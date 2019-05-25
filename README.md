@@ -68,6 +68,8 @@ npm run dev
 
 > by wuzht
 
+- 2019-5-25 更新登录界面    By chain
+
 ### Done
 
 实现了简单的登录界面和主页面原型，待修改
