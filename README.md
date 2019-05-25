@@ -46,6 +46,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 ## 运行
 
 ```bash
+#第一次运行
 # install dependencies
 npm install
 
@@ -56,7 +57,11 @@ npm install element-ui
 npm install sass-loader --save-dev
 npm install node-sass --sava-dev
 
+#配置boostrap-vue
+npm i vue bootstrap-vue bootstrap
+
 # serve with hot reload at localhost:8080
+#第一次安装上述依赖包后，以后运行只需下面命令
 npm run dev
 ```
 
@@ -68,7 +73,7 @@ npm run dev
 
 > by wuzht
 
-- 2019-5-25 更新登录界面    By chain
+- 2019.5.25 更改了登录界面 by chain
 
 ### Done
 

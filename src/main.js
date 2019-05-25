@@ -2,13 +2,23 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+// import Login from './page/Login.vue'
 import router from './router'
 import VueRouter from 'vue-router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
+/* bootstrap */
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+/* css */
+import './assets/css/loginPage.css'
+
 Vue.use(ElementUI)
 Vue.use(VueRouter)
+Vue.use(BootstrapVue)
 
 Vue.config.productionTip = false
 
