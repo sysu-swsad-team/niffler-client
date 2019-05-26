@@ -30,11 +30,11 @@
   margin-top:15px;
 }
 .signinpanel .uname {
-  background:#fff;
+  background-color:transparent;
   color:#333;
 }
 .signinpanel .pword {
-  background:#fff;
+  background-color:transparent;
   color:#333;
 }
 .signinpanel .btn{
