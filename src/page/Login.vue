@@ -63,33 +63,33 @@ export default {
       //     'password': password,
       //     'usertype': 'student'
       //   }
-        // var postData = JSON.stringify(data)
-        // var _self = this
-        // $.ajax({
-        //   type: 'POST',
-        //   url: '/users/login',
-        //   data: postData,
-        //   contentType: 'application/json;charset=utf-8',
-        //   dataType: 'json',
-        //   timeout: 5000,
-        //   success (result, xhr) {
-        //     for (let key in result) {
-        //       if (key === 'content') {
-        //         _self.$store.commit('updateUserStatus', 'student')
-        //         _self.$store.commit('updateUserInfo', data)
-        //         _self.$router.push({ name: 'Home' })
-        //       } else if (key === 'err') {
-        //         alert('服务器错误')
-        //       }
-        //     }
-        //   },
-        //   error (result, xhr) {
-        //     console.log(result)
-        //     if (result.status === 441) {
-        //       alert('账号或密码错误')
-        //     }
-        //   }
-        // })
+      // var postData = JSON.stringify(data)
+      // var _self = this
+      // $.ajax({
+      //   type: 'POST',
+      //   url: '/users/login',
+      //   data: postData,
+      //   contentType: 'application/json;charset=utf-8',
+      //   dataType: 'json',
+      //   timeout: 5000,
+      //   success (result, xhr) {
+      //     for (let key in result) {
+      //       if (key === 'content') {
+      //         _self.$store.commit('updateUserStatus', 'student')
+      //         _self.$store.commit('updateUserInfo', data)
+      //         _self.$router.push({ name: 'Home' })
+      //       } else if (key === 'err') {
+      //         alert('服务器错误')
+      //       }
+      //     }
+      //   },
+      //   error (result, xhr) {
+      //     console.log(result)
+      //     if (result.status === 441) {
+      //       alert('账号或密码错误')
+      //     }
+      //   }
+      // })
       // }
     },
     loginShopper () {
@@ -105,33 +105,33 @@ export default {
       //     'password': password,
       //     'usertype': 'shopper'
       //   }
-        // var postData = JSON.stringify(data)
-        // var _self = this
-        // $.ajax({
-        //   type: 'POST',
-        //   url: '/users/login',
-        //   data: postData,
-        //   contentType: 'application/json;charset=utf-8',
-        //   dataType: 'json',
-        //   timeout: 5000,
-        //   success (result, xhr) {
-        //     for (let key in result) {
-        //       if (key === 'content') {
-        //         _self.$store.commit('updateUserStatus', 'shopper')
-        //         _self.$store.commit('updateUserInfo', data)
-        //         _self.$router.push({ name: 'Main' })
-        //       } else if (key === 'err') {
-        //         alert('服务器错误')
-        //       }
-        //     }
-        //   },
-        //   error (result, xhr) {
-        //     console.log(result)
-        //     if (result.status === 441) {
-        //       alert('账号或密码错误')
-        //     }
-        //   }
-        // })
+      // var postData = JSON.stringify(data)
+      // var _self = this
+      // $.ajax({
+      //   type: 'POST',
+      //   url: '/users/login',
+      //   data: postData,
+      //   contentType: 'application/json;charset=utf-8',
+      //   dataType: 'json',
+      //   timeout: 5000,
+      //   success (result, xhr) {
+      //     for (let key in result) {
+      //       if (key === 'content') {
+      //         _self.$store.commit('updateUserStatus', 'shopper')
+      //         _self.$store.commit('updateUserInfo', data)
+      //         _self.$router.push({ name: 'Main' })
+      //       } else if (key === 'err') {
+      //         alert('服务器错误')
+      //       }
+      //     }
+      //   },
+      //   error (result, xhr) {
+      //     console.log(result)
+      //     if (result.status === 441) {
+      //       alert('账号或密码错误')
+      //     }
+      //   }
+      // })
       // }
     },
     isNULL (data) {
@@ -157,7 +157,7 @@ export default {
 //     <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
 //     <el-form-item style="width:100%;">
 //       <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">登录</el-button>
-      // <el-button type="primary" style="width:100%;">注册</el-button>
+//       <el-button type="primary" style="width:100%;">注册</el-button>
 //     </el-form-item>
 //   </el-form>
 // </template>
