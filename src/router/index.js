@@ -4,6 +4,7 @@ import HelloWorld from '@/components/HelloWorld'
 import Login from '@/page/Login'
 import Home from '@/page/Home'
 import NotFound from '@/page/404'
+import Register from '@/page/Register'
 
 Vue.use(Router)
 
@@ -29,6 +30,11 @@ export default new Router({
       path: '/404',
       name: '404',
       component: NotFound
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: Register
     }
   ]
 })

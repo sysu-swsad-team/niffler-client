@@ -17,7 +17,7 @@
                         <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 简介</li>
                     </ul>
                     <strong>还没有账号？  请</strong>
-                    <a href="" style="color:red"><strong>注册</strong></a>
+                    <a href="#register" style="color:red"><strong>注册</strong></a>
                 </div>
             </div>
             <div class="col-sm-5">

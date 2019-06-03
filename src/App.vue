@@ -38,6 +38,6 @@ export default{
   width:100%;
   height:100%;
   border:hidden;
-  background-color: #333;
+  overflow-y:auto
 }
 </style>
