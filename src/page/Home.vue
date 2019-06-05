@@ -1,15 +1,17 @@
 <template>
   <el-row id="app">
     <el-col :span="24" class="header">
-      <el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
-        {{collapsed?'':sysName}}
-      </el-col>
       <el-col :span="10">
-        <div class="tools" @click.prevent="collapse">
+        <el-button icon="el-icon-search" style="outline:none;" circle></el-button>
+        <el-col :span="5" class="tools" @click.native="collapse">
           <i class="fa fa-align-justify"></i>
-        </div>
+        </el-col>
+        <el-col :span="5" class="logo" :class="collapsed?'logo-width':'logo-width'">
+          <i class="fa fa-home"></i>
+          {{sysName}}
+        </el-col>
       </el-col>
-      <el-col :span="4" class="userinfo">
+      <el-col :span="14" class="userinfo">
         <el-dropdown trigger="hover">
           <span class="el-dropdown-link userinfo-inner">
             <img :src="this.sysUserAvatar"/>{{sysUserName}}
@@ -48,13 +50,13 @@
         <el-radio-button :label="true">收起</el-radio-button>
       </el-radio-group> -->
       <aside>
-        <el-menu default-active="1-4-1" class="el-menu-vertical-demo"
+        <el-menu default-active="1" class="el-menu-vertical-demo"
           @open="handleOpen" @close="handleClose" @select="handleSelect" :collapse="collapsed"
           :collapse-transition="true">
           <el-submenu index="1">
             <template slot="title">
-              <i class="el-icon-location"></i>
-              <span slot="title">导航一</span>
+              <i class="el-icon-edit-outline"></i>
+              <span slot="title">问卷系统</span>
             </template>
             <el-menu-item-group>
               <span slot="title">分组一</span>
@@ -93,7 +95,7 @@
               </el-breadcrumb-item>
             </el-breadcrumb>
           </el-col>
-          <el-col :span="24" class="content-wrapper">
+          <!-- <el-col :span="24" class="content-wrapper">
             <transition name="fade" mode="out-in">
               <el-table
                 v-loading="loading"
@@ -115,7 +117,7 @@
                 </el-table-column>
               </el-table>
             </transition>
-          </el-col>
+          </el-col> -->
         </div>
       </section>
     </el-col>
@@ -160,6 +162,11 @@ export default {
     },
     handleClose (key, keyPath) {
       console.log(key, keyPath)
+    },
+    logout: function () {
+      this.$router.push({
+        path: '/login'
+      })
     }
   }
 }
@@ -182,7 +189,14 @@ export default {
 .el-icon-arrow-down {
   font-size: 12px;
 }
+.el-col {
+  // border-right-width: 0px;
+  border-width: 0px;
+  // border-right-width: 0px !important;
+  // border-radius: 15px;
+}
 .header {
+  margin: 0px;
   height: 60px;
   line-height: 60px;
   background: $color-primary;
@@ -203,7 +217,8 @@ export default {
       }
     }
   }
-  .logo-width {
+}
+.logo-width {
     width: 200px;
     transition: 0.3s;
   }
@@ -217,16 +232,16 @@ export default {
     padding-left: 20px;
     padding-right: 20px;
     border-color: rgba(238, 241, 146, 0.3);
-    border-right-width: 1px;
+    // border-right-width: 1px;
     border-right-style: solid;
   }
   .tools {
-    padding: 0px 23px;
-    width: 14px;
+    padding: 0px 24px;
+    width: 20px;
     height: 60px;
+    border-radius: 30px;
     cursor: pointer;
   }
-}
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;

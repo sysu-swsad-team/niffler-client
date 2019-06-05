@@ -51,6 +51,7 @@ export default {
   },
   methods: {
     loginStudent () {
+      this.$router.push({ path: '/' })
       // var id = this.username
       // var password = this.password
       // if (this.isNULL(id)) {
@@ -93,6 +94,7 @@ export default {
       // }
     },
     loginShopper () {
+      this.$router.push({ path: '/' })
       // var id = this.username
       // var password = this.password
       // if (this.isNULL(id)) {
