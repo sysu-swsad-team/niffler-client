@@ -16,6 +16,9 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 /* css */
 import './assets/css/loginPage.css'
 
+/* font-awesome */
+import 'font-awesome/css/font-awesome.min.css'
+
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)

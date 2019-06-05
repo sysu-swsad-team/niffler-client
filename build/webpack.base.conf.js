@@ -36,6 +36,8 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
+      // scss_vars 是一些css全局变量
+      'scss_vars': '@/styles/vars.scss'
     }
   },
   module: {
