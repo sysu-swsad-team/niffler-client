@@ -163,10 +163,13 @@ export default {
     handleClose (key, keyPath) {
       console.log(key, keyPath)
     },
-    logout: function () {
-      this.$router.push({
-        path: '/login'
-      })
+    logout () {
+      var _this = this
+      this.$confirm('确认退出吗？', '提示', {
+        // type: 'warning'
+      }).then(() => {
+        _this.$router.push('/login')
+      }).catch(() => { })
     }
   }
 }
