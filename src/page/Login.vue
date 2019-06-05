@@ -21,15 +21,19 @@
                 </div>
             </div>
             <div class="col-sm-5">
-                <div class="loginform">
-                    <h4 class="no-margins">登录：</h4>
-                    <input type="text" v-model="username" class="form-control uname" placeholder="用户名" />
-                    <input type="password" v-model="password" class="form-control pword m-b" placeholder="密码" />
-                    <a href="" style="color:red">忘记密码了？</a>
+                <el-form :model="ruleForm2" :rules="rules" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm loginform">
+                    <h4 class="no-margins">登录</h4>
+                    <el-form-item prop="account">
+                      <input type="text" v-model="ruleForm2.account" placeholder="账号" class="form-control uname">
+                    </el-form-item>
+                    <el-form-item prop="checkPass">
+                      <input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码" class="form-control pword m-b">
+                    </el-form-item>
+                    <a href="#login" style="color:red">忘记密码了？</a>
                     <button id="fetch-btn" class="btn btn-success btn-block" @click="loginStudent">学生登录</button>
                     <button id="fetch-btn" class="btn btn-success btn-block" @click="loginShopper">商家登录</button>
                     <span class="window-tips" b></span>
-                </div>
+                </el-form>
             </div>
         </div>
         <div class="signup-footer">
@@ -45,8 +49,18 @@
 export default {
   data () {
     return {
-      username: '',
-      password: ''
+      ruleForm2: {
+        account: '',
+        checkPass: ''
+      },
+      rules: {
+        account: [
+          { required: true, message: '请输入账号', trigger: 'blur' }
+        ],
+        checkPass: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
