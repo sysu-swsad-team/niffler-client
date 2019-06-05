@@ -2,10 +2,12 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-// import Login from './page/Login.vue'
 import router from './router'
+import store from './store'
 import VueRouter from 'vue-router'
 import ElementUI from 'element-ui'
+
+/* theme */
 import 'element-ui/lib/theme-chalk/index.css'
 // import '../src/assets/theme/element-#1D365D/index.css'
 
@@ -40,5 +42,6 @@ router.beforeEach((to, from, next) => {
 new Vue({
   el: '#app',
   router,
+  store,
   render: h => h(App)
 })

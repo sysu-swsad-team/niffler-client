@@ -5,6 +5,7 @@ import Login from '@/page/Login'
 import Home from '@/page/Home'
 import NotFound from '@/page/404'
 import Register from '@/page/Register'
+// import QuestionnaireCreate from '@/page/Questionnaire/Create'
 
 Vue.use(Router)
 
@@ -13,7 +14,8 @@ let router = new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+      meta: { isCollapse: false }
     },
     {
       path: '/login',
@@ -36,6 +38,11 @@ let router = new Router({
       name: 'register',
       component: Register
     }
+    // {
+    //   path: '/questionnaire',
+    //   name: 'questionnaire',
+    //   component: QuestionnaireCreate
+    // }
   ]
 })
 
