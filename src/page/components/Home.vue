@@ -32,7 +32,7 @@
     <el-row style="padding-top: 20px;">
       <h4>Niffler 功能模块</h4>
       <el-col :span="6">
-        <el-card :body-style="{ padding: '0px' }">
+        <el-card :body-style="{ padding: '0px' }" class="module-cards" @click.native="handleQuestionnaireModuleClick">
           <img src="@/assets/images/products-lg-questionnaire.png" style="width: 100%;">
           <div style="padding: 14px;">
             <span>问卷系统</span>
@@ -44,8 +44,8 @@
         </el-card>
       </el-col>
       <el-col :span="6" :offset=1>
-        <el-card :body-style="{ padding: '0px' }">
-          <img src="@/assets/images/delivery_779px_1229802_easyicon.net.png" style="width: 100%; padding: 20px;">
+        <el-card :body-style="{ padding: '0px' }" class="module-cards">
+          <img src="@/assets/images/delivery_779px_1229802_easyicon.net.png" style="width: 100%; padding: 10px;">
           <div style="padding: 14px;">
             <span>跑腿办事</span>
             <div class="bottom clearfix">
@@ -56,8 +56,8 @@
         </el-card>
       </el-col>
       <el-col :span="6" :offset=1>
-        <el-card :body-style="{ padding: '0px' }">
-          <img src="@/assets/images/coins_782px_1227591_easyicon.net.png" style="width: 100%; padding: 20px;">
+        <el-card :body-style="{ padding: '0px' }" class="module-cards">
+          <img src="@/assets/images/coins_782px_1227591_easyicon.net.png" style="width: 100%; padding: 16px;">
           <div style="padding: 14px;">
             <span>提现</span>
             <div class="bottom clearfix">
@@ -93,6 +93,9 @@ export default {
     },
     handleClose (key, keyPath) {
       console.log(key, keyPath)
+    },
+    handleQuestionnaireModuleClick () {
+      this.$router.push('/questionnaire')
     }
   },
   components: {
@@ -130,5 +133,8 @@ export default {
     background-color: #fff;
     box-sizing: border-box;
   }
+}
+.module-cards {
+  cursor: pointer;
 }
 </style>
