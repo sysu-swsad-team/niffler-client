@@ -17,7 +17,8 @@
                         <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 简介</li>
                     </ul>
                     <strong>还没有账号？  请</strong>
-                    <a href="#register" style="color:red"><strong>注册</strong></a>
+                    <router-link to="/register" style="color:red"><strong>注册</strong></router-link>
+                    <!-- <a href="#register" style="color:red"><strong>注册</strong></a> -->
                 </div>
             </div>
             <div class="col-sm-5">
@@ -30,8 +31,8 @@
                       <input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码" class="form-control pword m-b">
                     </el-form-item>
                     <a href="#login" style="color:red">忘记密码了？</a>
-                    <button id="fetch-btn" class="btn btn-success btn-block" @click="loginStudent">学生登录</button>
-                    <button id="fetch-btn" class="btn btn-success btn-block" @click="loginShopper">商家登录</button>
+                    <button type="button" class="btn btn-success btn-block" @click="loginStudent">学生登录</button>
+                    <button type="button" class="btn btn-success btn-block" @click="loginShopper">商家登录</button>
                     <span class="window-tips" b></span>
                 </el-form>
             </div>
@@ -65,6 +66,7 @@ export default {
   },
   methods: {
     loginStudent () {
+      this.$store.dispatch('setAuth')
       this.$router.push({ path: '/' })
       // var id = this.username
       // var password = this.password
@@ -108,6 +110,7 @@ export default {
       // }
     },
     loginShopper () {
+      this.$store.dispatch('setAuth')
       this.$router.push({ path: '/' })
       // var id = this.username
       // var password = this.password

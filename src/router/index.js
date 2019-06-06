@@ -2,7 +2,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Login from '@/page/Login'
-import Home from '@/page/Home'
+
+import Root from '@/page/Root'
+import Home from '@/page/components/Home'
+import Questionnaire from '@/page/Questionnaire/Questionnaire'
+
 import NotFound from '@/page/404'
 import Register from '@/page/Register'
 // import QuestionnaireCreate from '@/page/Questionnaire/Create'
@@ -13,15 +17,25 @@ let router = new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home,
-      meta: { isCollapse: false }
+      name: 'Niffler',
+      component: Root,
+      children: [
+        {
+          path: '/home',
+          name: 'Home',
+          component: Home
+        },
+        {
+          path: '/questionnaire',
+          name: '问卷系统',
+          component: Questionnaire
+        }
+      ]
     },
     {
       path: '/login',
       name: 'login',
-      component: Login,
-      meta: { auth: false }
+      component: Login
     },
     {
       path: '/hello',

@@ -3,25 +3,27 @@
     <el-col :span="24" class="header">
       <el-col :span="12">
         <el-col :span="6" class="collapse-btn-col">
-          <el-tooltip class="item" effect="dark" content="菜单" placement="bottom">
-            <el-button class="collapse-btn" icon="fa fa-align-justify" @click.native="collapse" style="outline:none;" circle></el-button>
+          <el-tooltip effect="dark" content="菜单" placement="bottom">
+            <el-button icon="fa fa-align-justify" @click.native="collapse" style="outline:none;" circle></el-button>
           </el-tooltip>
         </el-col>
-        <el-col :span="6" class="logo">
-          <img id="niffler-logo" :src="this.nifflerLogo"/>
-          <!-- <i class="fa fa-home"></i> -->
-          {{sysName}}
-        </el-col>
+        <router-link to="/home">
+          <el-col :span="6" class="logo">
+            <img id="niffler-logo" :src="this.nifflerLogo"/>
+            <!-- <i class="fa fa-home"></i> -->
+            {{sysName}}
+          </el-col>
+        </router-link>
       </el-col>
       <el-col :span="12" class="header-right">
         <el-tooltip class="item" effect="dark" content="Home" placement="bottom">
-          <el-button icon="fa fa-home" style="outline:none;" circle></el-button>
+          <router-link to="/home"><el-button icon="fa fa-home" style="outline:none;" circle></el-button></router-link>
         </el-tooltip>
         <el-popover placement="bottom" width="400" trigger="click">
-          <h6 style="text-align: center;"> Niffler 应用模块</h6>
+          <h6 style="text-align: center;">Niffler 应用模块</h6>
           <el-col :span="24">
             <el-col :span="8">
-              <el-button class="modules" icon="el-icon-edit-outline" style="outline:none;">问卷系统</el-button>
+              <router-link to="/questionnaire"><el-button class="modules" icon="el-icon-edit-outline" style="outline:none;">问卷系统</el-button></router-link>
             </el-col>
             <el-col :span="8">
               <el-button class="modules" icon="fa fa-wheelchair-alt" style="outline:none;"> 跑腿办事</el-button>
@@ -45,12 +47,11 @@
         </el-dropdown>
       </el-col>
     </el-col>
-    <Questionnaire></Questionnaire>
+    <router-view></router-view>
   </el-row>
 </template>
 
 <script>
-import Questionnaire from './Questionnaire/Questionnaire'
 import img from '../assets/images/login-background.jpg'
 import logo from '../assets/images/niffler-logo.png'
 export default {
@@ -72,12 +73,15 @@ export default {
       this.$confirm('确认退出吗？', '提示', {
         // type: 'warning'
       }).then(() => {
+        this.$store.dispatch('resetAuth')
         _this.$router.push('/login')
       }).catch(() => { })
+    },
+    test () {
+      console.log(this.$router)
     }
   },
   components: {
-    Questionnaire
   }
 }
 </script>
@@ -85,11 +89,6 @@ export default {
 <style scoped lang="scss">
 @import '~scss_vars';
 #app {
-  // position: absolute;
-  // top: 0px;
-  // bottom: 0px;
-  // width: 100%;
-  // margin: 0 auto;
   font-family: "Helvetica Neue","PingFang SC", Arial, sans-serif;
 }
 .el-dropdown-link {
@@ -103,8 +102,6 @@ export default {
   border-width: 0px;
 }
 .header-buttons {
-  // float: right;
-  // padding-left: 10%;
   right: 0px;
 }
 
@@ -131,20 +128,22 @@ export default {
 }
 
 .logo {
-  width: 200px;
+  color: #fff;
+  width: 130px;
   height: 60px;
   font-size: 22px;
-  padding-left: 20px;
-  padding-right: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
   // border-right-width: 1px;
   border-right-style: solid;
+  #niffler-logo {
+    height: 30px;
+    margin-bottom: 8px;
+    margin-right: -2px;
+    margin-left: -4px;
+  }
 }
-#niffler-logo {
-  height: 30px;
-  margin-bottom: 8px;
-  margin-right: -2px;
-  margin-left: -4px;
-}
+
 .collapse-btn-col {
   padding: 0px 13px;
   width: 50px;

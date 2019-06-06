@@ -44,7 +44,8 @@
     </el-form-item>
      <el-form-item style="width:100%">
        <el-button type="primary" style="width:40%; margin:auto 10px auto 10px">注册</el-button>
-       <el-link type="primary" href="#" :underline="false">已有账号？去登录</el-link>
+       <!-- <el-link type="primary" href="#login" :underline="false">已有账号？去登录</el-link> -->
+       <router-link to="/login" :underline="false">已有账号？去登录</router-link>
      </el-form-item>
    </el-form>
   </el-col>

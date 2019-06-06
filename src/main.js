@@ -25,18 +25,26 @@ import 'font-awesome/css/font-awesome.min.css'
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
+// Vue.use(store)
 
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 router.beforeEach((to, from, next) => {
-  console.log(router.options.routes[1].meta.auth)
-  if (!router.options.routes[1].meta.auth && to.path !== '/login') {
+  console.log(store.getters.getIsAuth, to.path)
+  if (!store.getters.getIsAuth && to.path !== '/login' && to.path !== '/register') {
     next({
       path: '/login'
     })
+  } else {
+    if (to.path === '/') {
+      next({
+        path: '/home'
+      })
+    } else {
+      next()
+    }
   }
-  next()
 })
 
 new Vue({
