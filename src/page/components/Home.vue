@@ -104,36 +104,38 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 200px;
-  min-height: 400px;
-}
-.main {
-  display: flex;
-  overflow: hidden;
-}
-.content-container {
-  flex: 1;
-  overflow-y: scroll;
-  top: 60px;
-  bottom: 0px;
-  padding: 20px;
-  .breadcrumb-container {
-    //margin-bottom: 15px;
-    .title {
-      width: 200px;
-      float: left;
-      color: #475669;
-    }
-    .breadcrumb-inner {
-      float: right;
-    }
-  }
-  .content-wrapper {
-    background-color: #fff;
-    box-sizing: border-box;
-  }
-}
+@import '@/styles/pages.scss';
+// .el-menu-vertical-demo:not(.el-menu--collapse) {
+//   width: 200px;
+//   min-height: 400px;
+// }
+// .main {
+//   display: flex;
+//   overflow: hidden;
+// }
+// .content-container {
+//   flex: 1;
+//   overflow-y: scroll;
+//   top: 60px;
+//   bottom: 0px;
+//   padding: 20px;
+//   .breadcrumb-container {
+//     //margin-bottom: 15px;
+//     .title {
+//       width: 200px;
+//       float: left;
+//       color: #475669;
+//     }
+//     .breadcrumb-inner {
+//       line-height: 1.5;
+//       float: right;
+//     }
+//   }
+//   .content-wrapper {
+//     background-color: #fff;
+//     box-sizing: border-box;
+//   }
+// }
 .module-cards {
   cursor: pointer;
 }
