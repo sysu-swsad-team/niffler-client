@@ -1,26 +1,79 @@
 <template>
-  <el-col :span="24" class="content-wrapper">
-    <transition name="fade" mode="out-in">
-      <el-table
-        v-loading="loading"
-        :data="tableData"
-        style="width: 100%">
-        <el-table-column
-          prop="date"
-          label="日期"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="姓名"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          label="地址">
-        </el-table-column>
-      </el-table>
-    </transition>
+  <el-col :span="23" class="content-wrapper">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="80px" class="demo-ruleForm register-container">
+      <el-form-item label="题目" prop="title">
+        <el-input v-model="ruleForm.title" maxlength="30" show-word-limit></el-input>
+      </el-form-item>
+      <el-form-item label="简介" prop="description">
+        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 8}" v-model="ruleForm.description" maxlength="300" show-word-limit></el-input>
+      </el-form-item>
+      <el-form-item label="结束时间" prop="dueDate">
+        <el-date-picker v-model="ruleForm.dueDate" type="datetime"></el-date-picker>
+      </el-form-item>
+      <el-form-item lable-width="10px">
+        <el-col :span="11">
+          <el-form-item label="最大填写份数：" prop="maxNumber" label-width="150px">
+            <el-input-number v-model="ruleForm.maxNumber" :min="1" :max="99999"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11" :offset="1">
+          <el-form-item label="每份金额（元）：" prop="fee" label-width="150px">
+            <el-input-number v-model="ruleForm.fee" :min="0.01" :max="9999.0" :step="0.01"></el-input-number>
+          </el-form-item>
+        </el-col>
+      </el-form-item>
+      <el-divider content-position="center">问卷内容</el-divider>
+      <el-form-item
+        v-for="(question, index) in ruleForm.questions"
+        :label="'问题 ' + index" :key="question.key" v-if="index > 0">
+        <div>{{ question.title }}</div>
+        <el-form-item v-if="question.type === 0">
+          <el-radio-group v-for="(option) in question.options" :key="option.key">
+            <el-radio>{{ option.value }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item v-if="question.type === 1">
+          <el-checkbox-group v-for="(option) in question.options" :key="option.key">
+            <el-checkbox>{{ option.value }}</el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+        <el-form-item v-if="question.type === 2">
+          <el-input placeholder="答案"></el-input>
+        </el-form-item>
+        <el-button type="warning" icon="el-icon-delete" size="medium" @click.prevent="removeQuestion(question)">删除</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="addSingleChoice" style="width:30%">+ 单选题</el-button>
+        <el-button type="primary" @click="addMulChoice" style="width:30%">+ 多选题</el-button>
+        <el-button type="primary" @click="addFillIn" style="width:30%">+ 填空题</el-button>
+      </el-form-item>
+    </el-form>
+
+    <!-- 新增题目 -->
+    <el-dialog :visible.sync="isAddQuestion" :close-on-click-model="false" center="true" :show-close="false" :close-on-press-escape="false">
+      <h5 v-if="addType === 0" style="text-align: center">单选题</h5>
+      <h5 v-else-if="addType === 1" style="text-align: center">多选题</h5>
+      <h5 v-else-if="addType === 2" style="text-align: center">填空题</h5>
+      <el-divider></el-divider>
+      <el-form :model="addQuestion" label-width="100px" class="demo-dynamic">
+        <el-form-item label="题目" prop="question">
+          <el-input type="textarea" :autosize=" {minRows: 1, maxRows: 2} " v-model="addQuestion.title" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item v-if="addType === 0 || addType === 1"
+          v-for="(option, index) in addQuestion.options"
+          :key="option.key" :rules=" { required: true, message: '选项不能为空' } "
+          :label="'选项' + (index + 1)"
+        >
+          <el-input v-model="option.value" size="small"></el-input>
+          <el-button type="warning" icon="el-icon-delete" size="small" @click.prevent="removeOption(option)">删除</el-button>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" size="medium" @click.native="commitQuestion">确认</el-button>
+        <el-button size="medium" v-if="addType === 0 || addType === 1" @click.prevent="addOption">增加选项</el-button>
+        <el-button size="medium" @click.native="isAddQuestion = false">取消</el-button>
+      </div>
+    </el-dialog>
   </el-col>
 </template>
 
@@ -28,20 +81,108 @@
 export default {
   data () {
     return {
-      tableData: [{
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }],
-      loading: false
+      addQuestion: {
+        title: '',
+        options: [{
+          value: ''
+        }]
+      },
+      temp: '',
+      addType: -1,
+      ruleForm: {
+        title: '',
+        description: '',
+        maxNumber: '',
+        fee: '',
+        dueDate: '',
+        questions: [{
+          title: '',
+          type: '',
+          options: [{
+            value: ''
+          }]
+        }]
+      },
+      rules: {
+        title: [
+          { required: true, message: '请输入题目', triggr: 'blur' },
+          { min: 2, max: 50, message: '长度应为2~50', triggr: 'blur' }
+        ],
+        description: [ ],
+        maxNumber: [
+          { required: true }
+        ],
+        fee: [
+          { required: true }
+        ],
+        dueDate: [
+          { type: 'date', required: true, message: '', triggr: 'blur' }
+        ]
+      },
+      isAddQuestion: false
+    }
+  },
+  methods: {
+    addSingleChoice () {
+      this.addType = 0
+      this.isAddQuestion = true
+      this.addQuestion = {
+        title: '',
+        options: [{
+          value: ''
+        }]
+      }
+    },
+    addMulChoice () {
+      this.addType = 1
+      this.isAddQuestion = true
+      this.addQuestion = {
+        title: '',
+        options: [{
+          value: ''
+        }]
+      }
+    },
+    addFillIn () {
+      this.addType = 2
+      this.isAddQuestion = true
+      this.addQuestion = {
+        title: '',
+        options: [{
+          value: ''
+        }]
+      }
+    },
+    addOption () {
+      this.addQuestion.options.push({
+        value: '',
+        key: Date.now()
+      })
+    },
+    removeOption (item) {
+      var index = this.addQuestion.options.indexOf(item)
+      if (index !== -1) {
+        this.addQuestion.options.splice(index, 1)
+      }
+    },
+    removeQuestion (item) {
+      var index = this.ruleForm.questions.indexOf(item)
+      if (index !== -1) {
+        this.ruleForm.questions.splice(index, 1)
+      }
+    },
+    commitQuestion () {
+      if (this.addQuestion.title === '') {
+        this.$message.error('请输入题目！')
+      } else {
+        this.ruleForm.questions.push({
+          title: this.addQuestion.title,
+          type: this.addType,
+          options: this.addQuestion.options,
+          key: Date.now()
+        })
+        this.isAddQuestion = false
+      }
     }
   }
 }
