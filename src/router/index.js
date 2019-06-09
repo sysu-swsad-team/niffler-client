@@ -6,6 +6,7 @@ import Login from '@/page/Login'
 import Root from '@/page/Root'
 import Home from '@/page/components/Home'
 import Questionnaire from '@/page/Questionnaire/Questionnaire'
+import CreateQuestionnaire from '@/page/Questionnaire/Create'
 
 import NotFound from '@/page/404'
 import Register from '@/page/Register'
@@ -28,7 +29,14 @@ let router = new Router({
         {
           path: '/questionnaire',
           name: '问卷系统',
-          component: Questionnaire
+          component: Questionnaire,
+          children: [
+            {
+              path: '/questionnaire/create',
+              name: '创建问卷',
+              component: CreateQuestionnaire
+            }
+          ]
         }
       ]
     },

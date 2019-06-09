@@ -50,7 +50,7 @@
     </el-form>
 
     <!-- 新增题目 -->
-    <el-dialog :visible.sync="isAddQuestion" :close-on-click-model="false" center="true" :show-close="false" :close-on-press-escape="false">
+    <el-dialog :visible.sync="isAddQuestion" :close-on-click-model="false" :center="true" :show-close="false" :close-on-press-escape="false">
       <h5 v-if="addType === 0" style="text-align: center">单选题</h5>
       <h5 v-else-if="addType === 1" style="text-align: center">多选题</h5>
       <h5 v-else-if="addType === 2" style="text-align: center">填空题</h5>

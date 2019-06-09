@@ -1,3 +1,4 @@
+<!-- 页面名称与面包屑 -->
 <template>
   <el-row>
     <el-col :span="24">
@@ -8,10 +9,10 @@
         <el-breadcrumb separator="/">
           <template v-for="(item, index) in $route.matched">
             <el-breadcrumb-item v-if="index === 0" :key="item.path" :to="{ path: '/' + item.path }">
-              {{ item.name }} {{ index }}
+              {{ item.name }}
             </el-breadcrumb-item>
             <el-breadcrumb-item v-else :key="item.path" :to="{ path: item.path }">
-              {{ item.name }} {{ index }}
+              {{ item.name }}
             </el-breadcrumb-item>
           </template>
         </el-breadcrumb>
@@ -22,14 +23,13 @@
 
 <style lang="scss" scoped>
 .page-head-left {
-  width: 80px;
+  width: 70px;
   line-height: 1;
 }
 .page-head-right {
   position: absolute;
   right: 0;
-  width: 150px;
+  width: 205px;
   text-align: right;
 }
 </style>
-
