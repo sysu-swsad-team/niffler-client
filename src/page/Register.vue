@@ -10,7 +10,7 @@
        <el-input v-model="ruleForm.id" placeholder="请输入您的学号"></el-input>
      </el-form-item>
      <el-form-item label="年龄" prop="age">
-       <el-input v-model="ruleForm.age" placeholder="请输入您的年龄"></el-input>
+       <el-input-number v-model="ruleForm.age" :min="1" :max="120"></el-input-number>
      </el-form-item>
      <el-form-item label="性别" prop="gender">
       <el-radio-group v-model="ruleForm.gender">
@@ -76,9 +76,7 @@ export default {
           { required: true, message: '请输入学号', triggr: 'blur' },
           { min: 8, max: 8, message: '长度为8的数字序列', triggr: 'blur' }
         ],
-        age: [
-          { min: 2, max: 2, message: '长度为2的数字', triggr: 'blur' }
-        ],
+        age: [ ],
         gender: [
           { required: true, message: '请选择性别', triggr: 'blur' }
         ],
