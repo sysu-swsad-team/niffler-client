@@ -19,16 +19,7 @@
     </el-menu>
   </aside>
   <section class="content-container">
-    <el-row class="breadcrumb-container">
-      <el-col :span="24">
-        <strong class="title">{{$route.name}}</strong>
-        <el-breadcrumb separator="/" class="breadcrumb-inner">
-          <el-breadcrumb-item v-for="item in $route.matched" :key="item.path">
-            {{ item.name }}
-          </el-breadcrumb-item>
-        </el-breadcrumb>
-      </el-col>
-    </el-row>
+    <PageHead></PageHead>
     <el-row style="padding-top: 20px;">
       <h4>Niffler 功能模块</h4>
       <el-col :span="6">
@@ -73,6 +64,7 @@
 </template>
 
 <script>
+import PageHead from './PageHead'
 export default {
   data () {
     return {
@@ -99,43 +91,13 @@ export default {
     }
   },
   components: {
+    PageHead
   }
 }
 </script>
 
 <style scoped lang="scss">
 @import '@/styles/pages.scss';
-// .el-menu-vertical-demo:not(.el-menu--collapse) {
-//   width: 200px;
-//   min-height: 400px;
-// }
-// .main {
-//   display: flex;
-//   overflow: hidden;
-// }
-// .content-container {
-//   flex: 1;
-//   overflow-y: scroll;
-//   top: 60px;
-//   bottom: 0px;
-//   padding: 20px;
-//   .breadcrumb-container {
-//     //margin-bottom: 15px;
-//     .title {
-//       width: 200px;
-//       float: left;
-//       color: #475669;
-//     }
-//     .breadcrumb-inner {
-//       line-height: 1.5;
-//       float: right;
-//     }
-//   }
-//   .content-wrapper {
-//     background-color: #fff;
-//     box-sizing: border-box;
-//   }
-// }
 .module-cards {
   cursor: pointer;
 }

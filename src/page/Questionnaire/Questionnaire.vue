@@ -59,23 +59,15 @@
     </el-menu>
   </aside>
   <section class="content-container">
-    <div class="grid-content bg-purple-light">
-      <el-col :span="24" class="breadcrumb-container">
-        <strong class="title">{{$route.name}}</strong>
-        <el-breadcrumb separator="/" class="breadcrumb-inner">
-          <el-breadcrumb-item v-for="item in $route.matched" :key="item.path">
-            {{ item.name }}
-          </el-breadcrumb-item>
-        </el-breadcrumb>
-      </el-col>
-      <Create></Create>
-    </div>
+    <PageHead></PageHead>
+    <Create></Create>
   </section>
 </el-col>
 </template>
 
 <script>
 import Create from './Create'
+import PageHead from '../components/PageHead'
 export default {
   data () {
     return {
@@ -99,7 +91,8 @@ export default {
     }
   },
   components: {
-    Create
+    Create,
+    PageHead
   }
 }
 </script>
