@@ -21,7 +21,7 @@
         </el-tooltip>
         <el-popover placement="bottom" width="400" trigger="click">
           <h6 style="text-align: center;">Niffler 应用模块</h6>
-          <el-col :span="24">
+          <!-- <el-col :span="24">
             <el-col :span="8">
               <router-link to="/questionnaire"><el-button class="modules" icon="el-icon-edit-outline" style="outline:none;">问卷系统</el-button></router-link>
             </el-col>
@@ -31,7 +31,8 @@
             <el-col :span="8">
               <el-button class="modules" icon="fa fa-truck" style="outline:none;"> 其他系统</el-button>
             </el-col>
-          </el-col>
+          </el-col> -->
+          <ModuleCards :details="false"></ModuleCards>
           <el-button style="outline:none; margin-left: 10px;" slot="reference" icon="el-icon-s-grid" circle></el-button>
         </el-popover>
         <el-dropdown trigger="hover">
@@ -54,6 +55,7 @@
 <script>
 import img from '../assets/images/login-background.jpg'
 import logo from '../assets/images/niffler-logo.png'
+import ModuleCards from './components/ModuleCards'
 export default {
   data () {
     return {
@@ -82,6 +84,7 @@ export default {
     }
   },
   components: {
+    ModuleCards
   }
 }
 </script>

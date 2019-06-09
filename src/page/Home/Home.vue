@@ -1,0 +1,80 @@
+<template>
+<el-col :span="24" class="main">
+  <aside>
+    <el-menu default-active="1" class="el-menu-vertical-demo"
+      @open="handleOpen" @close="handleClose" @select="handleSelect" :collapse="isCollapse"
+      :collapse-transition="true">
+      <el-menu-item index="1" @click="$router.push('/home')">
+        <i class="el-icon-s-home"></i>
+        <span slot="title">首页</span>
+      </el-menu-item>
+      <el-menu-item index="2" @click="$router.push('/home/personinfo')">
+        <i class="el-icon-user-solid"></i>
+        <span slot="title">个人信息</span>
+      </el-menu-item>
+      <el-menu-item index="3" @click="$router.push('/home/settings')">
+        <i class="el-icon-setting"></i>
+        <span slot="title">设置</span>
+      </el-menu-item>
+    </el-menu>
+  </aside>
+  <section class="content-container">
+    <PageHead></PageHead>
+    <template v-if="this.$route.path === '/home'">
+      <el-row style="text-align: center;">
+        <div class="demo-image">
+          <img src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" class="avatar"/>
+        </div>
+        <h3 style="margin: 10px;">欢迎使用，xxx</h3>
+      </el-row>
+      <el-row style="margin-top: 20px; text-align: center;">
+        <h4>Niffler 功能模块</h4>
+        <ModuleCards :details="true" style="width: 80%; margin:0 auto;"></ModuleCards>
+      </el-row>
+    </template>
+    <router-view v-else></router-view>
+  </section>
+</el-col>
+</template>
+
+<script>
+import PageHead from '../components/PageHead'
+import ModuleCards from '../components/ModuleCards'
+export default {
+  data () {
+    return {
+    }
+  },
+  computed: {
+    isCollapse () {
+      // 返回./store/index.js中的全局变量
+      return this.$store.getters.getIsCollapse
+    }
+  },
+  methods: {
+    handleSelect (key, keyPath) {
+      console.log(this.$route.path)
+      console.log(key, keyPath)
+    },
+    handleOpen (key, keyPath) {
+      console.log(key, keyPath)
+    },
+    handleClose (key, keyPath) {
+      console.log(key, keyPath)
+    }
+  },
+  components: {
+    PageHead,
+    ModuleCards
+  }
+}
+</script>
+
+<style scoped lang="scss">
+@import '@/styles/pages.scss';
+.avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 150px;
+}
+</style>
