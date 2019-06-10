@@ -4,7 +4,9 @@ import HelloWorld from '@/components/HelloWorld'
 import Login from '@/page/Login'
 
 import Root from '@/page/Root'
-import Home from '@/page/components/Home'
+import Home from '@/page/Home/Home'
+import PersonInfo from '@/page/Home/PersonInfo'
+import Settings from '@/page/Home/Settings'
 import Questionnaire from '@/page/Questionnaire/Questionnaire'
 import CreateQuestionnaire from '@/page/Questionnaire/Create'
 
@@ -23,8 +25,20 @@ let router = new Router({
       children: [
         {
           path: '/home',
-          name: 'Home',
-          component: Home
+          name: '首页',
+          component: Home,
+          children: [
+            {
+              path: '/home/personinfo',
+              name: '个人信息',
+              component: PersonInfo
+            },
+            {
+              path: '/home/settings',
+              name: '设置',
+              component: Settings
+            }
+          ]
         },
         {
           path: '/questionnaire',
