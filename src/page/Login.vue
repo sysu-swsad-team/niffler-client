@@ -30,7 +30,7 @@
                     <el-form-item prop="checkPass">
                       <input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码" class="form-control pword m-b">
                     </el-form-item>
-                    <a href="#login" style="color:red">忘记密码了？</a>
+                    <a href="#login" style="color: red;">忘记密码了？</a>
                     <button type="button" class="btn btn-success btn-block" @click="loginStudent">学生登录</button>
                     <button type="button" class="btn btn-success btn-block" @click="loginShopper">商家登录</button>
                     <span class="window-tips" b></span>
@@ -258,20 +258,24 @@ export default {
   width:100%;
   height:100%;
   margin:0px;
-  padding-top: 10%;
+  padding-top: 6%;
   /* background:url(../images/login-background.jpg) no-repeat center fixed; */
   // background: $color-primary;
+  background: #fafafa;
   -webkit-background-size:cover;
   -moz-background-size:cover;
   -o-background-size:cover;
   background-size:cover;
-  color:rgba(255,255,255, 1)
+  color: $color-primary;
 }
 .signinpanel {
-  background: #344A6E;
+  background-color: white;
+  border: 1px solid #edeeee;
+  border-radius: 3px;
+  // background: #344A6E;
   width: 800px;
   margin: 0 auto;
-  border-radius: 10px;
+  // border-radius: 10px;
   padding: 30px;
   // background: rgba(255,255,255, 0.1);
   // color: #000;
@@ -303,17 +307,22 @@ export default {
   margin-top:15px;
 }
 .signinpanel form {
-  background:rgba(255,255,255,.2);
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 3px 10px 0 rgba(0,0,0,0.19) !important;
+  border-radius: 5px !important;
+
+  // background:rgba(255,255,255,.2);
   border:1px solid rgba(255,255,255,.3);
   -moz-box-shadow:0 3px 0 rgba(12,12,12,.03);
   -webkit-box-shadow:0 3px 0 rgba(12,12,12,.03);
   box-shadow:0 3px 0 rgba(12,12,12,.03);
   -moz-border-radius:3px;
   -webkit-border-radius:3px;
-  border-radius:3px;padding:30px;
+  // border-radius:3px;
+  padding: 20px;
 }
 .signup-footer {
-  border-top:solid 1px rgba(255,255,255,.3);
+  // border-top:solid 1px rgba(255,255,255,.3);
+  border-top: solid 1px $color-primary;
   margin:20px 0;
   padding-top:15px;
 }
