@@ -22,6 +22,9 @@
           </el-form-item>
         </el-col>
       </el-form-item>
+      <el-form-item>
+        <el-button type="primary" style="margin: 0 30% 0 30%; width:40%" class="el-icon-document" @click="summitQuestionnaire"> 发布问卷 </el-button>
+      </el-form-item>
       <el-divider content-position="center">问卷内容</el-divider>
       <el-form-item
         v-for="(question, index) in ruleForm.questions"
@@ -29,7 +32,7 @@
         <div>{{ question.title }}</div>
         <el-form-item v-if="question.type === 0">
           <el-radio-group v-for="(option) in question.options" :key="option.key">
-            <el-radio>{{ option.value }}</el-radio>
+            <el-radio style="margin: 0 20px 0 20px">{{ option.value }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item v-if="question.type === 1">
@@ -38,14 +41,15 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item v-if="question.type === 2">
-          <el-input placeholder="答案"></el-input>
+          <el-input placeholder="答案" style="margin-bottom: 5px"></el-input>
         </el-form-item>
+        <el-button type="primary" icon="el-icon-edit" @click.prevent="editQuestion(question)">编辑</el-button>
         <el-button type="warning" icon="el-icon-delete" size="medium" @click.prevent="removeQuestion(question)">删除</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="addSingleChoice" style="width:30%">+ 单选题</el-button>
-        <el-button type="primary" @click="addMulChoice" style="width:30%">+ 多选题</el-button>
-        <el-button type="primary" @click="addFillIn" style="width:30%">+ 填空题</el-button>
+        <el-button type="primary" icon="el-icon-edit" @click="addSingleChoice" style="width:30%"> 单选题</el-button>
+        <el-button type="primary" icon="el-icon-edit" @click="addMulChoice" style="width:30%"> 多选题</el-button>
+        <el-button type="primary" icon="el-icon-edit" @click="addFillIn" style="width:30%"> 填空题</el-button>
       </el-form-item>
     </el-form>
 
@@ -74,6 +78,31 @@
         <el-button size="medium" @click.native="isAddQuestion = false">取消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 编辑题目 -->
+    <el-dialog :visible.sync="isEdit" :close-on-click-model="false" :center="true" :show-close="false" :close-on-press-escape="false">
+      <h5 v-if="editForm.type === 0" style="text-align: center">单选题</h5>
+      <h5 v-else-if="editForm.type === 1" style="text-align: center">多选题</h5>
+      <h5 v-else-if="editForm.type === 2" style="text-align: center">填空题</h5>
+      <el-divider></el-divider>
+      <el-form :model="editForm" label-width="100px" class="demo-dynamic">
+        <el-form-item label="题目">
+          <el-input type="textarea" :autosize=" {minRows: 1, maxRows: 2} " v-model="editForm.title" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item v-if="editForm.type === 0 || editForm.type === 1"
+          v-for="(option, index) in editForm.options"
+          :key="option.key" :rules=" { required: true, message: '选项不能为空' } "
+          :label="'选项' + (index + 1)"
+        >
+          <el-input v-model="option.value" size="small"></el-input>
+          <el-button type="warning" icon="el-icon-delete" size="small" @click.prevent="removeOptionInEdit(option)">删除</el-button>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" size="medium" @click.native="commitQuestionInEdit">提交</el-button>
+        <el-button size="medium" v-if="editForm.type === 0 || editForm.type === 1" @click.prevent="addOptionInEdit">增加选项</el-button>
+      </div>
+    </el-dialog>
   </el-col>
 </template>
 
@@ -83,6 +112,13 @@ export default {
     return {
       addQuestion: {
         title: '',
+        options: [{
+          value: ''
+        }]
+      },
+      editForm: {
+        title: '',
+        type: -1,
         options: [{
           value: ''
         }]
@@ -97,7 +133,7 @@ export default {
         dueDate: '',
         questions: [{
           title: '',
-          type: '',
+          type: -1,
           options: [{
             value: ''
           }]
@@ -119,7 +155,8 @@ export default {
           { type: 'date', required: true, message: '', triggr: 'blur' }
         ]
       },
-      isAddQuestion: false
+      isAddQuestion: false,
+      isEdit: false
     }
   },
   methods: {
@@ -159,10 +196,22 @@ export default {
         key: Date.now()
       })
     },
+    addOptionInEdit () {
+      this.editForm.options.push({
+        value: '',
+        key: Date.now()
+      })
+    },
     removeOption (item) {
       var index = this.addQuestion.options.indexOf(item)
       if (index !== -1) {
         this.addQuestion.options.splice(index, 1)
+      }
+    },
+    removeOptionInEdit (item) {
+      var index = this.editForm.options.indexOf(item)
+      if (index !== -1) {
+        this.editForm.options.splice(index, 1)
       }
     },
     removeQuestion (item) {
@@ -170,6 +219,10 @@ export default {
       if (index !== -1) {
         this.ruleForm.questions.splice(index, 1)
       }
+    },
+    editQuestion (item) {
+      this.editForm = item
+      this.isEdit = true
     },
     commitQuestion () {
       if (this.addQuestion.title === '') {
@@ -183,6 +236,18 @@ export default {
         })
         this.isAddQuestion = false
       }
+    },
+    commitQuestionInEdit () {
+      if (this.editForm.title === '') {
+        this.$message.error('请输入题目！')
+      } else {
+        this.isEdit = false
+      }
+    },
+    summitQuestionnaire () {
+      this.$confirm('确认提交问卷吗？', '提示', { }).then(() => {
+        alert('问卷已提交')
+      })
     }
   }
 }
