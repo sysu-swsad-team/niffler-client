@@ -1,5 +1,5 @@
 <template>
-  <el-row id="app">
+  <el-row id="root-container">
     <el-col :span="24" class="header">
       <el-col :span="12">
         <el-col :span="6" class="collapse-btn-col">
@@ -9,9 +9,8 @@
         </el-col>
         <router-link to="/home">
           <el-col :span="6" class="logo">
-            <img id="niffler-logo" :src="this.nifflerLogo"/>
-            <!-- <i class="fa fa-home"></i> -->
-            {{sysName}}
+            <img id="niffler-logo" :src="getInfo.logo"/>
+            {{ getInfo.sysname }}
           </el-col>
         </router-link>
       </el-col>
@@ -20,27 +19,16 @@
           <router-link to="/home"><el-button icon="fa fa-home" style="outline:none;" circle></el-button></router-link>
         </el-tooltip>
         <el-popover placement="bottom" width="400" trigger="click">
-          <h6 style="text-align: center;">Niffler 应用模块</h6>
-          <!-- <el-col :span="24">
-            <el-col :span="8">
-              <router-link to="/questionnaire"><el-button class="modules" icon="el-icon-edit-outline" style="outline:none;">问卷系统</el-button></router-link>
-            </el-col>
-            <el-col :span="8">
-              <el-button class="modules" icon="fa fa-wheelchair-alt" style="outline:none;"> 跑腿办事</el-button>
-            </el-col>
-            <el-col :span="8">
-              <el-button class="modules" icon="fa fa-truck" style="outline:none;"> 其他系统</el-button>
-            </el-col>
-          </el-col> -->
+          <h6 style="text-align: center;">Niffler 功能模块</h6>
           <ModuleCards :details="false"></ModuleCards>
           <el-button style="outline:none; margin-left: 10px;" slot="reference" icon="el-icon-s-grid" circle></el-button>
         </el-popover>
         <el-dropdown trigger="hover">
           <span class="el-dropdown-link userinfo-inner">
-            <img id="avatar" :src="this.sysUserAvatar"/>
+            <img id="avatar" :src="getInfo.avatar"/>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>{{sysUserName}}</el-dropdown-item>
+            <el-dropdown-item>{{ getInfo.username }}</el-dropdown-item>
             <el-dropdown-item divided>我的消息</el-dropdown-item>
             <el-dropdown-item>设置</el-dropdown-item>
             <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
@@ -53,16 +41,15 @@
 </template>
 
 <script>
-import img from '../assets/images/login-background.jpg'
-import logo from '../assets/images/niffler-logo.png'
 import ModuleCards from './components/ModuleCards'
 export default {
   data () {
     return {
-      sysName: 'NIFFLER',
-      sysUserName: 'someone',
-      sysUserAvatar: img,
-      nifflerLogo: logo
+    }
+  },
+  computed: {
+    getInfo () {
+      return this.$store.getters.getInfo
     }
   },
   methods: {
@@ -91,8 +78,9 @@ export default {
 
 <style scoped lang="scss">
 @import '~scss_vars';
-#app {
-  font-family: "Helvetica Neue","PingFang SC", Arial, sans-serif;
+#root-container {
+  width: 100%;
+  height: 100%;
 }
 .el-dropdown-link {
   cursor: pointer;
@@ -107,7 +95,6 @@ export default {
 .header-buttons {
   right: 0px;
 }
-
 .header {
   user-select: none;
   margin: 0px;
@@ -140,6 +127,7 @@ export default {
   // border-right-width: 1px;
   border-right-style: solid;
   #niffler-logo {
+    width: 30px;
     height: 30px;
     margin-bottom: 8px;
     margin-right: -2px;

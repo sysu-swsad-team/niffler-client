@@ -3,13 +3,20 @@
   min-height: 400px;
 }
 .main {
+  position: absolute;
+  top: 60px;
+  bottom: 0px;
   display: flex;
   overflow: hidden;
 }
 .content-container {
+  height: 100%;
   flex: 1;
   overflow-y: scroll;
   top: 60px;
   bottom: 0px;
   padding: 20px;
+}
+#page-head {
+  margin-bottom: 20px;
 }

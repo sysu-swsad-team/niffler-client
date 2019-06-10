@@ -4,15 +4,17 @@ import HelloWorld from '@/components/HelloWorld'
 import Login from '@/page/Login'
 
 import Root from '@/page/Root'
+
 import Home from '@/page/Home/Home'
 import PersonInfo from '@/page/Home/PersonInfo'
 import Settings from '@/page/Home/Settings'
+
 import Questionnaire from '@/page/Questionnaire/Questionnaire'
-import CreateQuestionnaire from '@/page/Questionnaire/Create'
+import QuestionnaireCreate from '@/page/Questionnaire/Create'
+import QuestionnaireMine from '@/page/Questionnaire/Mine'
 
 import NotFound from '@/page/404'
 import Register from '@/page/Register'
-// import QuestionnaireCreate from '@/page/Questionnaire/Create'
 
 Vue.use(Router)
 
@@ -48,7 +50,12 @@ let router = new Router({
             {
               path: '/questionnaire/create',
               name: '创建问卷',
-              component: CreateQuestionnaire
+              component: QuestionnaireCreate
+            },
+            {
+              path: '/questionnaire/mine',
+              name: '我的问卷',
+              component: QuestionnaireMine
             }
           ]
         }
@@ -74,11 +81,6 @@ let router = new Router({
       name: 'register',
       component: Register
     }
-    // {
-    //   path: '/questionnaire',
-    //   name: 'questionnaire',
-    //   component: QuestionnaireCreate
-    // }
   ]
 })
 

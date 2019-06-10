@@ -12,21 +12,23 @@
         <i class="el-icon-menu"></i>
         <span slot="title">创建问卷</span>
       </el-menu-item>
-      <el-menu-item index="3" @click="$router.push('/questionnaire')">
+      <el-menu-item index="3" @click="$router.push('/questionnaire/mine')">
         <i class="el-icon-document"></i>
         <span slot="title">我的问卷</span>
       </el-menu-item>
     </el-menu>
   </aside>
   <section class="content-container">
-    <PageHead></PageHead>
-    <router-view style="margin-top: 20px;"></router-view>
+    <PageHead id="page-head"></PageHead>
+    <template v-if="this.$route.path === '/questionnaire'">
+    （问卷系统页面内容）
+    </template>
+    <router-view v-else></router-view>
   </section>
 </el-col>
 </template>
 
 <script>
-import Create from './Create'
 import PageHead from '../components/PageHead'
 export default {
   data () {
@@ -41,17 +43,16 @@ export default {
   },
   methods: {
     handleSelect (key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     },
     handleOpen (key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     },
     handleClose (key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     }
   },
   components: {
-    Create,
     PageHead
   }
 }
