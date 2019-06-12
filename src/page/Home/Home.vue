@@ -28,7 +28,6 @@
         <h3 style="margin: 10px;">欢迎使用，{{ getInfo.username }}</h3>
       </el-row>
       <el-row style="margin-top: 20px; text-align: center;">
-        <h4>Niffler 功能模块</h4>
         <ModuleCards :details="true" style="width: 80%; margin:0 auto;"></ModuleCards>
       </el-row>
     </template>
