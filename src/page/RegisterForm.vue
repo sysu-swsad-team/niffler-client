@@ -8,7 +8,7 @@
      <el-form-item label="学号" prop="id">
        <el-input v-model="ruleForm.id" placeholder="请输入您的学号"></el-input>
      </el-form-item>
-     <el-form-item label="年龄" prop="age" style="height: 30px;">
+     <el-form-item label="- 年龄" prop="age" style="height: 30px;">
        <el-input-number v-model="ruleForm.age" :min="1" :max="120"></el-input-number>
      </el-form-item>
      <el-form-item label="性别" prop="gender" style="height: 30px;">
@@ -17,7 +17,7 @@
         <el-radio label="female"></el-radio>
       </el-radio-group>
     </el-form-item>
-    <el-form-item label="年级" prop="grade">
+    <el-form-item label="年级" prop="grade" style="height: 30px;">
       <el-select v-model="ruleForm.grade" placeholder="请选择年级">
         <el-option label="大一" value="大一"></el-option>
         <el-option label="大二" value="大二"></el-option>

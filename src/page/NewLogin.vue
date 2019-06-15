@@ -10,7 +10,7 @@
           <LoginForm  style="overflow-y: auto; border: 0px; width: 300px;"></LoginForm>
         </template>
         <template v-else>
-          <h2 style="padding: 30px 0px 10px 0px;">Sign up</h2>
+          <h2 style="padding: 50px 0px 30px 0px;">Sign up</h2>
           <div class="Social">
           </div>
           <!-- <form>
@@ -190,7 +190,7 @@ this softens the color of the shapes, but most prominently shows the shapes as i
   max-width: 800px;
   width: 800px;
   /* minimum height to avoid a change in size with one additional input element */
-  min-height: 670px;
+  min-height: 695px;
   background: var(--theme-two);
   border-radius: 20px;
   box-shadow: 0 2px 5px -6px var(--text),0 0 30px -50px var(--text);
