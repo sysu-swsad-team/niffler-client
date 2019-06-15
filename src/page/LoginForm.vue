@@ -1,12 +1,12 @@
 <template>
 <el-row>
   <el-col :span="24">
-   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
+   <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" class="demo-ruleForm">
       <el-form-item prop="account">
-        <el-input type="text" v-model="ruleForm.account" placeholder="账号"></el-input>
+        <el-input type="text" v-model="ruleForm.account" placeholder="Email"></el-input>
       </el-form-item>
       <el-form-item prop="checkPass">
-        <el-input type="password" v-model="ruleForm.checkPass" placeholder="密码"></el-input>
+        <el-input type="password" show-password v-model="ruleForm.checkPass" placeholder="Password"></el-input>
       </el-form-item>
       <div class="link"><a href="#/">忘记密码?</a></div>
       <button type="button" @click="loginStudent">学生登录</button>

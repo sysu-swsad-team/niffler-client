@@ -10,7 +10,7 @@
           <LoginForm  style="overflow-y: auto; border: 0px; width: 300px;"></LoginForm>
         </template>
         <template v-else>
-          <h2 style="padding: 50px 0px 30px 0px;">Sign up</h2>
+          <h2 style="padding: 40px 0px 20px 0px;">SIGN UP</h2>
           <div class="Social">
           </div>
           <!-- <form>

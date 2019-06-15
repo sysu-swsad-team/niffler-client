@@ -1,7 +1,7 @@
 <template>
 <el-row>
   <el-col :span="12" :offset="6">
-   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="80px" class="demo-ruleForm register-container">
+   <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-position="left" label-width="80px" class="demo-ruleForm register-container">
      <h3 class="title">欢迎注册<em>Niffler</em></h3>
      <el-form-item label="姓名" prop="name">
        <el-input v-model="ruleForm.name" placeholder="请输入您的真实姓名"></el-input>
@@ -70,36 +70,36 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入姓名', triggr: 'blur' }
+          { required: true, message: '请输入姓名', trigger: 'blur' }
         ],
         id: [
-          { required: true, message: '请输入学号', triggr: 'blur' },
-          { min: 8, max: 8, message: '长度为8的数字序列', triggr: 'blur' }
+          { required: true, message: '请输入学号', trigger: 'blur' },
+          { min: 8, max: 8, message: '长度为8的数字序列', trigger: 'blur' }
         ],
         age: [ ],
         gender: [
-          { required: true, message: '请选择性别', triggr: 'blur' }
+          { required: true, message: '请选择性别', trigger: 'blur' }
         ],
         grade: [
-          { required: true, message: '请选择年级', triggr: 'blur' }
+          { required: true, message: '请选择年级', trigger: 'blur' }
         ],
         major: [
-          { required: true, message: '请输入专业', triggr: 'blur' }
+          { required: true, message: '请输入专业', trigger: 'blur' }
         ],
         email: [
-          { required: true, message: '请输入邮箱', triggr: 'blur' }
+          { required: true, message: '请输入邮箱', trigger: 'blur' }
         ],
         verCode: [
-          { required: true, message: '请输入验证码', triggr: 'blur' },
-          { min: 6, max: 6, message: '长度为6的数字', triggr: 'blur' }
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { min: 6, max: 6, message: '长度为6的数字', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '请输入密码', triggr: 'blur' },
-          { min: 6, max: 20, message: '长度不小于6，不大于20', triggr: 'blur' }
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 20, message: '长度不小于6，不大于20', trigger: 'blur' }
         ],
         ackPassword: [
-          { required: true, message: '请再次输入密码', triggr: 'blur' },
-          { min: 6, max: 20, message: '长度不小于6，不大于20', triggr: 'blur' }
+          { required: true, message: '请再次输入密码', trigger: 'blur' },
+          { min: 6, max: 20, message: '长度不小于6，不大于20', trigger: 'blur' }
         ]
       }
     }
