@@ -1,0 +1,78 @@
+<template>
+<el-row>
+  <el-col :span="24">
+   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
+      <el-form-item prop="account">
+        <el-input type="text" v-model="ruleForm.account" placeholder="账号"></el-input>
+      </el-form-item>
+      <el-form-item prop="checkPass">
+        <el-input type="password" v-model="ruleForm.checkPass" placeholder="密码"></el-input>
+      </el-form-item>
+      <div class="link"><a href="#/">忘记密码?</a></div>
+      <button type="button" @click="loginStudent">学生登录</button>
+      <button type="button" @click="loginStudent">商家登录</button>
+   </el-form>
+   <!-- <div class="link"><router-link to="/register" :underline="false">原注册页面</router-link></div> -->
+  </el-col>
+</el-row>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      ruleForm: {
+        account: '',
+        checkPass: ''
+      },
+      rules: {
+        account: [
+          { required: true, message: '请输入账号', trigger: 'blur' }
+        ],
+        checkPass: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  methods: {
+    loginStudent () {
+      this.$store.dispatch('setAuth')
+      this.$router.push({ path: '/' })
+    },
+    loginShopper () {
+      this.$store.dispatch('setAuth')
+      this.$router.push({ path: '/' })
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+@import '~scss_vars';
+button, button:hover, button:focus {
+  padding: 0.85rem 2.75rem;
+  outline: none;
+  cursor: pointer;
+  color: #fff;
+  font-family: inherit;
+
+  background: $color-primary;
+  border: 1px solid currentColor;
+  border-radius: 50px;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.1rem;
+}
+.link {
+  text-align: center;
+  padding: 10px;
+}
+a {
+  color: #697a79;
+  content: '';
+  border-bottom: 1px dashed currentColor;
+  text-decoration: none;
+  font-family: inherit;
+}
+</style>

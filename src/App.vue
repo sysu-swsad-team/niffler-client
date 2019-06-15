@@ -17,8 +17,10 @@ export default{
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
 #app {
-  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+  /* font-family: 'Montserrat', sans-serif; */
+  font-family: 'Montserrat', "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
   padding: 0px;
   margin: 0px;
   position: absolute;
