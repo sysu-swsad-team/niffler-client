@@ -32,7 +32,16 @@ export default {
   },
   methods: {
     summitForm () {
-      alert(this.ruleForm.title)
+      if (this.ruleForm.title === '') {
+        this.$message.error('请输入问卷标题')
+      } else if (this.ruleForm.dueDate === '') {
+        this.$message.error('请输入问卷截止时间')
+      } else {
+        this.$message({
+          message: '问卷提交成功',
+          type: 'success'
+        })
+      }
     }
   },
   components: {

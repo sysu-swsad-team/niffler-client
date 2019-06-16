@@ -40,12 +40,12 @@
       <el-col :span="24" class="toolbar">
         <el-button type="danger" size="medium" style="margin-top: 5px;" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
       </el-col>
-      <el-dialog :visible.sync="isEdit" :close-on-click-model="false" :show-close="false" :close-on-press-escape="false" width="60%" height="auto" class="infinite-list">
+      <el-dialog :visible.sync="isEdit" :close-on-click-model="false" :show-close="false" :close-on-press-escape="false" width="60%" height="auto" class="infinite-list" title="问卷编辑">
         <EditQuestionair :ruleForm="editingQN" style="background-color:white;padding:10px"></EditQuestionair>
-        <div>
-          <el-button type="primary" size="medium" style="width: 10%; margin-left: 60%; margin-bottom: 10px;" @click="summitEdit">提交</el-button>
-          <el-button type="primary" size="medium" style="width: 10%;" @click="resetEdit">重置</el-button>
-          <el-button type="warning" size="medium" style="width: 10%;" @click="cancelEdit">取消</el-button>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" size="medium" @click="summitEdit">提交</el-button>
+          <el-button type="primary" size="medium" @click="resetEdit">重置</el-button>
+          <el-button type="warning" size="medium" @click="cancelEdit">取消</el-button>
         </div>
       </el-dialog>
     </template>
@@ -125,14 +125,18 @@ export default {
   },
   methods: {
     getFilter () {
+      // 从后端根据查询条件获取对应的问卷，放在questionnaireList中
       alert('查询条件' + this.filters)
     },
     editQustionnair (index) {
+      // 根据this.questionnaireList[index].id 从后端获取完整问卷，存放在editingQN中
       this.isEdit = true
 
       // alert('获取问卷' + this.questionnaireList[index].title)
     },
     deleteQuestionnair (index) {
+      // 根据this.questionnaireList[index].id 想后端请求删除该问卷，如果返回success，在前端的
+      // this.questionnaireList删除对应问卷
       alert('删除问卷' + this.questionnaireList[index].title)
     },
     selsChange: function (sels) {
@@ -141,16 +145,29 @@ export default {
     filterTag (value, row) {
       return row.tag === value
     },
-    handleCurrentChange () { },
-    batchRemove () { },
+    batchRemove () {
+      // 根据sels中的下标，找到对应问卷的id，传给后端进行删除，返回成功再在前端questionnaireList进行删除
+    },
     summitEdit () {
-      alert('summitEdit')
-      this.isEdit = false
+      if (this.editingQN.title === '') {
+        this.$message.error('请输入问卷标题')
+      } else if (this.editingQN.dueDate === '') {
+        this.$message.error('请输入问卷截止时间')
+      } else {
+        // 向后端发送更改信息，成功则返回下面提示
+        this.$message({
+          message: '问卷更改成功',
+          type: 'success'
+        })
+        this.isEdit = false
+      }
     },
     resetEdit () {
+      // 使用个临时变量存储更改前问卷，
       alert('resetEdit')
     },
     cancelEdit () {
+      // 注意重置问卷
       this.editingQN = {
         title: '',
         description: '',
