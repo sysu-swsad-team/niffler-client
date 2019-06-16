@@ -29,7 +29,7 @@
 .page-head-right {
   position: absolute;
   right: 0;
-  width: 205px;
+  width: 230px;
   text-align: right;
 }
 </style>

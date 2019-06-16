@@ -12,9 +12,9 @@
         <i class="el-icon-user-solid"></i>
         <span slot="title">个人信息</span>
       </el-menu-item>
-      <el-menu-item index="3" @click="$router.push('/home/settings')">
-        <i class="el-icon-setting"></i>
-        <span slot="title">设置</span>
+      <el-menu-item index="3" @click="$router.push('/home/message')">
+        <i class="el-icon-message-solid"></i>
+        <span slot="title">我的消息</span>
       </el-menu-item>
     </el-menu>
   </aside>

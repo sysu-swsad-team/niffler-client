@@ -19,19 +19,18 @@
           <router-link to="/home"><el-button icon="fa fa-home" style="outline:none;" circle></el-button></router-link>
         </el-tooltip>
         <el-popover placement="bottom" width="400" trigger="click">
-          <h6 style="text-align: center;">Niffler 功能模块</h6>
+          <p id="title">NIFFLER 功能模块</p>
           <ModuleCards :details="false"></ModuleCards>
           <el-button style="outline:none; margin-left: 10px;" slot="reference" icon="el-icon-s-grid" circle></el-button>
         </el-popover>
-        <el-dropdown trigger="hover">
+        <el-dropdown trigger="hover" @command="handleCommand">
           <span class="el-dropdown-link userinfo-inner">
             <img id="avatar" :src="getInfo.avatar"/>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>{{ getInfo.username }}</el-dropdown-item>
-            <el-dropdown-item divided>我的消息</el-dropdown-item>
-            <el-dropdown-item>设置</el-dropdown-item>
-            <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
+            <el-dropdown-item command="personInfo"><i class="el-icon-user"></i> {{ getInfo.username }}</el-dropdown-item>
+            <el-dropdown-item command="message" divided><i class="el-icon-bell"></i> 我的消息</el-dropdown-item>
+            <el-dropdown-item command="logout"><i class="el-icon-switch-button"></i> 退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-col>
@@ -57,17 +56,20 @@ export default {
     collapse: function () {
       this.$store.dispatch('changeSideBar')
     },
-    logout () {
-      var _this = this
-      this.$confirm('确认退出吗？', '提示', {
-        // type: 'warning'
-      }).then(() => {
-        this.$store.dispatch('resetAuth')
-        _this.$router.push('/login')
-      }).catch(() => { })
-    },
-    test () {
-      console.log(this.$router)
+    handleCommand (command) {
+      if (command === 'personInfo') {
+        this.$router.push('/home/personInfo')
+      } else if (command === 'message') {
+        this.$router.push('/home/message')
+      } else if (command === 'logout') {
+        var _this = this
+        this.$confirm('确认退出吗？', '提示', {
+          // type: 'warning'
+        }).then(() => {
+          this.$store.dispatch('resetAuth')
+          _this.$router.push('/login')
+        }).catch(() => { })
+      }
     }
   },
   components: {
@@ -78,16 +80,15 @@ export default {
 
 <style scoped lang="scss">
 @import '~scss_vars';
+#title {
+  text-align: center;
+  font-weight:bold;
+  font-size: 16px;
+  font-family: 'Montserrat',"Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+}
 #root-container {
   width: 100%;
   height: 100%;
-}
-.el-dropdown-link {
-  cursor: pointer;
-  color: #fff;
-}
-.el-icon-arrow-down {
-  font-size: 12px;
 }
 .el-col {
   border-width: 0px;
@@ -118,11 +119,12 @@ export default {
 }
 
 .logo {
+  font-weight: bold;
   color: #fff;
-  width: 130px;
+  width: 140px;
   height: 60px;
-  font-size: 22px;
-  margin-left: 20px;
+  font-size: 23px;
+  margin-left: 16px;
   margin-right: 20px;
   // border-right-width: 1px;
   border-right-style: solid;

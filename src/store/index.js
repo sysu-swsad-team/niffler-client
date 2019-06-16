@@ -13,8 +13,15 @@ const state = {
   isCollapse: false,
   isAuth: false,
   sysname: 'NIFFLER',
-  username: 'someusername',
+  username: 'pmlpml', // 用户名即真实姓名
   avatar: avatar,
+  stuId: 16340000,
+  birth: '1990-02',
+  sex: true,
+  grade: '大一',
+  major: '软件工程',
+  email: 'pmlpml@niffler.com',
+  coinNum: 10086, // 闲钱币数量
   logo: logo
 }
 
@@ -32,6 +39,13 @@ const getters = {
       sysname: state.sysname,
       username: state.username,
       avatar: state.avatar,
+      stuId: state.stuId,
+      birth: state.birth,
+      sex: state.sex,
+      grade: state.grade,
+      major: state.major,
+      email: state.email,
+      coinNum: state.coinNum,
       logo: state.logo
     }
   }

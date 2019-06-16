@@ -54,6 +54,6 @@ export default {
   text-align: center;
 }
 .details {
-  font-size: 10pt;
+  font-size: 12px;
 }
 </style>

@@ -7,7 +7,7 @@ import Root from '@/page/Root'
 
 import Home from '@/page/Home/Home'
 import PersonInfo from '@/page/Home/PersonInfo'
-import Settings from '@/page/Home/Settings'
+import Message from '@/page/Home/Message'
 
 import Questionnaire from '@/page/Questionnaire/Questionnaire'
 import QuestionnaireCreate from '@/page/Questionnaire/Create'
@@ -22,7 +22,7 @@ let router = new Router({
   routes: [
     {
       path: '/',
-      name: 'Niffler',
+      name: 'NIFFLER',
       component: Root,
       children: [
         {
@@ -36,9 +36,9 @@ let router = new Router({
               component: PersonInfo
             },
             {
-              path: '/home/settings',
+              path: '/home/message',
               name: '设置',
-              component: Settings
+              component: Message
             }
           ]
         },
