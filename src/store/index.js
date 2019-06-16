@@ -22,6 +22,7 @@ const state = {
   major: '软件工程',
   email: 'pmlpml@niffler.com',
   coinNum: 10086, // 闲钱币数量
+  msgNumUnread: 100, // 未读信息数量
   logo: logo
 }
 
@@ -46,6 +47,7 @@ const getters = {
       major: state.major,
       email: state.email,
       coinNum: state.coinNum,
+      msgNumUnread: state.msgNumUnread,
       logo: state.logo
     }
   }

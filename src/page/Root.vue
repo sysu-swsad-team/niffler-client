@@ -23,14 +23,14 @@
           <ModuleCards :details="false"></ModuleCards>
           <el-button style="outline:none; margin-left: 10px;" slot="reference" icon="el-icon-s-grid" circle></el-button>
         </el-popover>
-        <el-dropdown trigger="hover" @command="handleCommand">
+        <el-dropdown trigger="hover" @command="handleCommand" :hide-timeout="150" :show-timeout="0">
           <span class="el-dropdown-link userinfo-inner">
             <img id="avatar" :src="getInfo.avatar"/>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="personInfo"><i class="el-icon-user"></i> {{ getInfo.username }}</el-dropdown-item>
-            <el-dropdown-item command="message" divided><i class="el-icon-bell"></i> 我的消息</el-dropdown-item>
-            <el-dropdown-item command="logout"><i class="el-icon-switch-button"></i> 退出登录</el-dropdown-item>
+            <el-dropdown-item command="personInfo" style="line-height: 40px;"><i class="el-icon-user"></i> {{ getInfo.username }}</el-dropdown-item>
+            <el-dropdown-item command="message" divided style="line-height: 40px;"><i class="el-icon-bell"></i> 我的消息<el-badge :value="getInfo.msgNumUnread" :max="99" style="top: 3px; left: 3px;"/></el-dropdown-item>
+            <el-dropdown-item command="logout" style="line-height: 40px;"><i class="el-icon-switch-button"></i> 退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-col>
@@ -115,7 +115,7 @@ export default {
   width: 40px;
   height: 40px;
   border-radius: 20px;
-  margin: 10px 0px 10px 10px;
+  margin: 8px 0px 10px 10px;
 }
 
 .logo {

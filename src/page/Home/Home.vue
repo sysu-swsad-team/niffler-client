@@ -14,7 +14,7 @@
       </el-menu-item>
       <el-menu-item index="3" @click="$router.push('/home/message')">
         <i class="el-icon-message-solid"></i>
-        <span slot="title">我的消息</span>
+        <span slot="title">我的消息 <el-badge :value="getInfo.msgNumUnread" :max="99" style="top: 3px; left: 3px;"/></span>
       </el-menu-item>
     </el-menu>
   </aside>
