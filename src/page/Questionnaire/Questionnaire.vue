@@ -61,6 +61,14 @@
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
         </el-pagination>
       </el-col>
+
+      <el-dialog :visible.sync="isDetail" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" fullscreen class="infinite-list" title="问卷填写" :center="true">
+        <ShowQuestionnaire :ruleForm="detailQN" :isDisable="true" style="background-color: #eee;padding: 10px;"></ShowQuestionnaire>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" size="medium" @click.native="commiteAnswer"  style="padding-top: 10px">提交</el-button>
+          <el-button type="warning" size="medium" @click.native="isDetail = false"  style="padding-top: 10px">取消</el-button>
+        </div>
+      </el-dialog>
     </template>
     <router-view v-else></router-view>
   </section>
@@ -69,6 +77,7 @@
 
 <script>
 import PageHead from '../components/PageHead'
+import ShowQuestionnaire from '../components/ShowQuestionnaire'
 export default {
   data () {
     return {
@@ -119,7 +128,9 @@ export default {
       },
       listLoading: false,
       sels: [],
-      total: 0
+      total: 0,
+      isDetail: false,
+      detailQN: { }
     }
   },
   computed: {
@@ -142,7 +153,13 @@ export default {
       alert('查询条件' + this.filters)
     },
     getQustionnair (index) {
-      alert('获取问卷' + this.questionnaireList[index].title)
+      // 后端先判断该用户是否已填写此问卷，若已填写，则不能再填写，否则，后端返回问卷细节
+      // alert('获取问卷' + this.questionnaireList[index].title)
+      // 若已填写，
+      // this.$message.error('您已填过此问卷')
+      // 若未填写。渲染问卷
+      this.isDetail = true
+      this.detailQN = this.questionnaireList[index]
     },
     selsChange: function (sels) {
       this.sels = sels
@@ -150,10 +167,25 @@ export default {
     filterTag (value, row) {
       return row.tag === value
     },
-    handleCurrentChange () { }
+    handleCurrentChange () { },
+    commiteAnswer () {
+      // 提交问卷答案
+      this.$confirm('确定提交问卷吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'success'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '问卷已提交'
+        })
+        this.isDetail = false
+      }).catch(() => { })
+    }
   },
   components: {
-    PageHead
+    PageHead,
+    ShowQuestionnaire
   }
 }
 </script>

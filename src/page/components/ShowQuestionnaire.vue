@@ -1,13 +1,13 @@
 <template>
   <el-col :span="24" class="content-wrapper">
-    <el-form :model="ruleForm" ref="ruleForm" label-position="left" label-width="80px" :disabled="true" style="font-weight: bold;">
-      <el-form-item label="题目" prop="title">
+    <el-form :model="ruleForm" ref="ruleForm" label-position="left" label-width="80px" :disabled="isDisable" style="font-weight: bold;">
+      <el-form-item label="题目：" prop="title">
         <p>{{ ruleForm.title }}</p>
       </el-form-item>
-      <el-form-item label="简介" prop="description">
+      <el-form-item label="简介：" prop="description">
         <div>{{ ruleForm.description }}</div>
       </el-form-item>
-      <el-form-item label="结束时间" prop="dueDate">
+      <el-form-item label="结束时间：" prop="dueDate" label-width="120px">
         <span>{{ ruleForm.dueDate }}</span>
       </el-form-item>
       <el-form-item lable-width="10px">
@@ -23,7 +23,7 @@
         </el-col>
         <el-col :span="7" :offset="1">
           <el-form-item label="标签：" label-width="80px">
-            <span>标签</span>
+            <el-tag type="success">学校</el-tag>
           </el-form-item>
         </el-col>
       </el-form-item>
@@ -67,7 +67,8 @@ export default {
           value: ''
         }]
       }]
-    }
+    },
+    isDisable: false
   },
   data () {
     return { }

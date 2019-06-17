@@ -55,7 +55,7 @@
         </el-table>
       </el-dialog>
       <el-dialog :visible.sync="isLookOver" :close-on-click-model="true" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷详细内容">
-        <ShowQuestionnaire :ruleForm="detailQN" style="background-color:white;padding:10px"></ShowQuestionnaire>
+        <ShowQuestionnaire :ruleForm="detailQN" :isDisable="false" style="background-color:white;padding:10px"></ShowQuestionnaire>
       </el-dialog>
     </template>
   </section>

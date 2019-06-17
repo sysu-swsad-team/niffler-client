@@ -11,14 +11,22 @@
         <el-date-picker v-model="ruleForm.dueDate" type="datetime"></el-date-picker>
       </el-form-item>
       <el-form-item lable-width="10px">
-        <el-col :span="11">
-          <el-form-item label="最大填写份数：" prop="maxNumber" label-width="150px">
+        <el-col :span="7">
+          <el-form-item label="最大填写份数：" prop="maxNumber" label-width="120px">
             <el-input-number v-model="ruleForm.maxNumber" :min="1" :max="99999"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="11" :offset="1">
-          <el-form-item label="每份金额（元）：" prop="fee" label-width="150px">
+        <el-col :span="7" :offset="1">
+          <el-form-item label="每份金额(元)：" prop="fee" label-width="120px">
             <el-input-number v-model="ruleForm.fee" :min="0.01" :max="9999.0" :step="0.01"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="7" :offset="1">
+          <el-form-item label="标签" label-width="100px" prop="tag">
+            <el-select v-model="ruleForm.tag" placeholder="请选择">
+              <el-option v-for="item in tags" :key="item.value" :label="item.value" :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-col>
       </el-form-item>
@@ -109,6 +117,7 @@ export default {
   props: {
     ruleForm: {
       title: '',
+      tag: '',
       description: '',
       maxNumber: 1,
       fee: 0.01,
@@ -130,6 +139,11 @@ export default {
           value: ''
         }]
       },
+      tags: [{
+        value: '学校'
+      }, {
+        value: '商业'
+      }],
       temp: '',
       addType: -1,
       editForm: {
@@ -149,6 +163,9 @@ export default {
           { required: true }
         ],
         fee: [
+          { required: true }
+        ],
+        tag: [
           { required: true }
         ],
         dueDate: [
