@@ -7,7 +7,7 @@
       <el-form-item label="简介" prop="description">
         <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 8}" v-model="ruleForm.description" maxlength="300" show-word-limit></el-input>
       </el-form-item>
-      <el-form-item label="结束时间" prop="dueDate">
+      <el-form-item label="结束时间" prop="dueDate" style="margin-top:10px">
         <el-date-picker v-model="ruleForm.dueDate" type="datetime"></el-date-picker>
       </el-form-item>
       <el-form-item lable-width="10px">

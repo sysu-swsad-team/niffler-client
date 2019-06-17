@@ -12,7 +12,7 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-table :data="questionnaireList" highlight-current-row @selection-change="selsChange" style="width: 100%;" stripe>
+      <el-table :data="questionnaireList" highlight-current-row @selection-change="selsChange" style="width: 100%;" stripe @row-click="lookOverQN">
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column type="index" width="50"></el-table-column>
@@ -31,7 +31,7 @@
           <template slot-scope="scope">
             <el-tooltip placement="top">
               <div slot="content">{{ scope.row.description }}</div>
-              <el-button size="small" type="primary" @click="editQustionnair(scope.$index)">编辑</el-button>
+              <el-button size="small" type="primary" @click="checkQustionnair(scope.$index)">查看</el-button>
             </el-tooltip>
           <el-button size="small" type="danger" @click="deleteQuestionnair(scope.$index)">删除</el-button>
           </template>
@@ -48,6 +48,15 @@
           <el-button type="warning" size="medium" @click="cancelEdit">取消</el-button>
         </div>
       </el-dialog>
+      <el-dialog :visible.sync="isCheck" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷填写情况">
+        <el-table :data="answerList" style="width: 100%" stripe highlight-current-row>
+          <el-table-column prop="id" label="问卷ID" width="80"></el-table-column>
+          <el-table-column v-for="(answers, index) in answerList.answers" :prop="answers" :label="'问题' + index" width="50" :key="index"></el-table-column>
+        </el-table>
+      </el-dialog>
+      <el-dialog :visible.sync="isLookOver" :close-on-click-model="true" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷详细内容">
+        <ShowQuestionnaire :ruleForm="detailQN" style="background-color:white;padding:10px"></ShowQuestionnaire>
+      </el-dialog>
     </template>
   </section>
 </el-col>
@@ -55,6 +64,7 @@
 
 <script>
 import EditQuestionair from '../components/EditQuestionair'
+import ShowQuestionnaire from '../components/ShowQuestionnaire'
 export default {
   data () {
     return {
@@ -114,7 +124,11 @@ export default {
         }]
       },
       sels: [],
-      isEdit: false
+      isEdit: false,
+      isCheck: false,
+      isLookOver: false,
+      answerList: { },
+      detailQN: { }
     }
   },
   computed: {
@@ -137,7 +151,14 @@ export default {
     deleteQuestionnair (index) {
       // 根据this.questionnaireList[index].id 想后端请求删除该问卷，如果返回success，在前端的
       // this.questionnaireList删除对应问卷
+      event.cancelBubble = true
       alert('删除问卷' + this.questionnaireList[index].title)
+    },
+    checkQustionnair (index) {
+      // 根据this.questionnaireList[index].id 向后端求情该问卷的所有填写情况，如果返回success，则
+      // 弹出对话框，以表格的形式{'id', 'Q1', 'Q2',...}显示，建议dialog为Fullscreen
+      this.isCheck = true
+      event.cancelBubble = true
     },
     selsChange: function (sels) {
       this.sels = sels
@@ -183,10 +204,16 @@ export default {
         }]
       }
       this.isEdit = false
+    },
+    lookOverQN: function (row) {
+      // 通过row.id获取问卷详细内容,放于detailQN
+      this.isLookOver = true
+      this.detailQN = row
     }
   },
   components: {
-    EditQuestionair
+    EditQuestionair,
+    ShowQuestionnaire
   }
 }
 </script>
