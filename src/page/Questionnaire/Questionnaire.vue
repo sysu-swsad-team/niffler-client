@@ -118,7 +118,8 @@ export default {
         sponsor: ''
       },
       listLoading: false,
-      sels: []
+      sels: [],
+      total: 0
     }
   },
   computed: {
