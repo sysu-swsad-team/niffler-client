@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
-import Login from '@/page/NewLogin'
+
+import Login from '@/page/Login/NewLogin'
 
 import Root from '@/page/Root'
 
@@ -18,7 +19,6 @@ import ErrandCreate from '@/page/Errand/Create'
 import ErrandMine from '@/page/Errand/Mine'
 
 import NotFound from '@/page/404'
-import Register from '@/page/Register'
 
 Vue.use(Router)
 
@@ -96,11 +96,6 @@ let router = new Router({
       path: '/404',
       name: '404',
       component: NotFound
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: Register
     }
   ]
 })

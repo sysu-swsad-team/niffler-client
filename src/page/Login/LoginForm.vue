@@ -51,14 +51,14 @@ export default {
 <style lang="scss" scoped>
 @import '~scss_vars';
 button, button:hover, button:focus {
-  padding: 0.85rem 2.75rem;
+  padding: 0.80rem 2.75rem;
   outline: none;
   cursor: pointer;
   color: #fff;
   font-family: inherit;
 
   background: $color-primary;
-  border: 1px solid currentColor;
+  border: 0px solid currentColor;
   border-radius: 50px;
   text-transform: uppercase;
   font-size: 0.8rem;

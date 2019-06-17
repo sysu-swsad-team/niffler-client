@@ -41,8 +41,8 @@
        <el-input v-model="ruleForm.email" placeholder="请输入您的邮箱"></el-input>
     </el-form-item>
     <el-form-item label="验证码" prop="verCode">
-      <el-input v-model="ruleForm.verCode" style="width: 49%;" placeholder="验证码"></el-input>
-      <el-button type="primary" style="width: 49%;">获取验证码</el-button>
+      <el-input v-model="ruleForm.verCode" style="width: 56%;" placeholder="验证码"></el-input>
+      <el-button type="primary" style="width: 42%; font-size: 12px; letter-spacing: 0px;">获取验证码</el-button>
     </el-form-item>
     <el-form-item label="密码" prop="password">
       <el-input v-model="ruleForm.password" show-password placeholder="请输入密码"></el-input>

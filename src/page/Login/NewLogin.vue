@@ -6,11 +6,11 @@
           <h2>NIFFLER</h2>
           <div class="Social">
           </div>
-          <p>一个可以赚闲钱的 APP</p>
-          <LoginForm  style="overflow-y: auto; border: 0px; width: 300px;"></LoginForm>
+          <p id="niffler-desc">一个可以赚闲钱的 APP</p>
+          <LoginForm class="sign-in-out-form"></LoginForm>
         </template>
         <template v-else>
-          <h2 style="padding: 40px 0px 20px 0px;">SIGN UP</h2>
+          <h2 id="signup-title">SIGN UP</h2>
           <div class="Social">
           </div>
           <!-- <form>
@@ -18,7 +18,7 @@
             <input type="text" key="Email" placeholder="Email"/>
             <input type="password" key="Password" placeholder="Password"/>
           </form> -->
-          <RegisterForm style="overflow-y: auto; border: 0px; width: 300px;"></RegisterForm>
+          <RegisterForm class="sign-in-out-form"></RegisterForm>
         </template>
       </div>
       <div class="Panel ActionPanel">
@@ -132,8 +132,16 @@ export default {
 @import '~scss_vars';
 /* font and color palette */
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+.sign-in-out-form {
+  overflow-y: auto;
+  border: 0px;
+  width: 300px;
+}
+#signup-title {
+  padding: 40px 0px 20px 0px;
+}
 button {
-  outline: none;
+  outline: none !important;
   cursor: pointer;
 }
 h2 {
@@ -190,7 +198,7 @@ this softens the color of the shapes, but most prominently shows the shapes as i
   max-width: 800px;
   width: 800px;
   /* minimum height to avoid a change in size with one additional input element */
-  min-height: 695px;
+  min-height: 690px;
   background: var(--theme-two);
   border-radius: 20px;
   box-shadow: 0 2px 5px -6px var(--text),0 0 30px -50px var(--text);
@@ -294,7 +302,33 @@ this excludes the social icons */
   font-size: 0.8rem;
   letter-spacing: 0.1rem;
 }
-
+/* expand the first half to cover twice the space of the second half */
+.FormPanel {
+  width: 400px;
+  overflow: hidden;
+  flex-grow: 2;
+  /* remove the border radius for the corners matching the container */
+  border-radius: inherit;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.FormPanel button {
+  background: var(--theme);
+  color: var(--theme-two);
+}
+.ActionPanel {
+  width: 300px;
+  overflow: hidden;
+  /* background and color using the theme */
+  background: var(--theme);
+  color: var(--theme-two);
+  padding: 2rem;
+  flex-grow: 1;
+  /* remove the border radius for the corners matching the container */
+  border-radius: inherit;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
 /*
 on smaller viewports position the panel atop one another
 expand the main panel to cover the entirety of the viewport
@@ -313,52 +347,30 @@ expand the main panel to cover the entirety of the viewport
     box-shadow: none;
   }
 }
-
-/* expand the first half to cover twice the space of the second half */
-.FormPanel {
-  width: 400px;
-  overflow: hidden;
-  flex-grow: 2;
-  /* remove the border radius for the corners matching the container */
-  border-radius: inherit;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-.FormPanel button {
-  background: var(--theme);
-  color: var(--theme-two);
-}
-
 /*
 on smaller viewports remove the border radius
 */
 @media (max-width: 650px) {
   .FormPanel {
+    margin-bottom: 5px;
+    height: 50%;
     overflow-y: auto;
     margin: 0px auto !important;
     border-radius: 0;
   }
+  #niffler-desc {
+    padding: 30px 0px 20px 0px;
+  }
+  #signup-title {
+    padding: 5px 0px;
+  }
 }
-
-.ActionPanel {
-  width: 300px;
-  overflow: hidden;
-  /* background and color using the theme */
-  background: var(--theme);
-  color: var(--theme-two);
-  padding: 2rem;
-  flex-grow: 1;
-  /* remove the border radius for the corners matching the container */
-  border-radius: inherit;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
 /*
 on smaller viewports remove the border radius
 */
 @media (max-width: 650px) {
   .ActionPanel {
+    height: 50%;
     width: 600px;
     border-radius: 0px !important;
     margin: 0 auto;
