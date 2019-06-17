@@ -13,6 +13,10 @@ import Questionnaire from '@/page/Questionnaire/Questionnaire'
 import QuestionnaireCreate from '@/page/Questionnaire/Create'
 import QuestionnaireMine from '@/page/Questionnaire/Mine'
 
+import Errand from '@/page/Errand/Errand'
+import ErrandCreate from '@/page/Errand/Create'
+import ErrandMine from '@/page/Errand/Mine'
+
 import NotFound from '@/page/404'
 import Register from '@/page/Register'
 
@@ -56,6 +60,23 @@ let router = new Router({
               path: '/questionnaire/mine',
               name: '我的问卷',
               component: QuestionnaireMine
+            }
+          ]
+        },
+        {
+          path: '/errand',
+          name: '跑腿办事',
+          component: Errand,
+          children: [
+            {
+              path: '/errand/create',
+              name: '创建订单',
+              component: ErrandCreate
+            },
+            {
+              path: '/errand/mine',
+              name: '我的订单',
+              component: ErrandMine
             }
           ]
         }

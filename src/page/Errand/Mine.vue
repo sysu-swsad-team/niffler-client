@@ -1,7 +1,7 @@
 <template>
     <el-row>
       <el-col :span="24">
-          我的消息
+          我的订单
           <anchored-heading :level="1">Hello world!</anchored-heading>
           <anchored-heading :level="2">Hello world!</anchored-heading>
           <anchored-heading :level="3">Hello world!</anchored-heading>

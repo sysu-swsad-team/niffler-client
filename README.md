@@ -2,6 +2,10 @@
 
 > niffler client, a vue.js project
 
+## Theme color \#1D365D
+
+<div style="background-color: #1D365D; width: 250px; color: white; text-align:center;">主题颜色<br>#1D365D</div>
+
 ## Build Setup
 
 ``` bash
