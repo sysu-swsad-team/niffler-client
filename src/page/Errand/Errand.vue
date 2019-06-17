@@ -65,9 +65,4 @@ export default {
 
 <style scoped lang="scss">
 @import '@/styles/pages.scss';
-.avatar {
-  width: 150px;
-  height: 150px;
-  border-radius: 150px;
-}
 </style>
