@@ -1,13 +1,13 @@
 <template>
   <el-row>
     <el-table
-    :data="questionnaireList"
+    :data="personInfoList"
     :show-header="false"
     :highlight-current-row="false"
     :row-style="rowStyle"
     :cell-style="cellStyle"
-    v-loading="listLoading"
-    @selection-change="selsChange"
+    v-loading="isLoading"
+    @selection-change="selectionChange"
     @row-click="rowClick"
     style="width: 100%;">
       <el-table-column prop="title" label="title" width="80"></el-table-column>
@@ -37,8 +37,8 @@
 export default {
   data () {
     return {
-      listLoading: false,
-      questionnaireList: [
+      isLoading: false,
+      personInfoList: [
         {title: '照片', content: '照片'},
         {title: '闲钱币', content: this.$store.getters.getInfo.coinNum},
         {title: '姓名', content: this.$store.getters.getInfo.username},
@@ -53,11 +53,7 @@ export default {
     }
   },
   methods: {
-    getQustionnair (index) {
-      alert('获取问卷' + this.questionnaireList[index].title)
-    },
-    selsChange: function (sels) {
-      this.sels = sels
+    selectionChange: function (selection) {
     },
     rowClick: function (row, column, event) {
       // console.log(row, column, event)
