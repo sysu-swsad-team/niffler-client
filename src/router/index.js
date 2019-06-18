@@ -41,7 +41,7 @@ let router = new Router({
             },
             {
               path: '/home/message',
-              name: '设置',
+              name: '我的消息',
               component: Message
             }
           ]
@@ -93,7 +93,7 @@ let router = new Router({
       component: HelloWorld
     },
     {
-      path: '/404',
+      path: '*',
       name: '404',
       component: NotFound
     }

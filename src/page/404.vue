@@ -1,11 +1,15 @@
 <template>
-    <p class="page-container">404 page not found</p>
+  <el-row>
+    <el-col :span="24">
+      <h2>404 Page Not Found</h2>
+    </el-col>
+  </el-row>
 </template>
 
 <style lang="scss" scoped>
-    .page-container {
-        font-size: 20px;
-        text-align: center;
-        color: rgb(192, 204, 218);
-    }
+h2 {
+  padding: 50px;
+  color: #697a79;
+  text-align: center;
+}
 </style>

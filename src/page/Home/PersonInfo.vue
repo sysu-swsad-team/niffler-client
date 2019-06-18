@@ -30,6 +30,24 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-button type="button" @click="dialogFormVisible = true">打开嵌套表单的 Dialog</el-button>
+    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="活动名称" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="活动区域" :label-width="formLabelWidth">
+          <el-select v-model="form.region" placeholder="请选择活动区域">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
 </el-row>
 </template>
 
@@ -49,14 +67,28 @@ export default {
         {title: '专业', content: this.$store.getters.getInfo.major},
         {title: '邮箱', content: this.$store.getters.getInfo.email},
         {title: '密码', content: '••••••••'}
-      ]
+      ],
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      form: {
+        name: '',
+        region: '',
+        date1: '',
+        date2: '',
+        delivery: false,
+        type: [],
+        resource: '',
+        desc: ''
+      },
+      formLabelWidth: '120px'
     }
   },
   methods: {
     selectionChange: function (selection) {
     },
     rowClick: function (row, column, event) {
-      // console.log(row, column, event)
+      console.log(row, column, event)
+      console.log(row.title)
     },
     rowStyle ({row, rowIndex}) {
       if (row.title === '闲钱币' || row.title === '邮箱') {
