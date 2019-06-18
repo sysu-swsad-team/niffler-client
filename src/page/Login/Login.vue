@@ -131,7 +131,6 @@ export default {
 <style lang="scss" scoped>
 @import '~scss_vars';
 /* font and color palette */
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
 .sign-in-out-form {
   overflow-y: auto;
   border: 0px;
