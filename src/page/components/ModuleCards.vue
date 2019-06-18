@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="8">
     <el-col :span="8">
-        <el-card :body-style="{ padding: '0px' }" class="module-cards" @click.native="handleClick('/questionnaire')">
+        <el-card :body-style="{ padding: '0px' }" class="module-cards" @click.native="handleClick('/questionnaire')" shadow="hover">
           <img src="@/assets/images/products-lg-questionnaire.png" style="width: 100%;">
           <div>
             <strong>问卷系统</strong>
@@ -12,7 +12,7 @@
         </el-card>
       </el-col>
       <el-col :span="8">
-        <el-card :body-style="{ padding: '0px' }" class="module-cards" @click.native="handleClick('/errand')">
+        <el-card :body-style="{ padding: '0px' }" class="module-cards" @click.native="handleClick('/errand')" shadow="hover">
           <img src="@/assets/images/delivery_779px_1229802_easyicon.net.png" style="width: 100%; padding: 10px;">
           <div>
             <strong>跑腿办事</strong>

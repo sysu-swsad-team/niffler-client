@@ -1,6 +1,6 @@
 <template>
   <el-col :span="24" class="content-wrapper">
-    <el-form :model="ruleForm" ref="ruleForm" label-position="left" label-width="80px" :disabled="isDisable" style="font-weight: bold;">
+    <el-form :model="ruleForm" ref="ruleForm" label-position="left" label-width="80px" :disabled="isDisable" style="font-weight: bold;" >
       <el-form-item label="题目：" prop="title">
         <p>{{ ruleForm.title }}</p>
       </el-form-item>
