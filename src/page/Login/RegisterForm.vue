@@ -12,6 +12,8 @@
           <el-date-picker :editable="false" style="width: 100%;"
             v-model="ruleForm.birth"
             type="month"
+            format="yyyy-MM"
+            value-format="yyyy-MM"
             placeholder="请选择您的出生年月">
           </el-date-picker>
       </el-form-item>

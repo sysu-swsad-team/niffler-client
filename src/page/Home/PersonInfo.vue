@@ -59,6 +59,8 @@
           <el-date-picker :editable="false" style="width: 100%;"
             v-model="forms.birth.birth"
             type="month"
+            format="yyyy-MM"
+            value-format="yyyy-MM"
             placeholder="请选择您的出生年月">
           </el-date-picker>
         </el-form-item>
@@ -205,7 +207,8 @@ export default {
       this.dialogVisible = true
     },
     dialogSubmitForm () {
-      if (this.dialogKey === 'avatar') {
+      if (this.dialogKey === 'avatar' || this.dialogKey === 'password') {
+        /* TODO: avatar和password的处理 */
         this.dialogVisible = false
         return
       }
@@ -213,7 +216,11 @@ export default {
         if (valid) {
           console.log('dialogSubmitForm', this.dialogKey, this.forms[this.dialogKey][this.dialogKey])
           /* TODO: 提交表单，修改个人信息 */
+
+          /* 在Vuex store中修改 */
           this.$store.dispatch('setInfo', {itemName: this.dialogKey, itemValue: this.forms[this.dialogKey][this.dialogKey]})
+
+          /* close dialog */
           this.dialogVisible = false
         } else {
           console.log('error submit!!')
