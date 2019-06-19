@@ -1,6 +1,6 @@
 <template>
     <el-row>
-      <el-col :span="24">
+      <!-- <el-col :span="24">
         <my-checkbox></my-checkbox>
         <my-dialog :somefunc="function () { dialogFormVisible = true }"></my-dialog>
         <anchored-heading :level="6" :haha="10" :mycolor="'#f0f'">Hello world!</anchored-heading>
@@ -9,7 +9,7 @@
         <anchored-heading :level="3" :haha="40" :mycolor="'#f68'">Hello world!</anchored-heading>
         <anchored-heading :level="2" :haha="50" :mycolor="'#f84'">Hello world!</anchored-heading>
         <anchored-heading :level="1" :haha="60" :mycolor="'#fa2'">Hello world!</anchored-heading>
-      </el-col>
+      </el-col> -->
       <el-col :span="24">
         <!-- Form -->
         <el-button type="button" @click="dialogFormVisible = true">打开嵌套表单的 Dialog</el-button>
@@ -36,67 +36,67 @@
 </template>
 
 <script>
-import Vue from 'vue'
-Vue.component('my-checkbox', {
-  data () {
-    return { checked: false, title: 'Check me' }
-  },
-  methods: {
-    check () {
-      this.checked = !this.checked
-      console.log(this.checked)
-    }
-  },
-  render () {
-    return <div class="checkbox-wrapper" onClick={ this.check }>
-      <div class={{ checkbox: true, checked: this.checked }}></div>
-      <div class="title">{ this.title }</div>
-    </div>
-  }
-})
-Vue.component('my-dialog', {
-  methods: {
-    dialog () {
-    }
-  },
-  render () {
-    return <el-button type="button" onClick={ this.somefunc }>打开嵌套表单的 Dialog</el-button>
-  },
-  props: {
-    somefunc: {
-      type: Function,
-      required: true
-    }
-  }
-})
-Vue.component('anchored-heading', {
-  render: function (createElement) {
-    return createElement(
-      'h1', // 标签名称
-      {
-        style: {
-          color: this.mycolor,
-          fontSize: this.haha + 'px'
-        }
-      },
-      this.$slots.default // 子节点数组
-    )
-  },
-  props: {
-    level: {
-      type: Number,
-      required: true
-    },
-    haha: {
-      type: Number,
-      required: true
-    },
-    mycolor: {
-      type: String,
-      required: true
-    }
-  }
-})
+// import Vue from 'vue'
+// Vue.component('my-checkbox', {
+//   data () {
+//     return { checked: false, title: 'Check me' }
+//   },
+//   methods: {
+//     check () {
+//       this.checked = !this.checked
+//       console.log(this.checked)
+//     }
+//   },
+//   render () {
+//     return <div class="checkbox-wrapper" onClick={ this.check }>
+//       <div class={{ checkbox: true, checked: this.checked }}></div>
+//       <div class="title">{ this.title }</div>
+//     </div>
+//   }
+// })
+// Vue.component('my-dialog', {
+//   methods: {
+//     dialog () {
+//     }
+//   },
+//   render () {
+//     return <el-button type="button" onClick={ this.somefunc }>打开嵌套表单的 Dialog</el-button>
+//   },
+//   props: {
+//     somefunc: {
+//       type: Function,
+//       required: true
+//     }
+//   }
+// })
+// Vue.component('anchored-heading', {
+//   render: function (createElement) {
+//     return createElement(
+//       'p', // 标签名称
+//       {
+//         style: {
+//           color: this.mycolor,
+//           fontSize: this.haha + 'px'
+//         }
+//       },
+//       this.$slots.default // 子节点数组
+//     )
+//   },
+//   props: {
+//     level: {
+//       type: Number,
+//       required: true
+//     },
+//     haha: {
+//       type: Number,
+//       required: true
+//     },
+//     mycolor: {
+//       type: String,
+//       required: true
+//     }
+//   }
+// })
 
 export default {
   data () {

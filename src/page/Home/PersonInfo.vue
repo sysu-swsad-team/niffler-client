@@ -11,9 +11,9 @@
     @row-click="rowClick"
     style="width: 100%;">
       <el-table-column prop="title" label="title" width="80"></el-table-column>
-      <el-table-column prop="content" label="content">
+      <el-table-column prop="key" label="key">
         <template slot-scope="scope">
-          <template v-if="scope.row.title === '照片'">
+          <template v-if="scope.row.key === 'avatar'">
             <div class="avator-box">
               <img :src="getInfo.avatar" class="avatar"/>
               <div class="camera-box">
@@ -21,7 +21,7 @@
               </div>
             </div>
           </template>
-          <template v-else>{{ scope.row.content }}</template>
+          <template v-else>{{ getInfoList[scope.row.key] }}</template>
         </template>
       </el-table-column>
       <el-table-column label="foo" fixed="right" width="50">
@@ -30,68 +30,224 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-button type="button" @click="dialogFormVisible = true">打开嵌套表单的 Dialog</el-button>
-    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="活动名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+    <!-- 对话框，更改个人信息 -->
+    <el-dialog :title="'更改' + dialogTitle" :visible.sync="dialogVisible" @close="dialogResetForm()">
+      <el-upload v-if="this.dialogKey === 'avatar'"
+        class="avatar-uploader"
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :show-file-list="true"
+        :on-success="handleAvatarSuccess"
+        :before-upload="beforeAvatarUpload">
+        <img v-if="imageUrl" :src="imageUrl" class="avatar-form">
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+      </el-upload>
+      <el-form v-if="this.dialogKey === 'username'"
+        :model="forms.username" :rules="rules.username" :ref="this.dialogKey" status-icon>
+        <el-form-item prop="username">
+          <el-input v-model="forms.username.username" autocomplete="off" placeholder="请输入您的真实姓名"></el-input>
         </el-form-item>
-        <el-form-item label="活动区域" :label-width="formLabelWidth">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+      </el-form>
+      <el-form v-else-if="this.dialogKey === 'stuId'"
+        :model="forms.stuId" :rules="rules.stuId" :ref="this.dialogKey" status-icon>
+        <el-form-item prop="stuId">
+          <el-input v-model="forms.stuId.stuId" autocomplete="off" placeholder="请输入您的学号"></el-input>
+        </el-form-item>
+      </el-form>
+      <el-form v-else-if="this.dialogKey === 'birth'"
+        :model="forms.birth" :rules="rules.birth" :ref="this.dialogKey" status-icon>
+        <el-form-item prop="birth">
+          <el-date-picker :editable="false" style="width: 100%;"
+            v-model="forms.birth.birth"
+            type="month"
+            placeholder="请选择您的出生年月">
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <el-form v-else-if="this.dialogKey === 'sex'"
+        :model="forms.sex" :rules="rules.sex" :ref="this.dialogKey" status-icon>
+        <el-form-item prop="sex">
+          <el-radio-group v-model="forms.sex.sex" style="width: 100%;" label="性别">
+            <el-radio border label="男" style="width: 44%; margin: 0px;"></el-radio>
+            <el-radio border label="女" style="width: 48%; margin-left: 8%;"></el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <el-form v-else-if="this.dialogKey === 'grade'"
+        :model="forms.grade" :rules="rules.grade" :ref="this.dialogKey" status-icon>
+        <el-form-item prop="grade">
+          <el-select v-model="forms.grade.grade" placeholder="请选择年级" style="width: 100%;">
+            <el-option label="大一" value="大一"></el-option>
+            <el-option label="大二" value="大二"></el-option>
+            <el-option label="大三" value="大三"></el-option>
+            <el-option label="大四" value="大四"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
+      <el-form v-else-if="this.dialogKey === 'major'"
+        :model="forms.major" :rules="rules.major" :ref="this.dialogKey" status-icon>
+        <el-form-item prop="major">
+          <el-select v-model="forms.major.major" placeholder="请输入您的专业" style="width: 100%;">
+            <el-option label="软件工程" value="软件工程"></el-option>
+            <el-option label="工商管理" value="工商管理"></el-option>
+            <el-option label="计算机科学与技术" value="计算机科学与技术"></el-option>
+            <el-option label="历史学系" value="历史学系"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <el-form v-else-if="this.dialogKey === 'password'"
+        label-position="right" label-width="78px"
+        :model="forms.password" :rules="rules.password" :ref="this.dialogKey" status-icon>
+        <el-form-item label="原密码" prop="oriPassword">
+          <el-input v-model="forms.password.oriPassword" show-password placeholder="请输入原密码"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input v-model="forms.password.newPassword" show-password placeholder="请输入新密码"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="ackPassword">
+          <el-input v-model="forms.password.ackPassword" show-password placeholder="请再次输入新密码"></el-input>
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button @click="dialogCancel()">取 消</el-button>
+        <el-button @click="dialogResetForm()">重置</el-button>
+        <el-button type="primary" @click="dialogSubmitForm()">确 定</el-button>
       </div>
     </el-dialog>
 </el-row>
 </template>
 
 <script>
+import RegisterForm from '../Login/RegisterForm'
 export default {
+  computed: {
+    getInfo () {
+      return this.$store.getters.getInfo
+    },
+    getInfoList () {
+      const info = this.$store.getters.getInfo
+      console.log(info)
+      return {
+        'avatar': '照片',
+        'coinNum': info.coinNum,
+        'username': info.username,
+        'stuId': info.stuId,
+        'birth': info.birth,
+        'sex': info.sex,
+        'grade': info.grade,
+        'major': info.major,
+        'email': info.email,
+        'password': '••••••••'
+      }
+    }
+  },
+  components: {
+    RegisterForm
+  },
   data () {
     return {
       isLoading: false,
       personInfoList: [
-        {title: '照片', content: '照片'},
-        {title: '闲钱币', content: this.$store.getters.getInfo.coinNum},
-        {title: '姓名', content: this.$store.getters.getInfo.username},
-        {title: '学号', content: this.$store.getters.getInfo.stuId},
-        {title: '生日', content: this.$store.getters.getInfo.birth},
-        {title: '性别', content: this.$store.getters.getInfo.sex ? '男' : '女'},
-        {title: '年级', content: this.$store.getters.getInfo.grade},
-        {title: '专业', content: this.$store.getters.getInfo.major},
-        {title: '邮箱', content: this.$store.getters.getInfo.email},
-        {title: '密码', content: '••••••••'}
+        {key: 'avatar', title: '照片'},
+        {key: 'coinNum', title: '闲钱币'},
+        {key: 'username', title: '姓名'},
+        {key: 'stuId', title: '学号'},
+        {key: 'birth', title: '生日'},
+        {key: 'sex', title: '性别'},
+        {key: 'grade', title: '年级'},
+        {key: 'major', title: '专业'},
+        {key: 'email', title: '邮箱'},
+        {key: 'password', title: '密码'}
       ],
-      dialogTableVisible: false,
-      dialogFormVisible: false,
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+      forms: {
+        username: {username: ''},
+        stuId: {stuId: ''},
+        birth: {birth: ''},
+        sex: {sex: ''},
+        grade: {grade: ''},
+        major: {major: ''},
+        password: {oriPassword: '', newPassword: '', ackPassword: ''}
       },
-      formLabelWidth: '120px'
+      rules: {
+        username: {username: [{ required: true, message: '请输入姓名', trigger: 'blur' }]},
+        stuId: {stuId: [{ required: true, message: '请输入学号', trigger: 'blur' }, { min: 8, max: 8, message: '长度为8的数字序列', trigger: 'blur' }]},
+        birth: {birth: [{ required: true, message: '请输入出生年月', trigger: 'blur' }]},
+        sex: {sex: [{ required: true, message: '请选择性别', trigger: 'blur' }]},
+        grade: {grade: [{ required: true, message: '请选择年级', trigger: 'blur' }]},
+        major: {major: [{ required: true, message: '请输入专业', trigger: 'blur' }]},
+        password: {
+          oriPassword: [{ required: true, message: '请输入原密码', trigger: 'blur' }],
+          newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }, { min: 6, max: 20, message: '长度不小于6，不大于20', trigger: 'blur' }],
+          ackPassword: [{ required: true, message: '请再次输入密码', trigger: 'blur' }, { min: 6, max: 20, message: '长度不小于6，不大于20', trigger: 'blur' }]
+        }
+      },
+      dialogKey: '',
+      dialogTitle: '',
+      dialogVisible: false,
+      imageUrl: ''
     }
   },
   methods: {
+    isAllowClick (key) {
+      if (key === 'coinNum' || key === 'email') {
+        return false
+      } else {
+        return true
+      }
+    },
     selectionChange: function (selection) {
     },
     rowClick: function (row, column, event) {
-      console.log(row, column, event)
-      console.log(row.title)
+      if (!this.isAllowClick(row.key)) {
+        return
+      }
+      this.dialogKey = row.key
+      this.dialogTitle = row.title
+      this.dialogVisible = true
+    },
+    dialogSubmitForm () {
+      if (this.dialogKey === 'avatar') {
+        this.dialogVisible = false
+        return
+      }
+      this.$refs[this.dialogKey].validate((valid) => {
+        if (valid) {
+          console.log('dialogSubmitForm', this.dialogKey, this.forms[this.dialogKey][this.dialogKey])
+          /* TODO: 提交表单，修改个人信息 */
+          this.$store.dispatch('setInfo', {itemName: this.dialogKey, itemValue: this.forms[this.dialogKey][this.dialogKey]})
+          this.dialogVisible = false
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    dialogResetForm () {
+      if (this.dialogKey === 'avatar') {
+        this.dialogVisible = false
+        return
+      }
+      this.$refs[this.dialogKey].resetFields()
+    },
+    dialogCancel () {
+      this.dialogVisible = false
+    },
+    handleAvatarSuccess (res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw)
+    },
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
     },
     rowStyle ({row, rowIndex}) {
-      if (row.title === '闲钱币' || row.title === '邮箱') {
+      if (!this.isAllowClick(row.key)) {
         return 'height: 66px; cursor: not-allowed;'
       } else {
         return 'height: 66px; cursor: pointer;'
@@ -104,16 +260,12 @@ export default {
         return 'font-weight: normal; font-size: 12px;'
       }
     }
-  },
-  computed: {
-    getInfo () {
-      return this.$store.getters.getInfo
-    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import '~scss_vars';
 .avatar-box {
   width: 60px;
   height: 60px;
@@ -142,5 +294,34 @@ export default {
   width: 20px;
   height: 20px;
   color: white;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9 !important;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: $color-primary !important;
+}
+.avatar-uploader-icon {
+  border: 1px dashed #d9d9d9 !important;
+  border-radius: 6px;
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar-uploader-icon:hover {
+  border-color: $color-primary !important;
+}
+.avatar-form {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>
