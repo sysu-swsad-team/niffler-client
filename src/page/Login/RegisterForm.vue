@@ -1,60 +1,62 @@
 <template>
 <el-row>
   <el-col :span="24">
-   <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-position="right" label-width="78px" size="mini" class="demo-ruleForm">
-     <el-form-item label="姓名" prop="name" inline-message="true">
-       <el-input v-model="ruleForm.name" placeholder="请输入您的真实姓名"></el-input>
-     </el-form-item>
-     <el-form-item label="学号" prop="id">
-       <el-input v-model="ruleForm.id" placeholder="请输入您的学号"></el-input>
-     </el-form-item>
-     <el-form-item label="生日" prop="birth">
-        <el-date-picker :editable="false" style="width: 100%;"
-          v-model="ruleForm.birth"
-          type="month"
-          placeholder="请选择您的出生年月">
-        </el-date-picker>
-     </el-form-item>
-     <el-form-item label="性别" prop="gender">
-      <el-radio-group v-model="ruleForm.gender" style="width: 100%;">
-        <el-radio border label="male" style="width: 44%; margin: 0px;"></el-radio>
-        <el-radio border label="female" style="width: 48%; margin-left: 8%;"></el-radio>
-      </el-radio-group>
-    </el-form-item>
-    <el-form-item label="年级" prop="grade">
-      <el-select v-model="ruleForm.grade" placeholder="请选择年级" style="width: 100%;">
-        <el-option label="大一" value="大一"></el-option>
-        <el-option label="大二" value="大二"></el-option>
-        <el-option label="大三" value="大三"></el-option>
-        <el-option label="大四" value="大四"></el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item label="专业" prop="major">
-       <el-select v-model="ruleForm.major" placeholder="请输入您的专业" style="width: 100%;">
+    <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-position="right" label-width="78px" size="mini" class="demo-ruleForm">
+      <el-form-item label="姓名" prop="name" inline-message="true">
+        <el-input v-model="ruleForm.name" placeholder="请输入您的真实姓名"></el-input>
+      </el-form-item>
+      <el-form-item label="学号" prop="id">
+        <el-input v-model="ruleForm.id" placeholder="请输入您的学号"></el-input>
+      </el-form-item>
+      <el-form-item label="生日" prop="birth">
+          <el-date-picker :editable="false" style="width: 100%;"
+            v-model="ruleForm.birth"
+            type="month"
+            format="yyyy-MM"
+            value-format="yyyy-MM"
+            placeholder="请选择您的出生年月">
+          </el-date-picker>
+      </el-form-item>
+      <el-form-item label="性别" prop="gender">
+        <el-radio-group v-model="ruleForm.gender" style="width: 100%;">
+          <el-radio border label="male" style="width: 44%; margin: 0px;"></el-radio>
+          <el-radio border label="female" style="width: 48%; margin-left: 8%;"></el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="年级" prop="grade">
+        <el-select v-model="ruleForm.grade" placeholder="请选择年级" style="width: 100%;">
+          <el-option label="大一" value="大一"></el-option>
+          <el-option label="大二" value="大二"></el-option>
+          <el-option label="大三" value="大三"></el-option>
+          <el-option label="大四" value="大四"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="专业" prop="major">
+        <el-select v-model="ruleForm.major" placeholder="请输入您的专业" style="width: 100%;">
           <el-option label="软件工程" value="软件工程"></el-option>
           <el-option label="工商管理" value="工商管理"></el-option>
           <el-option label="计算机科学与技术" value="计算机科学与技术"></el-option>
           <el-option label="历史学系" value="历史学系"></el-option>
         </el-select>
-    </el-form-item>
-    <el-form-item label="邮箱" prop="email">
-       <el-input v-model="ruleForm.email" placeholder="请输入您的邮箱"></el-input>
-    </el-form-item>
-    <el-form-item label="验证码" prop="verCode">
-      <el-input v-model="ruleForm.verCode" style="width: 56%;" placeholder="验证码"></el-input>
-      <el-button type="primary" style="width: 42%; font-size: 12px; letter-spacing: 0px;">获取验证码</el-button>
-    </el-form-item>
-    <el-form-item label="密码" prop="password">
-      <el-input v-model="ruleForm.password" show-password placeholder="请输入密码"></el-input>
-    </el-form-item>
-    <el-form-item label="确认密码" prop="ackPassword">
-      <el-input v-model="ruleForm.ackPassword" show-password placeholder="请再次输入密码"></el-input>
-    </el-form-item>
-     <el-form-item style="width:100%">
-       <el-button type="primary" @click="submitForm('ruleForm')" style="margin:0 auto; width: 45%; padding: 10px;">注册</el-button>
-       <el-button  @click="resetForm('ruleForm')" style="margin:0 auto; width: 45%; padding: 10px; color: #1D365D; background: #fff;">重置</el-button>
-     </el-form-item>
-   </el-form>
+      </el-form-item>
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="ruleForm.email" placeholder="请输入您的邮箱"></el-input>
+      </el-form-item>
+      <el-form-item label="验证码" prop="verCode">
+        <el-input v-model="ruleForm.verCode" style="width: 56%;" placeholder="验证码"></el-input>
+        <el-button type="primary" style="width: 42%; font-size: 12px; letter-spacing: 0px;">获取验证码</el-button>
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="ruleForm.password" show-password placeholder="请输入密码"></el-input>
+      </el-form-item>
+      <el-form-item label="确认密码" prop="ackPassword">
+        <el-input v-model="ruleForm.ackPassword" show-password placeholder="请再次输入密码"></el-input>
+      </el-form-item>
+      <el-form-item style="width:100%">
+        <el-button type="primary" @click="submitForm('ruleForm')" style="margin:0 auto; width: 45%; padding: 10px;">注册</el-button>
+        <el-button  @click="resetForm('ruleForm')" style="margin:0 auto; width: 45%; padding: 10px; color: #1D365D; background: #fff;">重置</el-button>
+      </el-form-item>
+    </el-form>
   </el-col>
 </el-row>
 </template>

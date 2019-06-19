@@ -17,7 +17,8 @@ export default{
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+/* @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700'); */
+@import './assets/font/font.css';
 #app {
   /* font-family: 'Montserrat', sans-serif; */
   font-family: 'Montserrat',"Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;

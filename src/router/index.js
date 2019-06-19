@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 
-import Login from '@/page/Login/NewLogin'
+import Login from '@/page/Login/Login'
 
 import Root from '@/page/Root'
 
@@ -41,7 +41,7 @@ let router = new Router({
             },
             {
               path: '/home/message',
-              name: '设置',
+              name: '我的消息',
               component: Message
             }
           ]
@@ -93,7 +93,7 @@ let router = new Router({
       component: HelloWorld
     },
     {
-      path: '/404',
+      path: '*',
       name: '404',
       component: NotFound
     }

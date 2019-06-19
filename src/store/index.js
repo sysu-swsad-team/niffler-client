@@ -17,7 +17,7 @@ const state = {
   avatar: avatar,
   stuId: 16340000,
   birth: '1990-02',
-  sex: true,
+  sex: '男',
   grade: '大一',
   major: '软件工程',
   email: 'pmlpml@niffler.com',
@@ -71,11 +71,12 @@ const mutations = {
   mutationsResetAuth (state) {
     state.isAuth = false
   },
-  mutationsSetInfo (state, tsysname, tusername, tavatar, tlogo) {
-    state.sysname = tsysname
-    state.username = tusername
-    state.avatar = tavatar
-    state.logo = tlogo
+  mutationsusername (state, username) {
+    state.username = username
+  },
+  mutationsSetInfo (state, payload) {
+    console.log('mutationsSetInfo', payload['itemName'], payload['itemValue'])
+    state[payload['itemName']] = payload['itemValue']
   }
 }
 
@@ -91,8 +92,11 @@ const actions = {
   resetAuth (context) {
     context.commit('mutationsResetAuth')
   },
-  setInfo (context, tsysname, tusername, tavatar, tlogo) {
-    context.commit('mutationsSetInfo', tsysname, tusername, tavatar, tlogo)
+  setusername (context, tusername) {
+    context.commit('mutationsusername', tusername)
+  },
+  setInfo (context, payload) {
+    context.commit('mutationsSetInfo', payload)
   }
 }
 
