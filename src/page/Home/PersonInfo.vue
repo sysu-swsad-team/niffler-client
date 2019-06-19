@@ -34,11 +34,11 @@
     <el-dialog :title="'更改' + dialogTitle" :visible.sync="dialogVisible" @close="dialogResetForm()">
       <el-upload v-if="this.dialogKey === 'avatar'"
         class="avatar-uploader"
-        action="https://jsonplaceholder.typicode.com/posts/"
+        action="http://jsonplaceholder.typicode.com/posts/"
         :show-file-list="true"
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload">
-        <img v-if="imageUrl" :src="imageUrl" class="avatar-form">
+        <img v-if="dialogImageUrl" :src="dialogImageUrl" class="avatar-form">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
       <el-form v-if="this.dialogKey === 'username'"
@@ -111,7 +111,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogCancel()">取 消</el-button>
-        <el-button @click="dialogResetForm()">重置</el-button>
+        <el-button @click="dialogResetForm()">重 置</el-button>
         <el-button type="primary" @click="dialogSubmitForm()">确 定</el-button>
       </div>
     </el-dialog>
@@ -119,7 +119,6 @@
 </template>
 
 <script>
-import RegisterForm from '../Login/RegisterForm'
 export default {
   computed: {
     getInfo () {
@@ -143,7 +142,6 @@ export default {
     }
   },
   components: {
-    RegisterForm
   },
   data () {
     return {
@@ -185,7 +183,7 @@ export default {
       dialogKey: '',
       dialogTitle: '',
       dialogVisible: false,
-      imageUrl: ''
+      dialogImageUrl: ''
     }
   },
   methods: {
@@ -198,6 +196,7 @@ export default {
     },
     selectionChange: function (selection) {
     },
+    /* 点击行后的事件 */
     rowClick: function (row, column, event) {
       if (!this.isAllowClick(row.key)) {
         return
@@ -206,12 +205,14 @@ export default {
       this.dialogTitle = row.title
       this.dialogVisible = true
     },
+    /* 提交dialog表单 */
     dialogSubmitForm () {
       if (this.dialogKey === 'avatar' || this.dialogKey === 'password') {
         /* TODO: avatar和password的处理 */
         this.dialogVisible = false
         return
       }
+      /* 表单验证 */
       this.$refs[this.dialogKey].validate((valid) => {
         if (valid) {
           console.log('dialogSubmitForm', this.dialogKey, this.forms[this.dialogKey][this.dialogKey])
@@ -222,24 +223,33 @@ export default {
 
           /* close dialog */
           this.dialogVisible = false
+
+          /* 成功提示消息 */
+          this.$message({
+            message: '更改成功',
+            type: 'success'
+          })
         } else {
           console.log('error submit!!')
           return false
         }
       })
     },
+    /* 重置dialog表单 */
     dialogResetForm () {
       if (this.dialogKey === 'avatar') {
-        this.dialogVisible = false
         return
       }
       this.$refs[this.dialogKey].resetFields()
     },
+    /* 点击取消，关闭dialog */
     dialogCancel () {
       this.dialogVisible = false
     },
+    /* 处理上传照片的函数 */
     handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      this.dialogImageUrl = URL.createObjectURL(file.raw)
+      console.log(this.dialogImageUrl)
     },
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'
@@ -253,6 +263,7 @@ export default {
       }
       return isJPG && isLt2M
     },
+    /* 表格行的样式设置 */
     rowStyle ({row, rowIndex}) {
       if (!this.isAllowClick(row.key)) {
         return 'height: 66px; cursor: not-allowed;'
@@ -260,6 +271,7 @@ export default {
         return 'height: 66px; cursor: pointer;'
       }
     },
+    /* 表格cell的样式设置 */
     cellStyle ({row, column, rowIndex, columnIndex}) {
       if (columnIndex === 1) {
         return 'font-weight: bold;'
