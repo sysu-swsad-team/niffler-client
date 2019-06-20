@@ -35,6 +35,7 @@ router.beforeEach((to, from, next) => {
     localStorage.removeItem('user')
   }
   let user = JSON.parse(localStorage.getItem('user'))
+  store.dispatch('setUser', user)
   console.log(user, to.path)
   if (!user && to.path !== '/login') {
     next({ path: '/login' })

@@ -68,7 +68,7 @@ export default {
               // 登录成功，用户信息就保存在sessionStorage中
               localStorage.setItem('user', JSON.stringify(user))
               // sessionStorage.setItem('user', JSON.stringify(user))
-              this.$store.dispatch('setAuth')
+              this.$store.dispatch('setUser', user)
               this.$router.push({ path: '/' })
             } else {
               // 登录失败，弹出element-ui中的提示组件
@@ -81,8 +81,6 @@ export default {
             console.log(err)
             return false
           })
-          // this.$store.dispatch('setAuth')
-          // this.$router.push({ path: '/' })
         } else {
           console.log('error submit!')
           return false

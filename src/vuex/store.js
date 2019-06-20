@@ -11,7 +11,6 @@ Vue.use(Vuex)
 const state = {
   // 要设置的初始属性值
   isCollapse: false,
-  isAuth: false,
   sysname: 'NIFFLER',
   name: 'pmlpml', // 用户名即真实姓名
   avatar: avatar,
@@ -47,6 +46,19 @@ const getters = {
       msgNumUnread: state.msgNumUnread,
       logo: state.logo
     }
+  },
+  getUser (state) {
+    return {
+      email: state.email,
+      avatar: state.avatar,
+      coinNum: state.coinNum,
+      name: state.name,
+      stuId: state.stuId,
+      birth: state.birth,
+      sex: state.sex,
+      grade: state.grade,
+      major: state.major
+    }
   }
 }
 
@@ -59,6 +71,11 @@ const mutations = {
   mutationsSetInfo (state, payload) {
     console.log('mutationsSetInfo', payload['itemName'], payload['itemValue'])
     state[payload['itemName']] = payload['itemValue']
+  },
+  mutationsSetUser (state, user) {
+    for (var key in user) {
+      state[key] = user[key]
+    }
   }
 }
 
@@ -70,6 +87,10 @@ const actions = {
   },
   setInfo (context, payload) {
     context.commit('mutationsSetInfo', payload)
+    localStorage.setItem('user', JSON.stringify(this.getters.getUser))
+  },
+  setUser (context, user) {
+    context.commit('mutationsSetUser', user)
   }
 }
 

@@ -66,7 +66,7 @@ export default {
         this.$confirm('确认退出吗？', '提示', {
           // type: 'warning'
         }).then(() => {
-          this.$store.dispatch('resetAuth')
+          localStorage.removeItem('user')
           _this.$router.push('/login')
         }).catch(() => { })
       }
