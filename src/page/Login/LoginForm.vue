@@ -1,14 +1,14 @@
 <template>
 <el-row>
   <el-col :span="24">
-   <el-form v-if="isRememberPW" :model="ruleForm" status-icon ref="ruleForm" class="demo-ruleForm">
+   <el-form v-if="isRememberPW" :model="ruleForm" status-icon :rules="rules" ref="ruleForm" class="demo-ruleForm">
       <el-form-item prop="email">
         <el-input type="text" v-model="ruleForm.email" placeholder="Email"></el-input>
       </el-form-item>
       <el-form-item prop="password">
         <el-input type="password" show-password v-model="ruleForm.password" placeholder="Password"></el-input>
       </el-form-item>
-      <div class="link"><a href="#" @click="isRememberPW = false">忘记密码?</a></div>
+      <div class="link"><a href="#" @click="isRememberPW = true">忘记密码?</a></div>
       <el-form-item style="width:100%">
         <el-button
         :loading="logining"
@@ -58,6 +58,14 @@ export default {
         email: '',
         password: ''
       },
+      rules: {
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'change' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'change' }
+        ]
+      },
       isRememberPW: true,
       ruleForm2: {
         email: '',
@@ -72,11 +80,7 @@ export default {
     /* TODO */
     handleLogin () {
       this.$refs.ruleForm.validate((valid) => {
-        if (this.ruleForm.email === '') {
-          this.$message.error('请输入邮箱')
-        } else if (this.ruleForm.password === '') {
-          this.$message.error('请输入密码')
-        } else if (valid) {
+        if (valid) {
           this.logining = true
           let loginParams = {
             email: this.ruleForm.email,
