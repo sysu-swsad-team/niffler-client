@@ -7,7 +7,7 @@ const users = [
   {
     email: 'pmlpml@qq.com',
     password: '123456',
-    avatar: 'http://img0.imgtn.bdimg.com/it/u=3806936792,3179473646&fm=26&gp=0.jpg',
+    avatar: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1561038007116&di=36a197a4d42d2fc3d3d1b2d955c65d10&imgtype=0&src=http%3A%2F%2Fimg0.pclady.com.cn%2Fpclady%2Fpet%2Fchoice%2Fcat%2F1503%2F7.jpg',
     coinNum: 100860,
     name: 'PanSir',
     stuId: '16340000',
@@ -19,7 +19,7 @@ const users = [
   {
     email: 'pmlpml1@qq.com',
     password: '123456',
-    avatar: 'https://b-ssl.duitang.com/uploads/item/201803/24/20180324212435_lrwpm.thumb.224_0.jpeg',
+    avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
     coinNum: 100861,
     name: 'PanSir',
     stuId: '16340001',
@@ -31,7 +31,7 @@ const users = [
   {
     email: 'pmlpm2l@qq.com',
     password: '123456',
-    avatar: 'http://tx.haiqq.com/uploads/allimg/150323/15150BP3-3.jpg',
+    avatar: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
     coinNum: 100862,
     name: 'PanSir',
     stuId: '16340002',
