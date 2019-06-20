@@ -106,8 +106,7 @@ export default {
         }
       ],
       filters: {
-        title: '',
-        sponsor: ''
+        title: ''
       },
       editingQN: {
         title: '',
