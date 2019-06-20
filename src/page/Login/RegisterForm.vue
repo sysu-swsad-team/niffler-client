@@ -5,8 +5,8 @@
       <el-form-item label="姓名" prop="name" inline-message="true">
         <el-input v-model="ruleForm.name" placeholder="请输入您的真实姓名"></el-input>
       </el-form-item>
-      <el-form-item label="学号" prop="id">
-        <el-input v-model="ruleForm.id" placeholder="请输入您的学号"></el-input>
+      <el-form-item label="学号" prop="stuId">
+        <el-input v-model="ruleForm.stuId" placeholder="请输入您的学号"></el-input>
       </el-form-item>
       <el-form-item label="生日" prop="birth">
           <el-date-picker :editable="false" style="width: 100%;"
@@ -17,8 +17,8 @@
             placeholder="请选择您的出生年月">
           </el-date-picker>
       </el-form-item>
-      <el-form-item label="性别" prop="gender">
-        <el-radio-group v-model="ruleForm.gender" style="width: 100%;">
+      <el-form-item label="性别" prop="sex">
+        <el-radio-group v-model="ruleForm.sex" style="width: 100%;">
           <el-radio border label="男" style="width: 44%; margin: 0px;"></el-radio>
           <el-radio border label="女" style="width: 48%; margin-left: 8%;"></el-radio>
         </el-radio-group>
@@ -67,9 +67,9 @@ export default {
     return {
       ruleForm: {
         name: '',
-        id: '',
+        stuId: '',
         birth: '',
-        gender: '',
+        sex: '',
         grade: '',
         major: '',
         email: '',
@@ -81,14 +81,14 @@ export default {
         name: [
           { required: true, message: '请输入姓名', trigger: 'blur' }
         ],
-        id: [
+        stuId: [
           { required: true, message: '请输入学号', trigger: 'blur' },
           { min: 8, max: 8, message: '长度为8的数字序列', trigger: 'blur' }
         ],
         birth: [
           { required: true, message: '请输入出生年月', trigger: 'blur' }
         ],
-        gender: [
+        sex: [
           { required: true, message: '请选择性别', trigger: 'blur' }
         ],
         grade: [

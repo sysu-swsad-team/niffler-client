@@ -13,11 +13,6 @@
           <h2 id="signup-title">SIGN UP</h2>
           <div class="Social">
           </div>
-          <!-- <form>
-            <input type="text" key="Name" placeholder="Name"/>
-            <input type="text" key="Email" placeholder="Email"/>
-            <input type="password" key="Password" placeholder="Password"/>
-          </form> -->
           <RegisterForm class="sign-in-out-form"></RegisterForm>
         </template>
       </div>
