@@ -30,7 +30,7 @@
             <el-input v-model="filters.sponsor" placeholder="活动发起者"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="getFilter">查询</el-button>
+            <el-button type="primary" class="el-icon-search" @click="getFilter"> 查询</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -41,9 +41,10 @@
         <el-table-column prop="sponsor" label="发起者" width="150"></el-table-column>
         <el-table-column prop="fee" label="报酬" width="80" sortable></el-table-column>
         <el-table-column prop="dueDate" label="结束时间" width="150"></el-table-column>
-        <el-table-column prop="tag" label="类型" width="100" :filters="[{ text: '快递', value: '快递' }, { text: '外卖', value: '外卖' }]" :filter-mothod="filterTag" filter-placement="bottom-end">
+        <el-table-column prop="tag" label="类型" width="100" :filters="[{ text: '快递', value: '快递' }, {text: '外卖', value: '外卖' }]" :filter-method="filterTag" filter-placement="bottom-end">
           <template slot-scope="scope">
-            <el-tag :type="scope.row.tag === '快递' ? 'primary' : 'success'" disable-transitions> {{ scope.row.tag }}</el-tag>
+            <el-tag :type="scope.row.tag === '快递' ? 'primary' : 'success'"
+            disable-transitions>{{ scope.row.tag }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作和活动描述" width="200">

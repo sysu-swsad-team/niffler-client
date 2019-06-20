@@ -43,6 +43,14 @@
           <el-button size="medium" @click.native="isWithdraw = false">取消</el-button>
         </div>
       </el-dialog>
+      <el-dialog :visible.sync="isRecharge" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="40%" title="充值" :center="true">
+        <el-row style="text-align: center; padding-top: 20px;">
+        <div class="demo-image">
+          <vue-qr :logo-src="config.logo" :text="config.text" :margin="5" :auto-color="true" :size="200" dot-scale="1"></vue-qr>
+        </div>
+        <h4 style="margin: 10px;">请扫码充值</h4>
+      </el-row>
+      </el-dialog>
     </template>
     <router-view v-else></router-view>
   </section>
@@ -53,6 +61,7 @@
 /* Errand noun. 差使；差事
 a job that you do for sb that involves going somewhere to take a message, to buy sth, deliver goods, etc. */
 import PageHead from '../components/PageHead'
+import VueQr from 'vue-qr'
 export default {
   data () {
     return {
@@ -61,6 +70,13 @@ export default {
       withdrawForm: {
         account: '',
         money: 0
+      },
+      config: {
+        value: 'www.baidu.com',
+        // logo图片路径
+        logo: '',
+        text: 'Niffler充值二维码（充值功能还在开发，请见谅）',
+        payInfo: {}
       }
     }
   },
@@ -108,7 +124,8 @@ export default {
     }
   },
   components: {
-    PageHead
+    PageHead,
+    VueQr
   }
 }
 </script>

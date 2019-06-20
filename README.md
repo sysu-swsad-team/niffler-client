@@ -64,6 +64,12 @@ npm install node-sass --sava-dev
 #配置boostrap-vue
 npm i vue bootstrap-vue bootstrap
 
+#配置axios
+npm install axios --save
+
+#配置二维码生成：vue-qr
+npm install vue-qr --save
+
 # serve with hot reload at localhost:8080
 #第一次安装上述依赖包后，以后运行只需下面命令
 npm run dev
