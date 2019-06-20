@@ -19,8 +19,8 @@
       </el-form-item>
       <el-form-item label="性别" prop="gender">
         <el-radio-group v-model="ruleForm.gender" style="width: 100%;">
-          <el-radio border label="male" style="width: 44%; margin: 0px;"></el-radio>
-          <el-radio border label="female" style="width: 48%; margin-left: 8%;"></el-radio>
+          <el-radio border label="男" style="width: 44%; margin: 0px;"></el-radio>
+          <el-radio border label="女" style="width: 48%; margin-left: 8%;"></el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="年级" prop="grade">

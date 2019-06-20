@@ -18,6 +18,8 @@ import Errand from '@/page/Errand/Errand'
 import ErrandCreate from '@/page/Errand/Create'
 import ErrandMine from '@/page/Errand/Mine'
 
+import Balance from '@/page/Balance/Balance'
+
 import NotFound from '@/page/404'
 
 Vue.use(Router)
@@ -79,6 +81,11 @@ let router = new Router({
               component: ErrandMine
             }
           ]
+        },
+        {
+          path: '/balance',
+          name: '闲钱币',
+          component: Balance
         }
       ]
     },

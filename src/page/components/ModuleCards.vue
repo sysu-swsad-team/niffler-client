@@ -23,12 +23,12 @@
         </el-card>
       </el-col>
       <el-col :span="8">
-        <el-card :body-style="{ padding: '0px' }" class="module-cards">
+        <el-card :body-style="{ padding: '0px' }" class="module-cards" shadow="hover" @click.native="handleClick('/balance')">
           <img src="@/assets/images/coins_782px_1227591_easyicon.net.png" style="width: 100%; padding: 10px;">
           <div>
-            <strong>提现</strong>
+            <strong>闲钱币</strong>
             <div v-if="details" class="details">
-              将您的闲钱币提现到微信
+              闲钱币提现和充值
             </div>
           </div>
         </el-card>
