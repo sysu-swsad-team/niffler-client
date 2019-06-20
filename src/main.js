@@ -27,6 +27,7 @@ Mock.init()
 // Vue.use(store)
 
 Vue.config.productionTip = false
+process.env.MOCK && require('@/mock')
 
 /* eslint-disable no-new */
 router.beforeEach((to, from, next) => {

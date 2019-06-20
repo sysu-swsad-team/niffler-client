@@ -30,7 +30,7 @@
             <el-input v-model="filters.sponsor" placeholder="问卷发起者"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="getFilter">查询</el-button>
+            <el-button type="primary" class="el-icon-search" @click="getFilter"> 查询</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -62,8 +62,10 @@
         </el-pagination>
       </el-col>
 
-      <el-dialog :visible.sync="isDetail" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" fullscreen class="infinite-list" title="问卷填写" :center="true">
+      <el-dialog :visible.sync="isDetail" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="80%" class="infinite-list" title="问卷填写" :center="true">
+        <el-divider></el-divider>
         <ShowQuestionnaire :ruleForm="detailQN" :isDisable="true" style="background-color: #eee;padding: 10px;"></ShowQuestionnaire>
+        <el-divider></el-divider>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" size="medium" @click.native="commiteAnswer"  style="padding-top: 10px">提交</el-button>
           <el-button type="warning" size="medium" @click.native="isDetail = false"  style="padding-top: 10px">取消</el-button>
