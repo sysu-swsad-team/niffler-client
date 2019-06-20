@@ -7,6 +7,10 @@ export const requestLogin = params => {
   return axios.post('/user/login', params)
 }
 
+export const deleteQN = params => {
+  return axios.post('questionnaire/mine/delete', params)
+}
+
 // export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }) }
 
 // export const getUserListPage = params => { return axios.get(`${base}/user/listpage`, { params: params }) }
