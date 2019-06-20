@@ -25,7 +25,7 @@
         <div class="demo-image">
           <img :src="getInfo.avatar" class="avatar"/>
         </div>
-        <h3 style="margin: 10px;">欢迎使用，{{ getInfo.username }}</h3>
+        <h3 style="margin: 10px;">欢迎使用，{{ getInfo.name }}</h3>
       </el-row>
       <el-row style="margin-top: 20px; text-align: center;">
         <ModuleCards :details="true" style="width: 80%; margin:0 auto;"></ModuleCards>

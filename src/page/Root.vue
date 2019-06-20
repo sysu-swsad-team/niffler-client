@@ -28,7 +28,7 @@
             <img id="avatar" :src="getInfo.avatar"/>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="personInfo" style="line-height: 40px;"><i class="el-icon-user"></i> {{ getInfo.username }}</el-dropdown-item>
+            <el-dropdown-item command="personInfo" style="line-height: 40px;"><i class="el-icon-user"></i> {{ getInfo.name }}</el-dropdown-item>
             <el-dropdown-item command="message" divided style="line-height: 40px;"><i class="el-icon-bell"></i> 我的消息<el-badge :value="getInfo.msgNumUnread" :max="99" style="top: 3px; left: 3px;"/></el-dropdown-item>
             <el-dropdown-item command="logout" style="line-height: 40px;"><i class="el-icon-switch-button"></i> 退出登录</el-dropdown-item>
           </el-dropdown-menu>

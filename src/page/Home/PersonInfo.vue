@@ -41,10 +41,10 @@
         <img v-if="dialogImageUrl" :src="dialogImageUrl" class="avatar-form">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
-      <el-form v-if="this.dialogKey === 'username'"
-        :model="forms.username" :rules="rules.username" :ref="this.dialogKey" status-icon>
-        <el-form-item prop="username">
-          <el-input v-model="forms.username.username" autocomplete="off" placeholder="请输入您的真实姓名"></el-input>
+      <el-form v-if="this.dialogKey === 'name'"
+        :model="forms.name" :rules="rules.name" :ref="this.dialogKey" status-icon>
+        <el-form-item prop="name">
+          <el-input v-model="forms.name.name" autocomplete="off" placeholder="请输入您的真实姓名"></el-input>
         </el-form-item>
       </el-form>
       <el-form v-else-if="this.dialogKey === 'stuId'"
@@ -130,7 +130,7 @@ export default {
       return {
         'avatar': '照片',
         'coinNum': info.coinNum,
-        'username': info.username,
+        'name': info.name,
         'stuId': info.stuId,
         'birth': info.birth,
         'sex': info.sex,
@@ -149,7 +149,7 @@ export default {
       personInfoList: [
         {key: 'avatar', title: '照片'},
         {key: 'coinNum', title: '闲钱币'},
-        {key: 'username', title: '姓名'},
+        {key: 'name', title: '姓名'},
         {key: 'stuId', title: '学号'},
         {key: 'birth', title: '生日'},
         {key: 'sex', title: '性别'},
@@ -159,7 +159,7 @@ export default {
         {key: 'password', title: '密码'}
       ],
       forms: {
-        username: {username: ''},
+        name: {name: ''},
         stuId: {stuId: ''},
         birth: {birth: ''},
         sex: {sex: ''},
@@ -168,7 +168,7 @@ export default {
         password: {oriPassword: '', newPassword: '', ackPassword: ''}
       },
       rules: {
-        username: {username: [{ required: true, message: '请输入姓名', trigger: 'blur' }]},
+        name: {name: [{ required: true, message: '请输入姓名', trigger: 'blur' }]},
         stuId: {stuId: [{ required: true, message: '请输入学号', trigger: 'blur' }, { min: 8, max: 8, message: '长度为8的数字序列', trigger: 'blur' }]},
         birth: {birth: [{ required: true, message: '请输入出生年月', trigger: 'blur' }]},
         sex: {sex: [{ required: true, message: '请选择性别', trigger: 'blur' }]},
