@@ -65,6 +65,7 @@
 <script>
 import EditQuestionair from '../components/EditQuestionair'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
+import {deleteQN} from '../../api/api'
 export default {
   data () {
     return {
@@ -150,8 +151,28 @@ export default {
     deleteQuestionnair (index) {
       // 根据this.questionnaireList[index].id 想后端请求删除该问卷，如果返回success，在前端的
       // this.questionnaireList删除对应问卷
-      event.cancelBubble = true
-      alert('删除问卷' + this.questionnaireList[index].title)
+      this.$confirm('确认删除该问卷吗？', '提示', {
+        type: 'warning'
+      }).then(() => {
+        let para = { id: this.questionnaireList[index].id }
+        deleteQN(para).then((res) => {
+          console.log(res.data)
+          let { code, msg } = res.data
+          if (code === 200) {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: msg,
+              type: 'error'
+            })
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      })
     },
     checkQustionnair (index) {
       // 根据this.questionnaireList[index].id 向后端求情该问卷的所有填写情况，如果返回success，则

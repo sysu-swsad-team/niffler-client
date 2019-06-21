@@ -44,7 +44,7 @@
       </el-form-item>
       <el-form-item label="验证码" prop="verCode">
         <el-input v-model="ruleForm.verCode" style="width: 56%;" placeholder="验证码"></el-input>
-        <el-button type="primary" style="width: 42%; font-size: 12px; letter-spacing: 0px;">获取验证码</el-button>
+        <el-button type="primary" style="width: 42%; font-size: 12px; letter-spacing: 0px;" @click="getVercode" :disabled="verDisable">{{ verBtnText }}</el-button>
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="ruleForm.password" show-password placeholder="请输入密码"></el-input>
@@ -63,7 +63,7 @@
 
 <script>
 /* 引入api */
-import {postRegister} from '../../api/api'
+import {postRegister, postVercode} from '../../api/api'
 
 export default {
   data () {
@@ -140,10 +140,50 @@ export default {
           { required: true, message: '请再次输入密码', trigger: 'blur' },
           { validator: validPassword, trigger: 'change' }
         ]
-      }
+      },
+      verDisable: false,
+      verBtnText: '获取验证码'
     }
   },
   methods: {
+    getSeconds (wait) {
+      let _this = this
+      let _wait = wait
+      if (wait === 0) {
+        this.verDisable = false
+        this.verBtnText = '获取验证码'
+        wait = _wait
+      } else {
+        this.verDisable = true
+        this.verBtnText = '验证码(' + wait + 's)'
+        wait--
+        setTimeout(function () {
+          _this.getSeconds(wait)
+        }, 1000)
+      }
+    },
+    getVercode () {
+      let verEmail = this.ruleForm.email
+      console.log(verEmail)
+      postVercode(verEmail).then(res => {
+        console.log(res.data)
+        let { code, msg } = res.data
+        if (code === 200) {
+          // 验证码发送成功
+          this.$message({
+            message: '验证码已发送',
+            type: 'success'
+          })
+          this.getSeconds(60)
+        } else {
+          // 验证码发送失败
+          this.$message({
+            message: '验证码发送失败' + msg,
+            type: 'error'
+          })
+        }
+      })
+    },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
