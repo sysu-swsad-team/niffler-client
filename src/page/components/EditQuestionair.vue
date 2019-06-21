@@ -56,6 +56,9 @@
         <el-button type="primary" icon="el-icon-edit" @click="addMulChoice" style="width:30%"> 多选题</el-button>
         <el-button type="primary" icon="el-icon-edit" @click="addFillIn" style="width:30%"> 填空题</el-button>
       </el-form-item>
+      <el-form-item label="" style="margin-top: 10px;">
+        <el-button :loading="isLoading" type="primary" icon="el-icon-document" @click.prevent="summitForm('ruleForm')" style="width:30%; margin-left: calc(30% + 12px)">提交问卷</el-button>
+      </el-form-item>
     </el-form>
 
     <!-- 新增题目 -->
@@ -112,6 +115,9 @@
 </template>
 
 <script>
+/* 引入api */
+import {summitQN} from '../../api/api'
+
 export default {
   name: 'EditQuestionair',
   props: {
@@ -166,14 +172,15 @@ export default {
           { required: true }
         ],
         tag: [
-          { required: true }
+          { required: true, message: '请选择类型', triggr: 'blur' }
         ],
         dueDate: [
-          { type: 'date', required: true, message: '', triggr: 'blur' }
+          { type: 'date', required: true, message: '请选择问卷到期时间', triggr: 'blur' }
         ]
       },
       isAddQuestion: false,
-      isEdit: false
+      isEdit: false,
+      isLoading: false
     }
   },
   methods: {
@@ -260,6 +267,45 @@ export default {
       } else {
         this.isEdit = false
       }
+    },
+    summitForm (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.isLoading = true
+          let summitParams = {
+            email: this.$store.getter.getInfo.email,
+            title: this.ruleForm.title,
+            tag: this.ruleForm.tag,
+            description: this.ruleForm.description,
+            maxNumber: this.ruleForm.maxNumber,
+            fee: this.ruleForm.fee,
+            dueDate: this.ruleForm.dueDate,
+            questions: this.ruleForm.questions
+          }
+          summitQN(summitParams).then(res => {
+            let { code, msg } = res.data
+            if (code === 200) {
+              this.$message({
+                message: '问卷提交成功',
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: '提交失败' + msg,
+                type: 'error'
+              })
+            }
+            this.isLoading = false
+          }).catch(err => {
+            console.log(err)
+            this.isLoading = false
+            return false
+          })
+        } else {
+          console.log('error submit')
+          return false
+        }
+      })
     }
   }
 }

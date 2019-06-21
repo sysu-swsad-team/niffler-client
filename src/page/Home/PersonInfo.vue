@@ -151,6 +151,21 @@ export default {
   components: {
   },
   data () {
+    let validID = (rule, value, callback) => {
+      let reg = /[0-9]{8}/
+      if (!reg.test(value)) {
+        callback(new Error('学号必须是由8位数字组成'))
+      } else {
+        callback()
+      }
+    }
+    let validPassword = (rule, value, callback) => {
+      if (value !== this.forms.password.newPassword) {
+        callback(new Error('两次密码应一样'))
+      } else {
+        callback()
+      }
+    }
     return {
       isLoading: false,
       personInfoList: [
@@ -176,7 +191,7 @@ export default {
       },
       rules: {
         name: {name: [{ required: true, message: '请输入姓名', trigger: 'blur' }]},
-        stuId: {stuId: [{ required: true, message: '请输入学号', trigger: 'blur' }, { min: 8, max: 8, message: '长度为8的数字序列', trigger: 'blur' }]},
+        stuId: {stuId: [{ required: true, message: '请输入学号', trigger: 'blur' }, { validator: validID, trigger: 'blur' }]},
         birth: {birth: [{ required: true, message: '请输入出生年月', trigger: 'blur' }]},
         sex: {sex: [{ required: true, message: '请选择性别', trigger: 'blur' }]},
         grade: {grade: [{ required: true, message: '请选择年级', trigger: 'blur' }]},
@@ -184,7 +199,7 @@ export default {
         password: {
           oriPassword: [{ required: true, message: '请输入原密码', trigger: 'blur' }],
           newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }, { min: 6, max: 20, message: '长度不小于6，不大于20', trigger: 'blur' }],
-          ackPassword: [{ required: true, message: '请再次输入密码', trigger: 'blur' }, { min: 6, max: 20, message: '长度不小于6，不大于20', trigger: 'blur' }]
+          ackPassword: [{ required: true, message: '请再次输入密码', trigger: 'blur' }, { validator: validPassword, trigger: 'change' }]
         }
       },
       dialogKey: '',
@@ -273,11 +288,11 @@ export default {
         console.log(file)
 
         // 将文件转化为formdata数据上传
-        // var fd = new FormData()
-        // fd.append('file', file)
-        // console.log(fd)
-        // // post上传图片
-        // /* 调用axios注册接口 */
+        var fd = new FormData()
+        fd.append('file', file)
+        console.log(fd)
+        // post上传图片
+        /* 调用axios注册接口 */
         // postAvatar(fd).then(res => {
         //   console.log(res.data)
         //   let { code, imgUrl, msg } = res.data
