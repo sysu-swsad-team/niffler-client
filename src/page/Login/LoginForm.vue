@@ -48,7 +48,7 @@
 
 <script>
 /* 引入api */
-import {requestLogin} from '../../api/api'
+import {postLogin} from '../../api/api'
 
 export default {
   data () {
@@ -87,12 +87,16 @@ export default {
             password: this.ruleForm.password
           }
           /* 调用axios登录接口 */
-          requestLogin(loginParams).then(res => {
+          postLogin(loginParams).then(res => {
             this.logining = false
             console.log(res.data)
-            let { code, msg, user } = res.data
+            let { code, msg, email, name, profile } = res.data
             if (code === 200) {
               // 登录成功，用户信息就保存在sessionStorage中
+              var user = profile
+              user.email = email
+              user.name = name
+              console.log('user', user)
               localStorage.setItem('user', JSON.stringify(user))
               // sessionStorage.setItem('user', JSON.stringify(user))
               this.$store.dispatch('setUser', user)

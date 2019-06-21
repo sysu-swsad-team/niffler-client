@@ -58,10 +58,10 @@
         <el-form-item prop="birth">
           <el-date-picker :editable="false" style="width: 100%;"
             v-model="forms.birth.birth"
-            type="month"
-            format="yyyy-MM"
-            value-format="yyyy-MM"
-            placeholder="请选择您的出生年月">
+            type="date"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择您的出生日期">
           </el-date-picker>
         </el-form-item>
       </el-form>
@@ -129,7 +129,7 @@ export default {
       console.log(info)
       return {
         'avatar': '照片',
-        'coinNum': info.coinNum,
+        'balance': info.balance,
         'name': info.name,
         'stuId': info.stuId,
         'birth': info.birth,
@@ -148,7 +148,7 @@ export default {
       isLoading: false,
       personInfoList: [
         {key: 'avatar', title: '照片'},
-        {key: 'coinNum', title: '闲钱币'},
+        {key: 'balance', title: '闲钱币'},
         {key: 'name', title: '姓名'},
         {key: 'stuId', title: '学号'},
         {key: 'birth', title: '生日'},
@@ -188,7 +188,7 @@ export default {
   },
   methods: {
     isAllowClick (key) {
-      if (key === 'coinNum' || key === 'email') {
+      if (key === 'balance' || key === 'email') {
         return false
       } else {
         return true

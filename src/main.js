@@ -6,7 +6,8 @@ import router from './router'
 import store from './vuex/store'
 import VueRouter from 'vue-router'
 import ElementUI from 'element-ui'
-import Mock from './mock/index'
+// import axios from 'axios'
+// import Mock from './mock/index'
 
 /* theme */
 // import 'element-ui/lib/theme-chalk/index.css'
@@ -23,7 +24,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
-Mock.init()
+// Mock.init()
 // Vue.use(store)
 
 Vue.config.productionTip = false
@@ -35,9 +36,13 @@ router.beforeEach((to, from, next) => {
   if (to.path === '/login') {
     localStorage.removeItem('user')
   }
+
+  /* 在localStorage中提取user */
   let user = JSON.parse(localStorage.getItem('user'))
   store.dispatch('setUser', user)
   console.log(user, to.path)
+
+  /* 若localStorage中没有user，则跳至login页面 */
   if (!user && to.path !== '/login') {
     next({ path: '/login' })
   } else {

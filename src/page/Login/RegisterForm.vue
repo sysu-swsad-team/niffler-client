@@ -11,10 +11,10 @@
       <el-form-item label="生日" prop="birth">
           <el-date-picker :editable="false" style="width: 100%;"
             v-model="ruleForm.birth"
-            type="month"
-            format="yyyy-MM"
-            value-format="yyyy-MM"
-            placeholder="请选择您的出生年月">
+            type="date"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择您的出生日期">
           </el-date-picker>
       </el-form-item>
       <el-form-item label="性别" prop="sex">
@@ -53,8 +53,8 @@
         <el-input v-model="ruleForm.ackPassword" show-password placeholder="请再次输入密码"></el-input>
       </el-form-item>
       <el-form-item style="width:100%">
-        <el-button type="primary" @click="submitForm('ruleForm')" style="margin:0 auto; width: 45%; padding: 10px;">注册</el-button>
-        <el-button  @click="resetForm('ruleForm')" style="margin:0 auto; width: 45%; padding: 10px; color: #1D365D; background: #fff;">重置</el-button>
+        <el-button :loading="isLoading" type="primary" @click="submitForm('ruleForm')" style="margin:0 auto; width: 45%; padding: 10px;">注册</el-button>
+        <el-button :loading="isLoading" @click="resetForm('ruleForm')" style="margin:0 auto; width: 45%; padding: 10px; color: #1D365D; background: #fff;">重置</el-button>
       </el-form-item>
     </el-form>
   </el-col>
@@ -62,9 +62,13 @@
 </template>
 
 <script>
+/* 引入api */
+import {postRegister} from '../../api/api'
+
 export default {
   data () {
     return {
+      isLoading: false,
       ruleForm: {
         name: '',
         stuId: '',
@@ -86,16 +90,16 @@ export default {
           { min: 8, max: 8, message: '长度为8的数字序列', trigger: 'blur' }
         ],
         birth: [
-          { required: true, message: '请输入出生年月', trigger: 'blur' }
+          { required: true, message: '请输入出生年月', trigger: 'change' }
         ],
         sex: [
-          { required: true, message: '请选择性别', trigger: 'blur' }
+          { required: true, message: '请选择性别', trigger: 'change' }
         ],
         grade: [
-          { required: true, message: '请选择年级', trigger: 'blur' }
+          { required: true, message: '请选择年级', trigger: 'change' }
         ],
         major: [
-          { required: true, message: '请输入专业', trigger: 'blur' }
+          { required: true, message: '请输入专业', trigger: 'change' }
         ],
         email: [
           { required: true, message: '请输入邮箱', trigger: 'blur' }
@@ -119,9 +123,45 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          this.isLoading = true
+          let registerParams = {
+            name: this.ruleForm.name,
+            stuId: this.ruleForm.stuId,
+            birth: this.ruleForm.birth,
+            sex: this.ruleForm.sex,
+            grade: this.ruleForm.grade,
+            major: this.ruleForm.major,
+            email: this.ruleForm.email,
+            password: this.ruleForm.password
+          }
+          console.log('registerParams', registerParams)
+          this.isLoading = false
+          /* 调用axios注册接口 */
+          postRegister(registerParams).then(res => {
+            this.isLoading = false
+            console.log(res.data)
+            let { code, msg } = res.data
+            if (code === 200) {
+              // 注册成功
+              this.$message({
+                message: '注册成功 ' + msg,
+                type: 'success'
+              })
+              // 调用父组件Login.vue的方法slide，滑动到登录界面
+              this.$parent.slide()
+            } else {
+              // 注册失败，弹出element-ui中的提示组件
+              this.$message({
+                message: '注册失败 ' + msg,
+                type: 'error'
+              })
+            }
+          }).catch(err => {
+            console.log(err)
+            return false
+          })
         } else {
-          console.log('error submit!!')
+          console.log('error submit!')
           return false
         }
       })
