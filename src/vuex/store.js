@@ -10,6 +10,7 @@ Vue.use(Vuex)
 // 要设置的全局访问的state对象
 const state = {
   // 要设置的初始属性值
+  token: '',
   isCollapse: false,
   sysname: 'NIFFLER',
   name: 'pmlpml', // 用户名即真实姓名
@@ -20,7 +21,7 @@ const state = {
   grade: '大一',
   major: '软件工程',
   email: 'pmlpml@niffler.com',
-  coinNum: 10086, // 闲钱币数量
+  balance: 10086, // 闲钱币数量
   msgNumUnread: 100, // 未读信息数量
   logo: logo
 }
@@ -42,7 +43,7 @@ const getters = {
       grade: state.grade,
       major: state.major,
       email: state.email,
-      coinNum: state.coinNum,
+      balance: state.balance,
       msgNumUnread: state.msgNumUnread,
       logo: state.logo
     }
@@ -51,7 +52,7 @@ const getters = {
     return {
       email: state.email,
       avatar: state.avatar,
-      coinNum: state.coinNum,
+      balance: state.balance,
       name: state.name,
       stuId: state.stuId,
       birth: state.birth,
