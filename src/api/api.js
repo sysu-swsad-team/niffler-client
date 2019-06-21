@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-// let base = 'http://127.0.0.1:8080'
+// let base = 'http://127.0.0.1:8000'
 // axios.defaults.baseURL = 'http://127.0.0.1:8080'
 
 export const requestLogin = params => {
@@ -8,7 +8,7 @@ export const requestLogin = params => {
 }
 
 export const deleteQN = params => {
-  return axios.post('questionnaire/mine/delete', params)
+  return axios.post('/questionnaire/mine/delete', params)
 }
 
 // export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }) }
