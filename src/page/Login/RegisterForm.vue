@@ -67,6 +67,29 @@ import {postRegister} from '../../api/api'
 
 export default {
   data () {
+    let validID = (rule, value, callback) => {
+      let reg = /[0-9]{8}/
+      if (!reg.test(value)) {
+        callback(new Error('学号必须是由8位数字组成'))
+      } else {
+        callback()
+      }
+    }
+    let validVarCode = (rule, value, callback) => {
+      let reg = /[0-9]{6}/
+      if (!reg.test(value)) {
+        callback(new Error('验证码应为6位数字'))
+      } else {
+        callback()
+      }
+    }
+    let validPassword = (rule, value, callback) => {
+      if (value !== this.ruleForm.password) {
+        callback(new Error('两次密码应一样'))
+      } else {
+        callback()
+      }
+    }
     return {
       isLoading: false,
       ruleForm: {
@@ -83,11 +106,11 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入姓名', trigger: 'blur' }
+          { required: true, message: '请输入姓名', trigger: 'change' }
         ],
         stuId: [
-          { required: true, message: '请输入学号', trigger: 'blur' },
-          { min: 8, max: 8, message: '长度为8的数字序列', trigger: 'blur' }
+          { required: true, message: '请输入学号', trigger: 'change' },
+          { validator: validID, trigger: 'change' }
         ],
         birth: [
           { required: true, message: '请输入出生年月', trigger: 'change' }
@@ -102,19 +125,20 @@ export default {
           { required: true, message: '请输入专业', trigger: 'change' }
         ],
         email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' }
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
         ],
         verCode: [
           { required: true, message: '请输入验证码', trigger: 'blur' },
-          { min: 6, max: 6, message: '长度为6的数字', trigger: 'blur' }
+          { validator: validVarCode, trigger: 'blur' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, max: 20, message: '长度不小于6，不大于20', trigger: 'blur' }
+          { min: 6, max: 20, message: '长度不小于6，不大于20', trigger: 'change' }
         ],
         ackPassword: [
           { required: true, message: '请再次输入密码', trigger: 'blur' },
-          { min: 6, max: 20, message: '长度不小于6，不大于20', trigger: 'blur' }
+          { validator: validPassword, trigger: 'change' }
         ]
       }
     }
