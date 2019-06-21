@@ -15,6 +15,10 @@ export const postRegister = params => {
   return axios.post('/questionnaire/register/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
 }
 
+export const postAvatar = params => {
+  return axios.post('/questionnaire/avatar/', params, {headers: {'Content-Type': 'multipart/form-data'}})
+}
+
 export const postVercode = params => {
   return axios.post('/questionnaire/register/vercode', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
 }

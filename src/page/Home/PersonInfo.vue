@@ -34,7 +34,7 @@
     <el-dialog :title="'更改' + dialogTitle" :visible.sync="dialogVisible" @close="dialogResetForm()">
       <el-upload v-if="this.dialogKey === 'avatar'"
         class="avatar-uploader"
-        action="http://jsonplaceholder.typicode.com/posts/"
+        :action="getBaseUrl + '/questionnaire/avatar/'"
         :show-file-list="true"
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload">
@@ -119,8 +119,15 @@
 </template>
 
 <script>
+/* 引入api */
+// import {postAvatar} from '../../api/api'
+import axios from 'axios'
+
 export default {
   computed: {
+    getBaseUrl () {
+      return axios.defaults.baseURL
+    },
     getInfo () {
       return this.$store.getters.getInfo
     },
@@ -252,16 +259,49 @@ export default {
       console.log(this.dialogImageUrl)
     },
     beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+        this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
       }
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPG && isLt2M
+      // return isJPG && isLt2M
+      if (isJPG && isLt2M) {
+        console.log(file)
+
+        // 将文件转化为formdata数据上传
+        // var fd = new FormData()
+        // fd.append('file', file)
+        // console.log(fd)
+        // // post上传图片
+        // /* 调用axios注册接口 */
+        // postAvatar(fd).then(res => {
+        //   console.log(res.data)
+        //   let { code, imgUrl, msg } = res.data
+        //   if (code === 200) {
+        //     console.log(imgUrl)
+        //     this.$message({
+        //       message: '成功 ' + msg,
+        //       type: 'success'
+        //     })
+        //   } else {
+        //     // 注册失败，弹出element-ui中的提示组件
+        //     this.$message({
+        //       message: '失败 ' + msg,
+        //       type: 'error'
+        //     })
+        //   }
+        // }).catch(err => {
+        //   console.log(err)
+        //   return false
+        // })
+        return true
+      } else {
+        return false
+      }
     },
     /* 表格行的样式设置 */
     rowStyle ({row, rowIndex}) {

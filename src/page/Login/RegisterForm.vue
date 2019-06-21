@@ -201,10 +201,8 @@ export default {
             password: this.ruleForm.password
           }
           console.log('registerParams', registerParams)
-          this.isLoading = false
           /* 调用axios注册接口 */
           postRegister(registerParams).then(res => {
-            this.isLoading = false
             console.log(res.data)
             let { code, msg } = res.data
             if (code === 200) {
@@ -222,8 +220,10 @@ export default {
                 type: 'error'
               })
             }
+            this.isLoading = false
           }).catch(err => {
             console.log(err)
+            this.isLoading = false
             return false
           })
         } else {
