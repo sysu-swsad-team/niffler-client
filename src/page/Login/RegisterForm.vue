@@ -163,7 +163,9 @@ export default {
       }
     },
     getVercode () {
-      let verEmail = this.ruleForm.email
+      let verEmail = {
+        email: this.ruleForm.email
+      }
       console.log(verEmail)
       postVercode(verEmail).then(res => {
         console.log(res.data)

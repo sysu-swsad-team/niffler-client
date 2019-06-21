@@ -149,6 +149,7 @@ export default {
       // alert('获取问卷' + this.questionnaireList[index].title)
     },
     deleteQuestionnair (index) {
+      event.cancelBubble = true
       // 根据this.questionnaireList[index].id 想后端请求删除该问卷，如果返回success，在前端的
       // this.questionnaireList删除对应问卷
       this.$confirm('确认删除该问卷吗？', '提示', {
