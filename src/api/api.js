@@ -15,6 +15,9 @@ export const postRegister = params => {
   return axios.post('/questionnaire/register/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
 }
 
+export const postAvatar = params => {
+  return axios.post('/questionnaire/avatar/', params, {headers: {'Content-Type': 'multipart/form-data'}})
+}
 // export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }) }
 
 // export const getUserListPage = params => { return axios.get(`${base}/user/listpage`, { params: params }) }
