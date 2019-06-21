@@ -2,6 +2,8 @@ import axios from 'axios'
 
 // let base = 'http://127.0.0.1:8080'
 axios.defaults.baseURL = 'http://127.0.0.1:8000'
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
 
 export const postLogin = params => {
   return axios.post('/questionnaire/login/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
