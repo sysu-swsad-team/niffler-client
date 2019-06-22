@@ -27,7 +27,7 @@
               <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 10 }" v-model="ruleForm.description" maxlength="500" show-word-limit></el-input>
             </el-form-item>
             <el-form-item label="" label-width="80px">
-              <el-button type="primary" icon="el-icon-s-claim" @click.prevent="summitForm" style="width:30%;margin-left:calc(30% + 20px)">提交任务</el-button>
+              <el-button type="primary" icon="el-icon-s-claim" @click.prevent="summitForm('ruleForm')" style="width:30%;margin-left:calc(30% + 20px)">提交任务</el-button>
             </el-form-item>
           </el-form>
       </el-col>
@@ -36,6 +36,7 @@
 
 <script>
 import Vue from 'vue'
+import {summitErrand} from '../../api/api'
 Vue.component('anchored-heading', {
   render: function (createElement) {
     return createElement(
@@ -84,22 +85,42 @@ export default {
       }
     }
   },
+  computed: {
+    getInfo () {
+      return this.$store.getters.getInfo
+    }
+  },
   methods: {
-    summitForm () {
-      if (this.ruleForm.title === '') {
-        this.$message.error('请输入任务标题')
-      } else if (this.ruleForm.dueDate === '') {
-        this.$message.error('请输入任务截止时间')
-      } else if (this.ruleForm.tag === '') {
-        this.$message.error('请选择类型')
-      } else if (this.ruleForm.description === '') {
-        this.$message.error('请增加任务描述')
-      } else {
-        this.$message({
-          message: '提交成功',
-          type: 'success'
-        })
-      }
+    summitForm (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.isLoading = true
+          console.log(this.getInfo.email)
+          let summitParams = {
+            email: this.getInfo.email,
+            title: this.ruleForm.title,
+            tag: this.ruleForm.tag,
+            description: this.ruleForm.description,
+            fee: this.ruleForm.fee,
+            dueDate: this.ruleForm.dueDate
+          }
+          summitErrand(summitParams).then(res => {
+            console.log(res.data)
+            let { code, msg } = res.data
+            if (code === 200) {
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: '提交失败' + msg,
+                type: 'error'
+              })
+            }
+          })
+        }
+      })
     }
   }
 }
