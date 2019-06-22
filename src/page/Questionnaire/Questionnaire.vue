@@ -33,10 +33,10 @@
             <el-button type="primary" class="el-icon-search" @click="getFilter"> 查询</el-button>
           </el-form-item>
         </el-form>
+        <el-button type="primary">刷新</el-button>
       </el-col>
       <el-table :data="questionnaireList" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;" stripe>
         <el-table-column type="index" width="50"></el-table-column>
-        <el-table-column prop="id" label="ID" width="100" sortable></el-table-column>
         <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
         <el-table-column prop="sponsor" label="发起者" width="150" sortable></el-table-column>
         <el-table-column prop="maxNumber" label="剩余量" width="100" sortable></el-table-column>
@@ -80,6 +80,7 @@
 <script>
 import PageHead from '../components/PageHead'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
+import {getAllQN, getAllQNFilter, getQNDetail} from '../../api/api'
 export default {
   data () {
     return {
@@ -142,6 +143,25 @@ export default {
     }
   },
   methods: {
+    getQNList () {
+      let params = {
+        email: this.getInfo.email
+      }
+      getAllQN(params).then(res => {
+        let { code, msg, questionnaires } = res.data
+        console.log(res.data)
+        if (code === 200) {
+          this.questionnaireList = questionnaires
+        } else {
+          this.$message({
+            message: '获取问卷失败' + msg,
+            type: 'error'
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
     handleSelect (key, keyPath) {
       // console.log(key, keyPath)
     },
@@ -152,7 +172,25 @@ export default {
       // console.log(key, keyPath)
     },
     getFilter () {
-      alert('查询条件' + this.filters)
+      // alert('查询条件' + this.filters)
+      let params = {
+        email: this.getInfo.email,
+        filters: this.filters
+      }
+      getAllQNFilter(params).then(res => {
+        console.log(res.data)
+        let { code, msg, questionnaires } = res.data
+        if (code === 200) {
+          this.questionnaireList = questionnaires
+        } else {
+          this.$message({
+            message: '获取问卷失败' + msg,
+            type: 'error'
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     getQustionnair (index) {
       // 后端先判断该用户是否已填写此问卷，若已填写，则不能再填写，否则，后端返回问卷细节
@@ -160,8 +198,28 @@ export default {
       // 若已填写，
       // this.$message.error('您已填过此问卷')
       // 若未填写。渲染问卷
-      this.isDetail = true
-      this.detailQN = this.questionnaireList[index]
+      // this.isDetail = true
+      // this.detailQN = this.questionnaireList[index]
+      let params = {
+        email: this.getInfo.email,
+        id: this.questionnaireList[index].id
+      }
+      getQNDetail(params).then(res => {
+        console.log(res.data)
+        let { code, msg, questionnaire } = res.data
+        if (code === 200) {
+          this.detailQN = questionnaire
+          this.isDetail = true
+        } else {
+          this.$message({
+            // 获取失败的原因（已经填写过？）
+            message: msg,
+            type: 'error'
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     selsChange: function (sels) {
       this.sels = sels
@@ -169,7 +227,10 @@ export default {
     filterTag (value, row) {
       return row.tag === value
     },
-    handleCurrentChange () { },
+    handleCurrentChange (val) {
+      this.page = val
+      this.getQNList()
+    },
     commiteAnswer () {
       // 提交问卷答案
       this.$confirm('确定提交问卷吗？', '提示', {
@@ -188,6 +249,9 @@ export default {
   components: {
     PageHead,
     ShowQuestionnaire
+  },
+  mounted () {
+    this.getQNList()
   }
 }
 </script>

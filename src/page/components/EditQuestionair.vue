@@ -137,6 +137,11 @@ export default {
       }]
     }
   },
+  computed: {
+    getInfo () {
+      return this.$store.getters.getInfo
+    }
+  },
   data () {
     return {
       addQuestion: {
@@ -164,7 +169,9 @@ export default {
           { required: true, message: '请输入题目', triggr: 'blur' },
           { min: 2, max: 50, message: '长度应为2~50', triggr: 'blur' }
         ],
-        description: [ ],
+        description: [
+          { required: true, message: '请输入问卷描述', triggr: 'blur' }
+        ],
         maxNumber: [
           { required: true }
         ],
@@ -252,6 +259,7 @@ export default {
       if (this.addQuestion.title === '') {
         this.$message.error('请输入题目！')
       } else {
+        console.log(this.ruleForm.questions)
         this.ruleForm.questions.push({
           title: this.addQuestion.title,
           type: this.addType,
@@ -272,8 +280,9 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.isLoading = true
+          console.log(this.getInfo.email)
           let summitParams = {
-            email: this.$store.getter.getInfo.email,
+            email: this.getInfo.email,
             title: this.ruleForm.title,
             tag: this.ruleForm.tag,
             description: this.ruleForm.description,
@@ -303,6 +312,7 @@ export default {
           })
         } else {
           console.log('error submit')
+          this.isLoading = false
           return false
         }
       })

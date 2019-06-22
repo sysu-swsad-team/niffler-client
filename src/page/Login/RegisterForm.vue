@@ -163,26 +163,36 @@ export default {
       }
     },
     getVercode () {
-      let verEmail = {
-        email: this.ruleForm.email
-      }
-      console.log(verEmail)
-      postVercode(verEmail).then(res => {
-        console.log(res.data)
-        let { code, msg } = res.data
-        if (code === 200) {
-          // 验证码发送成功
-          this.$message({
-            message: '验证码已发送',
-            type: 'success'
+      /* 验证email字段 */
+      this.$refs.ruleForm.validateField('email', (errorMessage) => {
+        if (errorMessage === '') {
+          let verEmail = {
+            email: this.ruleForm.email
+          }
+          console.log(verEmail)
+          postVercode(verEmail).then(res => {
+            console.log(res.data)
+            let { code, msg } = res.data
+            if (code === 200) {
+              // 验证码发送成功
+              this.$message({
+                message: '验证码已发送 ' + msg,
+                type: 'success'
+              })
+              this.getSeconds(60)
+            } else {
+              // 验证码发送失败
+              this.$message({
+                message: '验证码发送失败 ' + msg,
+                type: 'error'
+              })
+            }
+          }).catch(err => {
+            console.log('postVercode err:', err)
           })
-          this.getSeconds(60)
         } else {
-          // 验证码发送失败
-          this.$message({
-            message: '验证码发送失败' + msg,
-            type: 'error'
-          })
+          console.log('getVercode error submit! errorMessage: ', errorMessage)
+          return false
         }
       })
     },
@@ -222,7 +232,7 @@ export default {
             }
             this.isLoading = false
           }).catch(err => {
-            console.log(err)
+            console.log('postRegister err:', err)
             this.isLoading = false
             return false
           })

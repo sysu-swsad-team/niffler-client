@@ -16,7 +16,6 @@
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column type="index" width="50"></el-table-column>
-        <el-table-column prop="id" label="ID" width="100" sortable></el-table-column>
         <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
         <el-table-column prop="maxNumber" label="剩余量" width="100" sortable></el-table-column>
         <el-table-column prop="fee" label="费用" width="80" sortable></el-table-column>
@@ -37,6 +36,10 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-col :span="24" class="toolbar">
+        <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:left;">
+        </el-pagination>
+      </el-col>
       <el-col :span="24" class="toolbar">
         <el-button type="danger" size="medium" style="margin-top: 5px;" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
       </el-col>
@@ -65,7 +68,7 @@
 <script>
 import EditQuestionair from '../components/EditQuestionair'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
-import {deleteQN} from '../../api/api'
+import {deleteQN, getMyQN, getMyQNFilter, getQNDetail, deleteBatchQN} from '../../api/api'
 export default {
   data () {
     return {
@@ -135,12 +138,56 @@ export default {
     isCollapse () {
       // 返回./store/index.js中的全局变量
       return this.$store.getters.getIsCollapse
+    },
+    getInfo () {
+      return this.$store.getters.getInfo
     }
   },
   methods: {
+    getQNList () {
+      let params = {
+        email: this.getInfo.email
+      }
+      getMyQN(params).then(res => {
+        let { code, msg, questionnaires } = res.data
+        console.log(res.data)
+        if (code === 200) {
+          this.questionnaireList = questionnaires
+        } else {
+          this.$message({
+            message: '获取问卷失败' + msg,
+            type: 'error'
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    handleCurrentChange (val) {
+      this.page = val
+      this.getQNList()
+    },
     getFilter () {
       // 从后端根据查询条件获取对应的问卷，放在questionnaireList中
-      alert('查询条件' + this.filters)
+      // alert('查询条件' + this.filters)
+      let params = {
+        email: this.getInfo.email,
+        filters: this.filters
+      }
+      getMyQNFilter(params).then(res => {
+        console.log(res.data)
+        let { code, msg, questionnaires } = res.data
+        if (code === 200) {
+          this.questionnaireList = questionnaires
+        } else {
+          this.$message({
+            message: '获取问卷失败' + msg,
+            type: 'error'
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     editQustionnair (index) {
       // 根据this.questionnaireList[index].id 从后端获取完整问卷，存放在editingQN中
@@ -155,7 +202,10 @@ export default {
       this.$confirm('确认删除该问卷吗？', '提示', {
         type: 'warning'
       }).then(() => {
-        let para = { id: this.questionnaireList[index].id }
+        let para = {
+          email: this.getInfo.email,
+          id: this.questionnaireList[index].id
+        }
         deleteQN(para).then((res) => {
           console.log(res.data)
           let { code, msg } = res.data
@@ -177,7 +227,7 @@ export default {
     },
     checkQustionnair (index) {
       // 根据this.questionnaireList[index].id 向后端求情该问卷的所有填写情况，如果返回success，则
-      // 弹出对话框，以表格的形式{'id', 'Q1', 'Q2',...}显示，建议dialog为Fullscreen
+      // 弹出对话框，以表格的形式{'id', 'Q1', 'Q2',...}显示，建议dialog为Fullscreen,存于answerList
       this.isCheck = true
       event.cancelBubble = true
     },
@@ -188,7 +238,33 @@ export default {
       return row.tag === value
     },
     batchRemove () {
-      // 根据sels中的下标，找到对应问卷的id，传给后端进行删除，返回成功再在前端questionnaireList进行删除
+      // 根据sels中的下标，找到对应问卷的id，传给后端进行删除，
+      // 返回成功再在重新请求questionnaireList
+      this.$confirm('确认删除该问卷吗？', '提示', {
+        type: 'warning'
+      }).then(() => {
+        let para = {
+          email: this.getInfo.email,
+          id: this.sels
+        }
+        deleteBatchQN(para).then((res) => {
+          console.log(res.data)
+          let { code, msg } = res.data
+          if (code === 200) {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: msg,
+              type: 'error'
+            })
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      })
     },
     summitEdit () {
       if (this.editingQN.title === '') {
@@ -228,8 +304,27 @@ export default {
     },
     lookOverQN: function (row) {
       // 通过row.id获取问卷详细内容,放于detailQN
-      this.isLookOver = true
-      this.detailQN = row
+      // this.isLookOver = true
+      // this.detailQN = row
+      let params = {
+        email: this.getInfo.email,
+        id: row.id
+      }
+      getQNDetail(params).then(res => {
+        console.log(res.data)
+        let { code, msg, questionnaire } = res.data
+        if (code === 200) {
+          this.detailQN = questionnaire
+          this.isLookOver = true
+        } else {
+          this.$message({
+            message: '获取问卷失败' + msg,
+            type: 'error'
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   components: {
@@ -238,8 +333,8 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
+<style scoped lang="scss">
+@import '@/styles/pages.scss';
 .el-dialog .el-dialog__body {
   padding: 0px;
 }
