@@ -33,13 +33,15 @@
     <!-- 对话框，更改个人信息 -->
     <el-dialog :title="'更改' + dialogTitle" :visible.sync="dialogVisible" @close="dialogResetForm()">
       <el-upload v-if="this.dialogKey === 'avatar'"
-        class="avatar-uploader"
         :action="getBaseUrl + '/questionnaire/avatar/'"
-        :show-file-list="true"
+        :drag="true"
+        :show-file-list="false"
         :before-upload="beforeAvatarUpload"
         :http-request="uploadAvatar">
         <img v-if="dialogImageUrl" :src="dialogImageUrl" class="avatar-form">
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处<br/>或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip">只能上传 jpg/png 文件，且不超过 2 MB</div>
       </el-upload>
       <el-form v-if="this.dialogKey === 'name'"
         :model="forms.name" :rules="rules.name" :ref="this.dialogKey" status-icon>
@@ -109,7 +111,7 @@
           <el-input v-model="forms.password.ackPassword" show-password placeholder="请再次输入新密码"></el-input>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div v-if="this.dialogKey !== 'avatar'" slot="footer" class="dialog-footer">
         <el-button @click="dialogCancel()">取 消</el-button>
         <el-button @click="dialogResetForm()">重 置</el-button>
         <el-button type="primary" @click="dialogSubmitForm()">确 定</el-button>
@@ -206,7 +208,7 @@ export default {
       dialogKey: '',
       dialogTitle: '',
       dialogVisible: false,
-      dialogImageUrl: '',
+      dialogImageUrl: null,
       dialogImageFile: null
     }
   },
@@ -262,6 +264,8 @@ export default {
     /* 重置dialog表单 */
     dialogResetForm () {
       if (this.dialogKey === 'avatar') {
+        this.dialogImageUrl = null
+        this.dialogImageFile = null
         return
       }
       this.$refs[this.dialogKey].resetFields()
@@ -274,14 +278,11 @@ export default {
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
-
       if (!isJPG) {
         this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
+      } else if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2 MB!')
       }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      // return isJPG && isLt2M
       if (isJPG && isLt2M) {
         console.log(file)
         this.dialogImageFile = file
@@ -298,7 +299,7 @@ export default {
       postAvatar(fd).then(res => {
         if (res.status === 200) {
           var profile = res.data.profile
-          profile.avatar = 'questionnaire/' + profile.avatar
+          profile.avatar = `${axios.defaults.baseURL}/questionnaire/${profile.avatar}`
           this.$store.dispatch('setUser', profile)
           this.dialogImageUrl = profile.avatar
         }
@@ -365,32 +366,16 @@ export default {
   color: white;
 }
 
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9 !important;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: $color-primary !important;
-}
-.avatar-uploader-icon {
-  border: 1px dashed #d9d9d9 !important;
-  border-radius: 6px;
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-.avatar-uploader-icon:hover {
-  border-color: $color-primary !important;
-}
 .avatar-form {
-  width: 178px;
-  height: 178px;
+  width: 200px;
+  height: 200px;
   display: block;
+}
+</style>
+
+<style>
+.el-upload-dragger {
+  width: 200px;
+  height: 200px;
 }
 </style>
