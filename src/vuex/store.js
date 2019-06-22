@@ -92,6 +92,7 @@ const actions = {
   },
   setUser (context, user) {
     context.commit('mutationsSetUser', user)
+    localStorage.setItem('user', JSON.stringify(this.getters.getUser))
   }
 }
 

@@ -96,6 +96,7 @@ export default {
               var user = profile
               user.email = email
               user.name = name
+              user.avatar = 'questionnaire/' + user.avatar
               console.log('user', user)
               localStorage.setItem('user', JSON.stringify(user))
               // sessionStorage.setItem('user', JSON.stringify(user))

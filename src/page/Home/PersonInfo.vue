@@ -36,8 +36,8 @@
         class="avatar-uploader"
         :action="getBaseUrl + '/questionnaire/avatar/'"
         :show-file-list="true"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload">
+        :before-upload="beforeAvatarUpload"
+        :http-request="uploadAvatar">
         <img v-if="dialogImageUrl" :src="dialogImageUrl" class="avatar-form">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
@@ -122,6 +122,7 @@
 /* 引入api */
 // import {postAvatar} from '../../api/api'
 import axios from 'axios'
+import { postAvatar } from '../../api/api'
 
 export default {
   computed: {
@@ -205,7 +206,8 @@ export default {
       dialogKey: '',
       dialogTitle: '',
       dialogVisible: false,
-      dialogImageUrl: ''
+      dialogImageUrl: '',
+      dialogImageFile: null
     }
   },
   methods: {
@@ -268,11 +270,7 @@ export default {
     dialogCancel () {
       this.dialogVisible = false
     },
-    /* 处理上传照片的函数 */
-    handleAvatarSuccess (res, file) {
-      this.dialogImageUrl = URL.createObjectURL(file.raw)
-      console.log(this.dialogImageUrl)
-    },
+    /* 在图片上传之前的的判断 */
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
@@ -286,37 +284,34 @@ export default {
       // return isJPG && isLt2M
       if (isJPG && isLt2M) {
         console.log(file)
-
-        // 将文件转化为formdata数据上传
-        var fd = new FormData()
-        fd.append('file', file)
-        console.log(fd)
-        // post上传图片
-        /* 调用axios注册接口 */
-        // postAvatar(fd).then(res => {
-        //   console.log(res.data)
-        //   let { code, imgUrl, msg } = res.data
-        //   if (code === 200) {
-        //     console.log(imgUrl)
-        //     this.$message({
-        //       message: '成功 ' + msg,
-        //       type: 'success'
-        //     })
-        //   } else {
-        //     // 注册失败，弹出element-ui中的提示组件
-        //     this.$message({
-        //       message: '失败 ' + msg,
-        //       type: 'error'
-        //     })
-        //   }
-        // }).catch(err => {
-        //   console.log(err)
-        //   return false
-        // })
+        this.dialogImageFile = file
         return true
       } else {
         return false
       }
+    },
+    /* 覆盖默认的上传行为，实现自定义上传 */
+    uploadAvatar () {
+      // 将文件转化为formdata数据上传
+      var fd = new FormData()
+      fd.append('file', this.dialogImageFile)
+      postAvatar(fd).then(res => {
+        if (res.status === 200) {
+          var profile = res.data.profile
+          profile.avatar = 'questionnaire/' + profile.avatar
+          this.$store.dispatch('setUser', profile)
+          this.dialogImageUrl = profile.avatar
+        }
+        this.$message({
+          message: `${res.data.msg} ${res.status} ${res.statusText}`,
+          type: res.status === 200 ? 'success' : 'error'
+        })
+      }).catch(err => {
+        this.$message({
+          message: '失败 ' + err,
+          type: 'error'
+        })
+      })
     },
     /* 表格行的样式设置 */
     rowStyle ({row, rowIndex}) {

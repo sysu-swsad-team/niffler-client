@@ -17,7 +17,7 @@
         <div class="demo-image">
           <img :src="getInfo.avatar" class="avatar"/>
         </div>
-        <h4 style="margin: 10px;">闲钱币余额：<strong>{{ getInfo.coinNum }} 元</strong></h4>
+        <h4 style="margin: 10px;">闲钱币余额：<strong>{{ getInfo.balance }} 元</strong></h4>
       </el-row>
       <el-col :span="24" class="toolbar">
         <el-form :inline="true" style="padding-top: 20px; text-align: center;">
@@ -46,7 +46,7 @@
       <el-dialog :visible.sync="isRecharge" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="40%" title="充值" :center="true">
         <el-row style="text-align: center; padding-top: 20px;">
         <div class="demo-image">
-          <vue-qr :logo-src="config.logo" :text="config.text" :margin="5" :auto-color="true" :size="200" dot-scale="1"></vue-qr>
+          <vue-qr :logo-src="config.logo" :text="config.text" :margin="5" :auto-color="true" :size="200" :dot-scale="1"></vue-qr>
         </div>
         <h4 style="margin: 10px;">请扫码充值</h4>
       </el-row>
