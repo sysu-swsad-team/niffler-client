@@ -144,12 +144,12 @@ export default {
   },
   methods: {
     getQNList () {
-      let params = {
-        email: this.getInfo.email
-      }
-      getAllQN(params).then(res => {
-        let { code, msg, questionnaires } = res.data
+      // let params = {
+      //   email: this.getInfo.email
+      // }
+      getAllQN(null).then(res => {
         console.log(res.data)
+        let { code, msg, questionnaires } = res.data
         if (code === 200) {
           this.questionnaireList = questionnaires
         } else {
