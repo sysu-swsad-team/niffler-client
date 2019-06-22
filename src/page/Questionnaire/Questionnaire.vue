@@ -151,21 +151,8 @@ export default {
         })
       })
     },
-    handleSelect (key, keyPath) {
-      // console.log(key, keyPath)
-    },
-    handleOpen (key, keyPath) {
-      // console.log(key, keyPath)
-    },
-    handleClose (key, keyPath) {
-      // console.log(key, keyPath)
-    },
     getFilter () {
-      // alert('查询条件' + this.filters)
-      // let params = {
-      //   email: this.getInfo.email,
-      //   filters: this.filters
-      // }
+      console.log(this.filters)
       getAllQNFilter(this.filters).then(res => {
         if (res.status === 200) {
           console.log(res.data)
@@ -185,16 +172,6 @@ export default {
             type: 'error'
           })
         }
-        // console.log(res.data)
-        // let { code, msg, questionnaires } = res.data
-        // if (code === 200) {
-        //   this.questionnaireList = questionnaires
-        // } else {
-        //   this.$message({
-        //     message: '获取问卷失败' + msg,
-        //     type: 'error'
-        //   })
-        // }
       }).catch(err => {
         console.log(err)
         this.$message({
@@ -202,6 +179,15 @@ export default {
           type: 'error'
         })
       })
+    },
+    handleSelect (key, keyPath) {
+      // console.log(key, keyPath)
+    },
+    handleOpen (key, keyPath) {
+      // console.log(key, keyPath)
+    },
+    handleClose (key, keyPath) {
+      // console.log(key, keyPath)
     },
     getQustionnair (index) {
       // 后端先判断该用户是否已填写此问卷，若已填写，则不能再填写，否则，后端返回问卷细节
