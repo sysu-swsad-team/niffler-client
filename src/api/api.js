@@ -39,11 +39,11 @@ export const getAllQN = params => {
 }
 
 export const getAllQNFilter = params => {
-  return axios.get('questionnaire/filter/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+  return axios.get(`questionnaire/task/?issuer=${params.issuer}&title=${params.title}`, params, header)
 }
 
 export const getQNDetail = params => {
-  return axios.get('questionnaire/detail/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+  return axios.get('questionnaire/detail/', params, header)
 }
 
 export const getMyQN = params => {

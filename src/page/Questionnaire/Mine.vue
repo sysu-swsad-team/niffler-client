@@ -131,7 +131,8 @@ export default {
       isCheck: false,
       isLookOver: false,
       answerList: { },
-      detailQN: { }
+      detailQN: { },
+      total: 0
     }
   },
   computed: {

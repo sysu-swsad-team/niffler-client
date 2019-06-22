@@ -27,21 +27,21 @@
             <el-input v-model="filters.title" placeholder="问卷标题"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="filters.sponsor" placeholder="问卷发起者"></el-input>
+            <el-input v-model="filters.issuer" placeholder="问卷发起者"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" class="el-icon-search" @click="getFilter"> 查询</el-button>
           </el-form-item>
         </el-form>
-        <el-button type="primary">刷新</el-button>
+        <el-button type="primary" @click="getQNList">刷新</el-button>
       </el-col>
       <el-table :data="questionnaireList" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;" stripe>
         <el-table-column type="index" width="50"></el-table-column>
         <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
-        <el-table-column prop="sponsor" label="发起者" width="150" sortable></el-table-column>
-        <el-table-column prop="maxNumber" label="剩余量" width="100" sortable></el-table-column>
+        <el-table-column prop="issuer" label="发起者" width="150" sortable></el-table-column>
+        <el-table-column prop="remaining_quota" label="剩余量" width="100" sortable></el-table-column>
         <el-table-column prop="fee" label="费用" width="80" sortable></el-table-column>
-        <el-table-column prop="dueDate" label="结束日期" width="150"></el-table-column>
+        <el-table-column prop="due_date" label="结束日期" width="150"></el-table-column>
         <el-table-column prop="tag" label="标签" width="100" :filters="[{ text: '商业', value: '商业' }, {text: '学校', value: '学校' }]" :filter-method="filterTag" filter-placement="bottom-end">
           <template slot-scope="scope">
             <el-tag :type="scope.row.tag === '商业' ? 'primary' : 'success'"
@@ -88,46 +88,26 @@ export default {
         {
           id: 0,
           title: '问卷1',
-          sponsor: '发起者1',
+          issuer: '发起者1',
           description: '问卷1描述',
-          maxNumber: 20,
+          remaining_quota: 20,
           fee: 10,
-          dueDate: '1111-1-1',
+          due_date: '1111-1-1',
           tag: '学校'
         }, {
           id: 1,
           title: '问卷2',
-          sponsor: '发起者2',
+          issuer: '发起者2',
           description: '问卷2描述',
-          maxNumber: 20,
+          remaining_quota: 20,
           fee: 10,
-          dueDate: '1111-1-1',
-          tag: '商业'
-        },
-        {
-          id: 3,
-          title: '问卷3',
-          sponsor: '发起者3',
-          description: '问卷3描述',
-          maxNumber: 10,
-          fee: 50,
-          dueDate: '1131-1-1',
-          tag: '学校'
-        },
-        {
-          id: 4,
-          title: '问卷4',
-          sponsor: '发起者2',
-          description: '问卷4描述',
-          maxNumber: 30,
-          fee: 4,
-          dueDate: '1131-1-1',
+          due_date: '1111-1-1',
           tag: '商业'
         }
       ],
       filters: {
         title: '',
-        sponsor: ''
+        issuer: ''
       },
       listLoading: false,
       sels: [],
@@ -144,22 +124,31 @@ export default {
   },
   methods: {
     getQNList () {
-      // let params = {
-      //   email: this.getInfo.email
-      // }
       getAllQN(null).then(res => {
-        console.log(res.data)
-        let { code, msg, questionnaires } = res.data
-        if (code === 200) {
-          this.questionnaireList = questionnaires
+        if (res.status === 200) {
+          console.log(res.data)
+          let { count, next, previous, results } = res.data
+          console.log('getAllQN', count, next, previous)
+          this.questionnaireList = results
+          for (var i = 0; i < this.questionnaireList.length; i++) {
+            this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
+          }
+          this.$message({
+            message: `获取问卷成功 ${res.status} ${res.statusText}`,
+            type: 'success'
+          })
         } else {
           this.$message({
-            message: '获取问卷失败' + msg,
+            message: `获取问卷失败 ${res.status} ${res.statusText}`,
             type: 'error'
           })
         }
       }).catch(err => {
         console.log(err)
+        this.$message({
+          message: '获取问卷失败 ' + err,
+          type: 'error'
+        })
       })
     },
     handleSelect (key, keyPath) {
@@ -173,23 +162,45 @@ export default {
     },
     getFilter () {
       // alert('查询条件' + this.filters)
-      let params = {
-        email: this.getInfo.email,
-        filters: this.filters
-      }
-      getAllQNFilter(params).then(res => {
-        console.log(res.data)
-        let { code, msg, questionnaires } = res.data
-        if (code === 200) {
-          this.questionnaireList = questionnaires
+      // let params = {
+      //   email: this.getInfo.email,
+      //   filters: this.filters
+      // }
+      getAllQNFilter(this.filters).then(res => {
+        if (res.status === 200) {
+          console.log(res.data)
+          let { count, next, previous, results } = res.data
+          console.log('getAllQN', count, next, previous)
+          this.questionnaireList = results
+          for (var i = 0; i < this.questionnaireList.length; i++) {
+            this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
+          }
+          this.$message({
+            message: `获取问卷成功 ${res.status} ${res.statusText}`,
+            type: 'success'
+          })
         } else {
           this.$message({
-            message: '获取问卷失败' + msg,
+            message: `获取问卷失败 ${res.status} ${res.statusText}`,
             type: 'error'
           })
         }
+        // console.log(res.data)
+        // let { code, msg, questionnaires } = res.data
+        // if (code === 200) {
+        //   this.questionnaireList = questionnaires
+        // } else {
+        //   this.$message({
+        //     message: '获取问卷失败' + msg,
+        //     type: 'error'
+        //   })
+        // }
       }).catch(err => {
         console.log(err)
+        this.$message({
+          message: '获取问卷失败 ' + err,
+          type: 'error'
+        })
       })
     },
     getQustionnair (index) {
@@ -201,7 +212,7 @@ export default {
       // this.isDetail = true
       // this.detailQN = this.questionnaireList[index]
       let params = {
-        email: this.getInfo.email,
+        // email: this.getInfo.email,
         id: this.questionnaireList[index].id
       }
       getQNDetail(params).then(res => {
