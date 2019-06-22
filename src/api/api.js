@@ -54,17 +54,13 @@ export const getMyQNFilter = params => {
   return axios.get('questionnaire/mine/filter', params, header)
 }
 
-export const deleteQN = params => {
-  return axios.post('/questionnaire/mine/delete/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
-}
-
 export const deleteBatchQN = params => {
-  return axios.post('questionnaire/mine/batchDelete/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+  return axios.post('questionnaire/mine/batchDelete/', header)
 }
 
 // errand
 export const summitErrand = params => {
-  return axios.post('errand/create/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+  return axios.post('errand/create/', params, header)
 }
 
 // export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }) }

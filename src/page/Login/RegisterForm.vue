@@ -195,7 +195,6 @@ export default {
           return false
         }
       })
-      
     },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {

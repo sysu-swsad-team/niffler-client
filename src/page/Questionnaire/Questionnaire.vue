@@ -142,28 +142,6 @@ export default {
       return this.$store.getters.getIsCollapse
     }
   },
-<<<<<<< HEAD
-=======
-  created: function () {
-    // let params = {
-    //   email: this.getInfo.email
-    // }
-    getAllQN(null).then(res => {
-      let { code, msg, questionnaires } = res.data
-      console.log(res.data)
-      if (code === 200) {
-        this.questionnaireList = questionnaires
-      } else {
-        this.$message({
-          message: '获取问卷失败' + msg,
-          type: 'error'
-        })
-      }
-    }).catch(err => {
-      console.log('getAllQN err:', err)
-    })
-  },
->>>>>>> d3613c1f5529089001c7ceb0a0cc4ee5388e8d67
   methods: {
     getQNList () {
       let params = {
