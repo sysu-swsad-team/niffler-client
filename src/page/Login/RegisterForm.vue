@@ -184,6 +184,8 @@ export default {
             type: 'error'
           })
         }
+      }).catch(err => {
+        console.log('postVercode err:', err)
       })
     },
     submitForm (formName) {
@@ -222,7 +224,7 @@ export default {
             }
             this.isLoading = false
           }).catch(err => {
-            console.log(err)
+            console.log('postRegister err:', err)
             this.isLoading = false
             return false
           })
