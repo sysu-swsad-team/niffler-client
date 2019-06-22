@@ -58,8 +58,6 @@
 </template>
 
 <script>
-/* Errand noun. 差使；差事
-a job that you do for sb that involves going somewhere to take a message, to buy sth, deliver goods, etc. */
 import PageHead from '../components/PageHead'
 import VueQr from 'vue-qr'
 export default {
