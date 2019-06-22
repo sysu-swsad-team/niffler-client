@@ -32,7 +32,7 @@ export const summitQN = params => {
 }
 
 export const getAllQN = params => {
-  return axios.get('questionnaire/', params, header)
+  return axios.get('questionnaire/task/', params, header)
 }
 
 export const getMyQN = params => {

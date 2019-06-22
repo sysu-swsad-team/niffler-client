@@ -33,6 +33,7 @@
             <el-button type="primary" class="el-icon-search" @click="getFilter"> 查询</el-button>
           </el-form-item>
         </el-form>
+        <el-button type="primary">刷新</el-button>
       </el-col>
       <el-table :data="questionnaireList" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;" stripe>
         <el-table-column type="index" width="50"></el-table-column>
@@ -142,10 +143,10 @@ export default {
     }
   },
   created: function () {
-    let params = {
-      email: this.getInfo.email
-    }
-    getAllQN(params).then(res => {
+    // let params = {
+    //   email: this.getInfo.email
+    // }
+    getAllQN(null).then(res => {
       let { code, msg, questionnaires } = res.data
       console.log(res.data)
       if (code === 200) {
@@ -157,7 +158,7 @@ export default {
         })
       }
     }).catch(err => {
-      console.log(err)
+      console.log('getAllQN err:', err)
     })
   },
   methods: {
