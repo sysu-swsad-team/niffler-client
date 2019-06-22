@@ -189,13 +189,16 @@ export default {
             }
           }).catch(err => {
             console.log('postVercode err:', err)
+            this.$message({
+              message: '验证码发送失败 ' + err,
+              type: 'error'
+            })
           })
         } else {
           console.log('getVercode error submit! errorMessage: ', errorMessage)
           return false
         }
       })
-      
     },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
@@ -234,6 +237,10 @@ export default {
             this.isLoading = false
           }).catch(err => {
             console.log('postRegister err:', err)
+            this.$message({
+              message: '注册失败 ' + err,
+              type: 'error'
+            })
             this.isLoading = false
             return false
           })
