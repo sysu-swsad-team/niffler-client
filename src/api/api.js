@@ -10,7 +10,7 @@ export const postLogin = params => {
 }
 
 export const deleteQN = params => {
-  return axios.post('/questionnaire/mine/delete', params)
+  return axios.post('/questionnaire/mine/delete/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
 }
 
 export const postRegister = params => {
@@ -22,11 +22,23 @@ export const postAvatar = params => {
 }
 
 export const postVercode = params => {
-  return axios.post('/questionnaire/register/vercode', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+  return axios.post('/questionnaire/register/vercode/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
 }
 
 export const summitQN = params => {
   return axios.post('questionnaire/create/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+}
+
+export const getAllQN = params => {
+  return axios.get('questionnaire/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+}
+
+export const getMyQN = params => {
+  return axios.get('questionnaire/mine/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+}
+
+export const getMyQNFilter = params => {
+  return axios.get('questionnaire/mine/filter', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
 }
 
 // export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }) }

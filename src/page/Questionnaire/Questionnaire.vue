@@ -36,7 +36,6 @@
       </el-col>
       <el-table :data="questionnaireList" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;" stripe>
         <el-table-column type="index" width="50"></el-table-column>
-        <el-table-column prop="id" label="ID" width="100" sortable></el-table-column>
         <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
         <el-table-column prop="sponsor" label="发起者" width="150" sortable></el-table-column>
         <el-table-column prop="maxNumber" label="剩余量" width="100" sortable></el-table-column>
@@ -80,6 +79,7 @@
 <script>
 import PageHead from '../components/PageHead'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
+import {getAllQN} from '../../api/api'
 export default {
   data () {
     return {
@@ -140,6 +140,25 @@ export default {
       // 返回./store/index.js中的全局变量
       return this.$store.getters.getIsCollapse
     }
+  },
+  created: function () {
+    let params = {
+      email: this.getInfo.email
+    }
+    getAllQN(params).then(res => {
+      let { code, msg, questionnaires } = res.data
+      console.log(res.data)
+      if (code === 200) {
+        this.questionnaireList = questionnaires
+      } else {
+        this.$message({
+          message: '获取问卷失败' + msg,
+          type: 'error'
+        })
+      }
+    }).catch(err => {
+      console.log(err)
+    })
   },
   methods: {
     handleSelect (key, keyPath) {

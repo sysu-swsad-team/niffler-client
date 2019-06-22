@@ -65,7 +65,7 @@
 <script>
 import EditQuestionair from '../components/EditQuestionair'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
-import {deleteQN} from '../../api/api'
+import {deleteQN, getMyQN, getMyQNFilter} from '../../api/api'
 export default {
   data () {
     return {
@@ -135,12 +135,52 @@ export default {
     isCollapse () {
       // 返回./store/index.js中的全局变量
       return this.$store.getters.getIsCollapse
+    },
+    getInfo () {
+      return this.$store.getters.getInfo
     }
+  },
+  created: function () {
+    let params = {
+      email: this.getInfo.email
+    }
+    getMyQN(params).then(res => {
+      let { code, msg, questionnaires } = res.data
+      console.log(res.data)
+      if (code === 200) {
+        this.questionnaireList = questionnaires
+      } else {
+        this.$message({
+          message: '获取问卷失败' + msg,
+          type: 'error'
+        })
+      }
+    }).catch(err => {
+      console.log(err)
+    })
   },
   methods: {
     getFilter () {
       // 从后端根据查询条件获取对应的问卷，放在questionnaireList中
-      alert('查询条件' + this.filters)
+      // alert('查询条件' + this.filters)
+      let params = {
+        email: this.getInfo.email,
+        filters: this.filters
+      }
+      getMyQNFilter(params).then(res => {
+        console.log(res.data)
+        let { code, msg, questionnaires } = res.data
+        if (code === 200) {
+          this.questionnaireList = questionnaires
+        } else {
+          this.$message({
+            message: '获取问卷失败' + msg,
+            type: 'error'
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     editQustionnair (index) {
       // 根据this.questionnaireList[index].id 从后端获取完整问卷，存放在editingQN中
@@ -155,7 +195,10 @@ export default {
       this.$confirm('确认删除该问卷吗？', '提示', {
         type: 'warning'
       }).then(() => {
-        let para = { id: this.questionnaireList[index].id }
+        let para = {
+          email: this.getInfo.email,
+          id: this.questionnaireList[index].id
+        }
         deleteQN(para).then((res) => {
           console.log(res.data)
           let { code, msg } = res.data
