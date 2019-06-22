@@ -142,20 +142,6 @@ export default {
   font-size: 0.8rem;
   letter-spacing: 0.1rem;
 }
-// button, button:hover, button:focus {
-//   padding: 0.80rem 2.75rem;
-//   outline: none;
-//   cursor: pointer;
-//   color: #fff;
-//   font-family: inherit;
-
-//   background: $color-primary;
-//   border: 0px solid currentColor;
-//   border-radius: 50px;
-//   text-transform: uppercase;
-//   font-size: 0.8rem;
-//   letter-spacing: 0.1rem;
-// }
 .link {
   text-align: center;
   padding: 10px;

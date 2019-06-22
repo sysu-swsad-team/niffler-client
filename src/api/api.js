@@ -7,12 +7,18 @@ axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
 
 // user info
+const header = {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+
 export const postLogin = params => {
-  return axios.post('/questionnaire/login/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+  return axios.post('/questionnaire/login/', params, header)
+}
+
+export const deleteQN = params => {
+  return axios.post('/questionnaire/mine/delete/', params, header)
 }
 
 export const postRegister = params => {
-  return axios.post('/questionnaire/register/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+  return axios.post('/questionnaire/register/', params, header)
 }
 
 export const postAvatar = params => {
@@ -20,16 +26,16 @@ export const postAvatar = params => {
 }
 
 export const postVercode = params => {
-  return axios.post('/questionnaire/register/vercode/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+  return axios.post('/questionnaire/register/vercode/', params, header)
 }
 
 // questionnaire
 export const summitQN = params => {
-  return axios.post('questionnaire/create/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+  return axios.post('questionnaire/create/', params, header)
 }
 
 export const getAllQN = params => {
-  return axios.get('questionnaire/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+  return axios.get('questionnaire/task/', params, header)
 }
 
 export const getAllQNFilter = params => {
@@ -41,11 +47,11 @@ export const getQNDetail = params => {
 }
 
 export const getMyQN = params => {
-  return axios.get('questionnaire/mine/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+  return axios.get('questionnaire/mine/', params, header)
 }
 
 export const getMyQNFilter = params => {
-  return axios.get('questionnaire/mine/filter/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+  return axios.get('questionnaire/mine/filter', params, header)
 }
 
 export const deleteQN = params => {
