@@ -279,36 +279,42 @@ export default {
     summitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.isLoading = true
-          console.log(this.getInfo.email)
-          let summitParams = {
-            email: this.getInfo.email,
-            title: this.ruleForm.title,
-            tag: this.ruleForm.tag,
-            description: this.ruleForm.description,
-            maxNumber: this.ruleForm.maxNumber,
-            fee: this.ruleForm.fee,
-            dueDate: this.ruleForm.dueDate,
-            questions: this.ruleForm.questions
-          }
-          summitQN(summitParams).then(res => {
-            let { code, msg } = res.data
-            if (code === 200) {
-              this.$message({
-                message: '问卷提交成功',
-                type: 'success'
-              })
-            } else {
-              this.$message({
-                message: '提交失败' + msg,
-                type: 'error'
-              })
+          this.$confirm('确定提交问卷吗？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'success'
+          }).then(() => {
+            this.isLoading = true
+            console.log(this.getInfo.email)
+            let summitParams = {
+              email: this.getInfo.email,
+              title: this.ruleForm.title,
+              tag: this.ruleForm.tag,
+              description: this.ruleForm.description,
+              maxNumber: this.ruleForm.maxNumber,
+              fee: this.ruleForm.fee,
+              dueDate: this.ruleForm.dueDate,
+              questions: this.ruleForm.questions
             }
-            this.isLoading = false
-          }).catch(err => {
-            console.log(err)
-            this.isLoading = false
-            return false
+            summitQN(summitParams).then(res => {
+              let { code, msg } = res.data
+              if (code === 200) {
+                this.$message({
+                  message: '问卷提交成功',
+                  type: 'success'
+                })
+              } else {
+                this.$message({
+                  message: '提交失败' + msg,
+                  type: 'error'
+                })
+              }
+              this.isLoading = false
+            }).catch(err => {
+              console.log(err)
+              this.isLoading = false
+              return false
+            })
           })
         } else {
           console.log('error submit')

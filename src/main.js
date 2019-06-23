@@ -6,7 +6,7 @@ import router from './router'
 import store from './vuex/store'
 import VueRouter from 'vue-router'
 import ElementUI from 'element-ui'
-import axios from 'axios'
+// import axios from 'axios'
 // import Mock from './mock/index'
 
 /* theme */
