@@ -299,7 +299,7 @@ export default {
       postAvatar(fd).then(res => {
         if (res.status === 200) {
           var profile = res.data.profile
-          profile.avatar = `${axios.defaults.baseURL}/questionnaire/${profile.avatar}`
+          profile.avatar = `${axios.defaults.baseURL}/${profile.avatar}`
           this.$store.dispatch('setUser', profile)
           this.dialogImageUrl = profile.avatar
         }

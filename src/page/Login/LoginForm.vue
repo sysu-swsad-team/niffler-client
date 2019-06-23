@@ -97,7 +97,7 @@ export default {
               var user = profile
               user.email = email
               user.name = name
-              user.avatar = `${axios.defaults.baseURL}/questionnaire/${user.avatar}`
+              user.avatar = `${axios.defaults.baseURL}/${user.avatar}`
               console.log('user', user)
               localStorage.setItem('user', JSON.stringify(user))
               // sessionStorage.setItem('user', JSON.stringify(user))

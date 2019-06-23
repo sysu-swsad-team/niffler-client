@@ -10,15 +10,15 @@ axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
 const header = {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
 
 export const postLogin = params => {
-  return axios.post('/questionnaire/login/', params, header)
+  return axios.post('/login/', params, header)
 }
 
 export const postRegister = params => {
-  return axios.post('/questionnaire/register/', params, header)
+  return axios.post('/register/', params, header)
 }
 
 export const postAvatar = params => {
-  return axios.post('/questionnaire/avatar/', params, {headers: {'Content-Type': 'image/jpeg'}})
+  return axios.post('/avatar/', params, {headers: {'Content-Type': 'image/jpeg'}})
 }
 
 export const postVercode = params => {
@@ -36,7 +36,6 @@ export const getAllQN = params => {
 
 export const getAllQNFilter = params => {
   var url = 'questionnaire/task/'
-  console.log('getAllQNFilter', url, params, params.title !== '', params.issuer !== '')
   if (params.title !== '' && params.issuer !== '') {
     url += `?title=${params.title}&issuer=${params.issuer}`
   } else {
