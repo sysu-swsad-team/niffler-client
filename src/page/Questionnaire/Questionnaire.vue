@@ -147,6 +147,7 @@ export default {
           this.questionnaireList = results
           for (var i = 0; i < this.questionnaireList.length; i++) {
             this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
+            this.questionnaireList[i].issuer = this.questionnaireList[i].issuer_first_name
           }
           this.$message({
             message: `获取问卷成功 ${res.status} ${res.statusText}`,

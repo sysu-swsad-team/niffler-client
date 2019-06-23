@@ -61,8 +61,8 @@ export const summitErrand = params => {
   return axios.post('errand/create/', params, header)
 }
 
-export const getErrand = params => {
-  return axios.get('errand/', params, header)
+export const queryErrand = params => {
+  return axios.get('errand/' + params, null, header)
 }
 /* ***************** end errand ***************** */
 

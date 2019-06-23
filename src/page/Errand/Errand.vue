@@ -27,10 +27,10 @@
             <el-input v-model="filters.title" placeholder="活动标题"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="filters.sponsor" placeholder="活动发起者"></el-input>
+            <el-input v-model="filters.issuer" placeholder="活动发起者"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="el-icon-search" @click="getFilter"> 查询</el-button>
+            <el-button type="primary" class="el-icon-search" @click="getErrandList"> 查询</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -38,7 +38,7 @@
         <el-table-column type="index" width="50"></el-table-column>
         <el-table-column prop="id" label="ID" width="100" sortable></el-table-column>
         <el-table-column prop="title" label="活动标题" width="200"></el-table-column>
-        <el-table-column prop="sponsor" label="发起者" width="150"></el-table-column>
+        <el-table-column prop="issuer" label="发起者" width="150"></el-table-column>
         <el-table-column prop="fee" label="报酬" width="80" sortable></el-table-column>
         <el-table-column prop="dueDate" label="结束时间" width="150"></el-table-column>
         <el-table-column prop="tag" label="类型" width="100" :filters="[{ text: '快递', value: '快递' }, {text: '外卖', value: '外卖' }]" :filter-method="filterTag" filter-placement="bottom-end">
@@ -67,21 +67,20 @@
 </template>
 
 <script>
-/* Errand noun. 差使；差事
-a job that you do for sb that involves going somewhere to take a message, to buy sth, deliver goods, etc. */
+import { queryErrand } from '../../api/api'
 import PageHead from '../components/PageHead'
 export default {
   data () {
     return {
       filters: {
         title: '',
-        sponsor: ''
+        issuer: ''
       },
       // 加载页面前从后端获取errandList，当前所有可接受活动（假设每个活动只能一个人接取）
       errandList: [{
         id: 0,
         title: '外卖1',
-        sponsor: '14',
+        issuer: '14',
         fee: 0.1,
         dueDate: '1123-2-2',
         tag: '外卖',
@@ -89,7 +88,7 @@ export default {
       }, {
         id: 1,
         title: '外卖2',
-        sponsor: '14',
+        issuer: '14',
         fee: 0.1,
         dueDate: '1123-2-2',
         tag: '外卖',
@@ -97,7 +96,7 @@ export default {
       }, {
         id: 3,
         title: '快递1',
-        sponsor: '14',
+        issuer: '14',
         fee: 0.1,
         dueDate: '1123-2-2',
         tag: '快递',
@@ -117,6 +116,50 @@ export default {
     }
   },
   methods: {
+    getErrandList () {
+      const queryParams = {
+        /* 去除所有空格 */
+        title: this.filters.title.replace(/\s*/g, ''),
+        issuer: this.filters.issuer.replace(/\s*/g, '')
+      }
+      var params = ''
+      if (queryParams.title !== '' && queryParams.issuer !== '') {
+        params += `?title=${queryParams.title}&issuer=${queryParams.issuer}`
+      } else {
+        if (queryParams.title !== '') {
+          params += `?title=${queryParams.title}`
+        } else if (queryParams.issuer !== '') {
+          params += `?issuer=${queryParams.issuer}`
+        }
+      }
+      console.log('queryErrand params:', params)
+      queryErrand(params).then(res => {
+        if (res.status === 200) {
+          console.log(res.data)
+          // let { count, next, previous, results } = res.data
+          // console.log('queryErrand', count, next, previous)
+          // this.questionnaireList = results
+          // for (var i = 0; i < this.questionnaireList.length; i++) {
+          //   this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
+          // }
+          this.$message({
+            message: `获取任务成功 ${res.status} ${res.statusText}`,
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: `获取任务失败 ${res.status} ${res.statusText}`,
+            type: 'error'
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$message({
+          message: '获取任务失败 ' + err,
+          type: 'error'
+        })
+      })
+    },
     handleSelect (key, keyPath) {
       // console.log(key, keyPath)
     },
@@ -127,9 +170,6 @@ export default {
       // console.log(key, keyPath)
     },
     handleCurrentChange () { },
-    getFilter () {
-      alert('查询条件' + this.filters)
-    },
     filterTag (value, row) {
       return row.tag === value
     },
