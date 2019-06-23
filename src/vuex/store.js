@@ -88,11 +88,13 @@ const actions = {
   },
   setInfo (context, payload) {
     context.commit('mutationsSetInfo', payload)
-    localStorage.setItem('user', JSON.stringify(this.getters.getUser))
+    console.log('setInfo', payload)
+    sessionStorage.setItem('user', JSON.stringify(this.getters.getUser))
   },
   setUser (context, user) {
     context.commit('mutationsSetUser', user)
-    localStorage.setItem('user', JSON.stringify(this.getters.getUser))
+    console.log('setUser', user)
+    sessionStorage.setItem('user', JSON.stringify(this.getters.getUser))
   }
 }
 

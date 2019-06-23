@@ -99,7 +99,7 @@ export default {
               user.name = name
               user.avatar = `${axios.defaults.baseURL}/${user.avatar}`
               console.log('user', user)
-              localStorage.setItem('user', JSON.stringify(user))
+              sessionStorage.setItem('user', JSON.stringify(user))
               // sessionStorage.setItem('user', JSON.stringify(user))
               this.$store.dispatch('setUser', user)
               this.$router.push({ path: '/' })

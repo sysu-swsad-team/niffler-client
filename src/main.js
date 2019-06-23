@@ -12,7 +12,6 @@ import axios from 'axios'
 /* theme */
 // import 'element-ui/lib/theme-chalk/index.css'
 import '../src/assets/theme/element-#1D365D/index.css'
-
 /* font-awesome */
 import 'font-awesome/css/font-awesome.min.css'
 
@@ -25,27 +24,34 @@ Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
 // Mock.init()
-// Vue.use(store)
+
+axios.defaults.baseURL = 'http://127.0.0.1:8000'
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+axios.defaults.withCredentials = true
 
 Vue.config.productionTip = false
-process.env.MOCK && require('@/mock')
 
 /* eslint-disable no-new */
 router.beforeEach((to, from, next) => {
-  /* 若返回登录界面，则清除localStorage数据 */
+  console.log(this.$cookies)
+  /* 若返回登录界面，则清除sessionStorage数据 */
   if (to.path === '/login') {
-    localStorage.removeItem('user')
+    sessionStorage.clear()
+    console.log('CLEAR!')
   }
 
-  /* 在localStorage中提取user */
-  let user = JSON.parse(localStorage.getItem('user'))
-  store.dispatch('setUser', user)
-  console.log(user, to.path)
+  /* 在sessionStorage中提取user */
+  let user = JSON.parse(sessionStorage.getItem('user'))
+  console.log(user, to.path, sessionStorage.getItem('token'))
 
-  /* 若localStorage中没有user，则跳至login页面 */
+  /* 若sessionStorage中没有user，则跳至login页面 */
   if (!user && to.path !== '/login') {
     next({ path: '/login' })
   } else {
+    if (user) {
+      store.dispatch('setUser', user)
+    }
     if (to.path === '/') {
       next({ path: '/home' })
     } else {
@@ -56,13 +62,13 @@ router.beforeEach((to, from, next) => {
 
 axios.interceptors.response.use(
   response => {
-    console.log('axios.interceptors.response', response)
-    console.log('axios.interceptors.response', document.cookie)
+    sessionStorage.setItem('token', JSON.stringify(document.cookie))
+    console.log('axios.interceptors.response cookie', document.cookie)
     return response
   },
   error => {
     console.log('axios.interceptors.response', error)
-    return Promise.reject(error.response)
+    return Promise.reject(error)
   }
 )
 
