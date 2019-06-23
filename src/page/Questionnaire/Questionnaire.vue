@@ -41,7 +41,7 @@
         <el-table-column prop="issuer" label="发起者" width="150" sortable></el-table-column>
         <el-table-column prop="remaining_quota" label="剩余量" width="100" sortable></el-table-column>
         <el-table-column prop="fee" label="费用" width="80" sortable></el-table-column>
-        <el-table-column prop="due_date" label="结束日期" width="150" sortable></el-table-column>
+        <el-table-column prop="due_date" label="结束日期" width="200" sortable></el-table-column>
         <el-table-column prop="tag" label="标签" width="100" :filters="[{ text: '商业', value: '商业' }, {text: '学校', value: '学校' }]" :filter-method="filterTag" filter-placement="bottom-end">
           <template slot-scope="scope">
             <el-tag :type="scope.row.tag === '商业' ? 'primary' : 'success'"
@@ -153,13 +153,6 @@ export default {
     },
     getFilter () {
       console.log(this.filters)
-      if (this.filters.title === '' || this.filters.issuer === '') {
-        this.$message({
-          message: '获取问卷成功',
-          type: 'success'
-        })
-        return
-      }
       getAllQNFilter(this.filters).then(res => {
         if (res.status === 200) {
           console.log(res.data)
