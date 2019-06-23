@@ -6,13 +6,13 @@ import router from './router'
 import store from './vuex/store'
 import VueRouter from 'vue-router'
 import ElementUI from 'element-ui'
-// import axios from 'axios'
+import axios from 'axios'
+import utils from './utils'
 // import Mock from './mock/index'
 
 /* theme */
 // import 'element-ui/lib/theme-chalk/index.css'
 import '../src/assets/theme/element-#1D365D/index.css'
-/* font-awesome */
 import 'font-awesome/css/font-awesome.min.css'
 
 /* bootstrap */
@@ -24,17 +24,28 @@ Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
 // Mock.init()
+Vue.config.productionTip = false
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000'
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
 axios.defaults.withCredentials = true
-
-Vue.config.productionTip = false
+axios.interceptors.response.use(
+  response => {
+    sessionStorage.setItem('csrftoken', JSON.stringify(utils.getCookie('csrftoken')))
+    sessionStorage.setItem('sessionid', JSON.stringify(utils.getCookie('sessionid')))
+    console.log('axios.interceptors.response csrftoken:', utils.getCookie('csrftoken'))
+    console.log('axios.interceptors.response sessionid:', utils.getCookie('sessionid'))
+    return response
+  },
+  error => {
+    console.log('axios.interceptors.response', error)
+    return Promise.reject(error)
+  }
+)
 
 /* eslint-disable no-new */
 router.beforeEach((to, from, next) => {
-  console.log(this.$cookies)
   /* 若返回登录界面，则清除sessionStorage数据 */
   if (to.path === '/login') {
     sessionStorage.clear()
@@ -59,18 +70,6 @@ router.beforeEach((to, from, next) => {
     }
   }
 })
-
-axios.interceptors.response.use(
-  response => {
-    sessionStorage.setItem('token', JSON.stringify(document.cookie))
-    console.log('axios.interceptors.response cookie', document.cookie)
-    return response
-  },
-  error => {
-    console.log('axios.interceptors.response', error)
-    return Promise.reject(error)
-  }
-)
 
 new Vue({
   el: '#app',

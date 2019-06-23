@@ -119,10 +119,9 @@ export default {
           params += `?issuer=${queryParams.issuer}`
         }
       }
-      console.log('queryQN', params)
       queryQN(params).then(res => {
         if (res.status === 200) {
-          console.log(res.data)
+          // console.log(res.data)
           let { count, next, previous, results } = res.data
           console.log('queryQN', count, next, previous)
           this.questionnaireList = results

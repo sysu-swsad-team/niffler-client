@@ -70,7 +70,6 @@ const mutations = {
     state.isCollapse = !state.isCollapse
   },
   mutationsSetInfo (state, payload) {
-    console.log('mutationsSetInfo', payload['itemName'], payload['itemValue'])
     state[payload['itemName']] = payload['itemValue']
   },
   mutationsSetUser (state, user) {
@@ -88,12 +87,10 @@ const actions = {
   },
   setInfo (context, payload) {
     context.commit('mutationsSetInfo', payload)
-    console.log('setInfo', payload)
     sessionStorage.setItem('user', JSON.stringify(this.getters.getUser))
   },
   setUser (context, user) {
     context.commit('mutationsSetUser', user)
-    console.log('setUser', user)
     sessionStorage.setItem('user', JSON.stringify(this.getters.getUser))
   }
 }
