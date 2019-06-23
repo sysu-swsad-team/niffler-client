@@ -35,7 +35,19 @@ export const getAllQN = params => {
 }
 
 export const getAllQNFilter = params => {
-  return axios.get(`questionnaire/task/?issuer=${params.issuer}&title=${params.title}`, params, header)
+  var url = 'questionnaire/task/'
+  console.log('getAllQNFilter', url, params, params.title !== '', params.issuer !== '')
+  if (params.title !== '' && params.issuer !== '') {
+    url += `?title=${params.title}&issuer=${params.issuer}`
+  } else {
+    if (params.title !== '') {
+      url += `?title=${params.title}`
+    } else if (params.issuer !== '') {
+      url += `?issuer=${params.issuer}`
+    }
+  }
+  console.log('getAllQNFilter', url)
+  return axios.get(url, params, header)
 }
 
 export const getQNDetail = params => {

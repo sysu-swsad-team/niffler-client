@@ -152,15 +152,12 @@ export default {
       })
     },
     getFilter () {
-      console.log(this.filters)
-      if (this.filters.title === '' || this.filters.issuer === '') {
-        this.$message({
-          message: '获取问卷成功',
-          type: 'success'
-        })
-        return
+      let params = {
+        /* 去除所有空格 */
+        title: this.filters.title.replace(/\s*/g, ''),
+        issuer: this.filters.issuer.replace(/\s*/g, '')
       }
-      getAllQNFilter(this.filters).then(res => {
+      getAllQNFilter(params).then(res => {
         if (res.status === 200) {
           console.log(res.data)
           let { count, next, previous, results } = res.data
