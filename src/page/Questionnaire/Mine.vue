@@ -8,7 +8,7 @@
             <el-input v-model="filters.title" placeholder="问卷标题"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="el-icon-search" @click="getFilter"> 查询</el-button>
+            <el-button type="primary" class="el-icon-search" @click="getQNList"> 查询</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -148,23 +148,42 @@ export default {
   methods: {
     getQNList () {
       this.listLoading = true
-      let params = {
-        email: this.getInfo.email
+      const queryParams = {
+        /* 去除所有空格 */
+        title: this.filters.title.replace(/\s*/g, '')
       }
+      var params = ''
+      if (queryParams.title !== '') {
+        params += `?title=${queryParams.title}`
+      }
+      console.log('queryQN', params)
       getMyQN(params).then(res => {
-        let { code, msg, questionnaires } = res.data
-        console.log(res.data)
-        if (code === 200) {
-          this.questionnaireList = questionnaires
+        if (res.status === 200) {
+          console.log(res.data)
+          let { count, next, previous, results } = res.data
+          console.log('queryQN', count, next, previous)
+          this.questionnaireList = results
+          for (var i = 0; i < this.questionnaireList.length; i++) {
+            this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
+          }
+          this.$message({
+            message: `获取问卷成功 ${res.status} ${res.statusText}`,
+            type: 'success'
+          })
+          this.listLoading = false
         } else {
           this.$message({
-            message: '获取问卷失败' + msg,
+            message: `获取问卷失败 ${res.status} ${res.statusText}`,
             type: 'error'
           })
+          this.listLoading = false
         }
-        this.listLoading = false
       }).catch(err => {
         console.log(err)
+        this.$message({
+          message: '获取问卷失败 ' + err,
+          type: 'error'
+        })
         this.listLoading = false
       })
     },
@@ -331,6 +350,9 @@ export default {
         console.log(err)
       })
     }
+  },
+  mouted () {
+    this.getQNList()
   },
   components: {
     EditQuestionair,
