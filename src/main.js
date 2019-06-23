@@ -43,6 +43,16 @@ axios.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+axios.interceptors.request.use((config) => {
+  if (sessionStorage.getItem('csrftoken')) {
+    /* 在头部设置token */
+    config.headers['X-CSRFToken'] = sessionStorage.getItem('csrftoken')
+  }
+  return config
+}, (error) => {
+  console.log(error)
+  return Promise.reject(error)
+})
 
 /* eslint-disable no-new */
 router.beforeEach((to, from, next) => {
