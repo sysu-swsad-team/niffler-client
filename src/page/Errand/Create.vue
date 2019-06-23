@@ -94,30 +94,36 @@ export default {
     summitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.isLoading = true
-          console.log(this.getInfo.email)
-          let summitParams = {
-            email: this.getInfo.email,
-            title: this.ruleForm.title,
-            tag: this.ruleForm.tag,
-            description: this.ruleForm.description,
-            fee: this.ruleForm.fee,
-            dueDate: this.ruleForm.dueDate
-          }
-          summitErrand(summitParams).then(res => {
-            console.log(res.data)
-            let { code, msg } = res.data
-            if (code === 200) {
-              this.$message({
-                message: '提交成功',
-                type: 'success'
-              })
-            } else {
-              this.$message({
-                message: '提交失败' + msg,
-                type: 'error'
-              })
+          this.$confirm('确定提交该任务吗？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'success'
+          }).then(() => {
+            this.isLoading = true
+            console.log(this.getInfo.email)
+            let summitParams = {
+              // email: this.getInfo.email,
+              title: this.ruleForm.title,
+              tag: this.ruleForm.tag,
+              description: this.ruleForm.description,
+              fee: this.ruleForm.fee,
+              dueDate: this.ruleForm.dueDate
             }
+            summitErrand(summitParams).then(res => {
+              console.log(res.data)
+              let { code, msg } = res.data
+              if (code === 200) {
+                this.$message({
+                  message: '提交成功',
+                  type: 'success'
+                })
+              } else {
+                this.$message({
+                  message: '提交失败' + msg,
+                  type: 'error'
+                })
+              }
+            })
           })
         }
       })

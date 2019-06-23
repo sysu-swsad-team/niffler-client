@@ -34,7 +34,7 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-table :data="questionnaireList" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;" stripe>
+      <el-table :data="questionnaireList" highlight-current-row v-loading="listLoading" element-loading-text="玩命加载中，请稍等..." element-loading-spinner="el-icon-loading" @selection-change="selsChange" style="width: 100%;" stripe >
         <el-table-column type="index" width="50"></el-table-column>
         <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
         <el-table-column prop="issuer" label="发起者" width="150" sortable></el-table-column>
@@ -83,27 +83,7 @@ import {queryQN, getQNDetail} from '../../api/api'
 export default {
   data () {
     return {
-      questionnaireList: [
-        {
-          id: 0,
-          title: '问卷1',
-          issuer: '发起者1',
-          description: '问卷1描述',
-          remaining_quota: 20,
-          fee: 10,
-          due_date: '1111-1-1',
-          tag: '学校'
-        }, {
-          id: 1,
-          title: '问卷2',
-          issuer: '发起者2',
-          description: '问卷2描述',
-          remaining_quota: 20,
-          fee: 10,
-          due_date: '1111-1-1',
-          tag: '商业'
-        }
-      ],
+      questionnaireList: [ ],
       filters: {
         title: '',
         issuer: ''
@@ -123,6 +103,7 @@ export default {
   },
   methods: {
     getQNList () {
+      this.listLoading = true
       const queryParams = {
         /* 去除所有空格 */
         title: this.filters.title.replace(/\s*/g, ''),
@@ -153,11 +134,13 @@ export default {
             message: `获取问卷成功 ${res.status} ${res.statusText}`,
             type: 'success'
           })
+          this.listLoading = false
         } else {
           this.$message({
             message: `获取问卷失败 ${res.status} ${res.statusText}`,
             type: 'error'
           })
+          this.listLoading = false
         }
       }).catch(err => {
         console.log(err)
@@ -165,6 +148,7 @@ export default {
           message: '获取问卷失败 ' + err,
           type: 'error'
         })
+        this.listLoading = false
       })
     },
     handleSelect (key, keyPath) {

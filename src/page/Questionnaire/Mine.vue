@@ -12,7 +12,7 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-table :data="questionnaireList" highlight-current-row @selection-change="selsChange" style="width: 100%;" stripe @row-click="lookOverQN">
+      <el-table :data="questionnaireList" highlight-current-row @selection-change="selsChange" style="width: 100%;" stripe @row-click="lookOverQN" v-loading="listLoading" element-loading-spinner="el-icon-loading">
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column type="index" width="50"></el-table-column>
@@ -132,7 +132,8 @@ export default {
       isLookOver: false,
       answerList: { },
       detailQN: { },
-      total: 0
+      total: 0,
+      listLoading: false
     }
   },
   computed: {
@@ -146,6 +147,7 @@ export default {
   },
   methods: {
     getQNList () {
+      this.listLoading = true
       let params = {
         email: this.getInfo.email
       }
@@ -160,8 +162,10 @@ export default {
             type: 'error'
           })
         }
+        this.listLoading = false
       }).catch(err => {
         console.log(err)
+        this.listLoading = false
       })
     },
     handleCurrentChange (val) {

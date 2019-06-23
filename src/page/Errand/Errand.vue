@@ -34,7 +34,7 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-table :data="errandList" highlight-current-row v-loading="listLoading" style="width: 100%;" stripe>
+      <el-table :data="errandList" highlight-current-row v-loading="listLoading" element-loading-text="玩命加载中，请稍等..." element-loading-spinner="el-icon-loading" style="width: 100%;" stripe>
         <el-table-column type="index" width="50"></el-table-column>
         <el-table-column prop="id" label="ID" width="100" sortable></el-table-column>
         <el-table-column prop="title" label="活动标题" width="200"></el-table-column>
@@ -117,6 +117,7 @@ export default {
   },
   methods: {
     getErrandList () {
+      this.listLoading = true
       const queryParams = {
         /* 去除所有空格 */
         title: this.filters.title.replace(/\s*/g, ''),
@@ -146,11 +147,13 @@ export default {
             message: `获取任务成功 ${res.status} ${res.statusText}`,
             type: 'success'
           })
+          this.listLoading = false
         } else {
           this.$message({
             message: `获取任务失败 ${res.status} ${res.statusText}`,
             type: 'error'
           })
+          this.listLoading = false
         }
       }).catch(err => {
         console.log(err)
@@ -158,6 +161,7 @@ export default {
           message: '获取任务失败 ' + err,
           type: 'error'
         })
+        this.listLoading = false
       })
     },
     handleSelect (key, keyPath) {
