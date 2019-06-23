@@ -6,7 +6,7 @@ import router from './router'
 import store from './vuex/store'
 import VueRouter from 'vue-router'
 import ElementUI from 'element-ui'
-// import axios from 'axios'
+import axios from 'axios'
 // import Mock from './mock/index'
 
 /* theme */
@@ -52,21 +52,19 @@ router.beforeEach((to, from, next) => {
       next()
     }
   }
-  // console.log(store.getters.getIsAuth, to.path)
-  // if (!store.getters.getIsAuth && to.path !== '/login' && to.path !== '/register') {
-  //   next({
-  //     path: '/login'
-  //   })
-  // } else {
-  //   if (to.path === '/') {
-  //     next({
-  //       path: '/home'
-  //     })
-  //   } else {
-  //     next()
-  //   }
-  // }
 })
+
+axios.interceptors.response.use(
+  response => {
+    console.log('axios.interceptors.response', response)
+    console.log('axios.interceptors.response', document.cookie)
+    return response
+  },
+  error => {
+    console.log('axios.interceptors.response', error)
+    return Promise.reject(error.response)
+  }
+)
 
 new Vue({
   el: '#app',
