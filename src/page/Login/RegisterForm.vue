@@ -43,8 +43,11 @@
         <el-input v-model="ruleForm.email" placeholder="请输入您的邮箱"></el-input>
       </el-form-item>
       <el-form-item label="验证码" prop="verCode">
-        <el-input v-model="ruleForm.verCode" style="width: 56%;" placeholder="验证码"></el-input>
-        <el-button type="primary" style="width: 42%; font-size: 12px; letter-spacing: 0px;" @click="getVercode" :disabled="verDisable">{{ verBtnText }}</el-button>
+        <el-input v-model="ruleForm.verCode" style="width: 46%;" placeholder="验证码"></el-input>
+        <el-button type="primary" style="width: 52%; font-size: 12px; letter-spacing: 0px;"
+        @click="getVercode"
+        :loading="isRequestVercodeLoading"
+        :disabled="verDisable">{{ verBtnText }}</el-button>
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="ruleForm.password" show-password placeholder="请输入密码"></el-input>
@@ -63,7 +66,7 @@
 
 <script>
 /* 引入api */
-import {postRegister, postVercode} from '../../api/api'
+import {postRegister, requestSendVercode} from '../../api/api'
 
 export default {
   data () {
@@ -92,6 +95,7 @@ export default {
     }
     return {
       isLoading: false,
+      isRequestVercodeLoading: false,
       ruleForm: {
         name: '',
         stuId: '',
@@ -151,6 +155,7 @@ export default {
       let _wait = wait
       if (wait === 0) {
         this.verDisable = false
+        this.isRequestVercodeLoading = false
         this.verBtnText = '获取验证码'
         wait = _wait
       } else {
@@ -166,33 +171,27 @@ export default {
       /* 验证email字段 */
       this.$refs.ruleForm.validateField('email', (errorMessage) => {
         if (errorMessage === '') {
-          let verEmail = {
-            email: this.ruleForm.email
-          }
-          console.log(verEmail)
-          postVercode(verEmail).then(res => {
-            console.log(res.data)
-            let { code, msg } = res.data
-            if (code === 200) {
-              // 验证码发送成功
-              this.$message({
-                message: '验证码已发送 ' + msg,
-                type: 'success'
-              })
-              this.getSeconds(60)
-            } else {
-              // 验证码发送失败
-              this.$message({
-                message: '验证码发送失败 ' + msg,
-                type: 'error'
-              })
-            }
-          }).catch(err => {
-            console.log('postVercode err:', err)
+          this.isLoading = true
+          this.isRequestVercodeLoading = true
+          var params = `?email=${this.ruleForm.email}`
+          console.log('verEmail', params)
+          requestSendVercode(params).then(res => {
+            console.log(res)
             this.$message({
-              message: '验证码发送失败 ' + err,
+              message: `${res.data.msg} ${res.status} ${res.statusText} `,
+              type: res.status === 200 ? 'success' : 'error'
+            })
+            // this.getSeconds(5)
+            this.isRequestVercodeLoading = false
+            this.isLoading = false
+          }).catch(err => {
+            console.log('requestSendVercode err:', err)
+            this.$message({
+              message: 'F验证码发送失败 ' + err,
               type: 'error'
             })
+            this.isRequestVercodeLoading = false
+            this.isLoading = false
           })
         } else {
           console.log('getVercode error submit! errorMessage: ', errorMessage)
@@ -200,6 +199,44 @@ export default {
         }
       })
     },
+    // getVercode () {
+    //   /* 验证email字段 */
+    //   this.$refs.ruleForm.validateField('email', (errorMessage) => {
+    //     if (errorMessage === '') {
+    //       let verEmail = {
+    //         email: this.ruleForm.email
+    //       }
+    //       console.log(verEmail)
+    //       postVercode(verEmail).then(res => {
+    //         console.log(res.data)
+    //         let { code, msg } = res.data
+    //         if (code === 200) {
+    //           // 验证码发送成功
+    //           this.$message({
+    //             message: '验证码已发送 ' + msg,
+    //             type: 'success'
+    //           })
+    //           this.getSeconds(60)
+    //         } else {
+    //           // 验证码发送失败
+    //           this.$message({
+    //             message: '验证码发送失败 ' + msg,
+    //             type: 'error'
+    //           })
+    //         }
+    //       }).catch(err => {
+    //         console.log('postVercode err:', err)
+    //         this.$message({
+    //           message: '验证码发送失败 ' + err,
+    //           type: 'error'
+    //         })
+    //       })
+    //     } else {
+    //       console.log('getVercode error submit! errorMessage: ', errorMessage)
+    //       return false
+    //     }
+    //   })
+    // },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -268,7 +305,7 @@ button, button:hover, button:focus {
   background: $color-primary;
   border: 1px solid currentColor;
   border-radius: 50px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   font-size: 0.8rem;
   letter-spacing: 0.1rem;
 }

@@ -18,6 +18,11 @@ export const postAvatar = params => {
   return axios.post('avatar/', params, {headers: {'Content-Type': 'image/jpeg'}})
 }
 
+/* 点击获取验证码按钮，请求后端发送验证码到邮箱 */
+export const requestSendVercode = params => {
+  return axios.get('register/' + params, null, header)
+}
+
 export const postVercode = params => {
   return axios.post('questionnaire/register/vercode/', params, header)
 }
