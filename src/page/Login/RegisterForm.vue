@@ -78,14 +78,14 @@ export default {
         callback()
       }
     }
-    let validVarCode = (rule, value, callback) => {
-      let reg = /[0-9]{6}/
-      if (!reg.test(value)) {
-        callback(new Error('验证码应为6位数字'))
-      } else {
-        callback()
-      }
-    }
+    // let validVarCode = (rule, value, callback) => {
+    //   let reg = /[0-9]{6}/
+    //   if (!reg.test(value)) {
+    //     callback(new Error('验证码应为6位数字'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     let validPassword = (rule, value, callback) => {
       if (value !== this.ruleForm.password) {
         callback(new Error('两次密码应一样'))
@@ -133,8 +133,7 @@ export default {
           { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
         ],
         verCode: [
-          { required: true, message: '请输入验证码', trigger: 'blur' },
-          { validator: validVarCode, trigger: 'blur' }
+          { required: true, message: '请输入验证码', trigger: 'blur' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -176,11 +175,23 @@ export default {
           var params = `?email=${this.ruleForm.email}`
           console.log('verEmail', params)
           requestSendVercode(params).then(res => {
-            console.log(res)
-            this.$message({
-              message: `${res.data.msg} ${res.status} ${res.statusText} `,
-              type: res.status === 200 ? 'success' : 'error'
-            })
+            console.log('requestSendVercode res:', res)
+            if (res.status === 200) {
+              this.$message({
+                message: `${res.data.msg} ${res.status} ${res.statusText} `,
+                type: res.status === 200 ? 'success' : 'error'
+              })
+            } else if (res.status <= 300) {
+              this.$message({
+                message: `${res.data.msg} ${res.status} ${res.statusText} `,
+                type: res.status === 200 ? 'success' : 'error'
+              })
+            } else {
+              this.$message({
+                message: `1F ${res.status} ${res.statusText} `,
+                type: res.status === 200 ? 'success' : 'error'
+              })
+            }
             // this.getSeconds(5)
             this.isRequestVercodeLoading = false
             this.isLoading = false

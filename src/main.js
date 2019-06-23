@@ -45,9 +45,9 @@ axios.interceptors.response.use(
   }
 )
 axios.interceptors.request.use((config) => {
-  if (sessionStorage.getItem('csrftoken')) {
+  if (utils.getCookie('csrftoken')) {
     /* 在头部设置token */
-    config.headers['X-CSRFToken'] = sessionStorage.getItem('csrftoken')
+    config.headers['X-CSRFToken'] = utils.getCookie('csrftoken')
   }
   return config
 }, (error) => {
