@@ -30,9 +30,8 @@
             <el-input v-model="filters.issuer" placeholder="问卷发起者"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="el-icon-search" @click="getFilter"> 查询</el-button>
+            <el-button type="primary" class="el-icon-search" @click="getQNList"> 查询</el-button>
           </el-form-item>
-          <el-button type="primary" @click="getQNList">刷新</el-button>
         </el-form>
       </el-col>
       <el-table :data="questionnaireList" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;" stripe>
@@ -80,7 +79,7 @@
 <script>
 import PageHead from '../components/PageHead'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
-import {getAllQN, getAllQNFilter, getQNDetail} from '../../api/api'
+import {queryQN, getQNDetail} from '../../api/api'
 export default {
   data () {
     return {
@@ -124,44 +123,27 @@ export default {
   },
   methods: {
     getQNList () {
-      getAllQN(null).then(res => {
-        if (res.status === 200) {
-          console.log(res.data)
-          let { count, next, previous, results } = res.data
-          console.log('getAllQN', count, next, previous)
-          this.questionnaireList = results
-          for (var i = 0; i < this.questionnaireList.length; i++) {
-            this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
-          }
-          this.$message({
-            message: `获取问卷成功 ${res.status} ${res.statusText}`,
-            type: 'success'
-          })
-        } else {
-          this.$message({
-            message: `获取问卷失败 ${res.status} ${res.statusText}`,
-            type: 'error'
-          })
-        }
-      }).catch(err => {
-        console.log(err)
-        this.$message({
-          message: '获取问卷失败 ' + err,
-          type: 'error'
-        })
-      })
-    },
-    getFilter () {
-      let params = {
+      const queryParams = {
         /* 去除所有空格 */
         title: this.filters.title.replace(/\s*/g, ''),
         issuer: this.filters.issuer.replace(/\s*/g, '')
       }
-      getAllQNFilter(params).then(res => {
+      var params = ''
+      if (queryParams.title !== '' && queryParams.issuer !== '') {
+        params += `?title=${queryParams.title}&issuer=${queryParams.issuer}`
+      } else {
+        if (queryParams.title !== '') {
+          params += `?title=${queryParams.title}`
+        } else if (queryParams.issuer !== '') {
+          params += `?issuer=${queryParams.issuer}`
+        }
+      }
+      console.log('queryQN', params)
+      queryQN(params).then(res => {
         if (res.status === 200) {
           console.log(res.data)
           let { count, next, previous, results } = res.data
-          console.log('getAllQN', count, next, previous)
+          console.log('queryQN', count, next, previous)
           this.questionnaireList = results
           for (var i = 0; i < this.questionnaireList.length; i++) {
             this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()

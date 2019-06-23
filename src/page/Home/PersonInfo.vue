@@ -122,7 +122,6 @@
 
 <script>
 /* 引入api */
-// import {postAvatar} from '../../api/api'
 import axios from 'axios'
 import { postAvatar } from '../../api/api'
 
