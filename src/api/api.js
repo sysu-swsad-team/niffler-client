@@ -13,10 +13,6 @@ export const postLogin = params => {
   return axios.post('/questionnaire/login/', params, header)
 }
 
-export const deleteQN = params => {
-  return axios.post('/questionnaire/mine/delete/', params, header)
-}
-
 export const postRegister = params => {
   return axios.post('/questionnaire/register/', params, header)
 }
@@ -56,6 +52,10 @@ export const getMyQNFilter = params => {
 
 export const deleteBatchQN = params => {
   return axios.post('questionnaire/mine/batchDelete/', header)
+}
+
+export const deleteQN = params => {
+  return axios.post('/questionnaire/mine/delete/', params, header)
 }
 
 // errand
