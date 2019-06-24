@@ -71,21 +71,22 @@ import {postRegister, requestSendVercode} from '../../api/api'
 export default {
   data () {
     let validID = (rule, value, callback) => {
-      let reg = /[0-9]{8}/
+      /* reg应该加开始符号和结束符号 */
+      let reg = /^[0-9]{8}$/
       if (!reg.test(value)) {
         callback(new Error('学号必须是由8位数字组成'))
       } else {
         callback()
       }
     }
-    // let validVarCode = (rule, value, callback) => {
-    //   let reg = /[0-9]{6}/
-    //   if (!reg.test(value)) {
-    //     callback(new Error('验证码应为6位数字'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
+    let validVarCode = (rule, value, callback) => {
+      let reg = /^[0-9a-zA-z]{6}$/
+      if (!reg.test(value)) {
+        callback(new Error('验证码应为6位字符'))
+      } else {
+        callback()
+      }
+    }
     let validPassword = (rule, value, callback) => {
       if (value !== this.ruleForm.password) {
         callback(new Error('两次密码应一样'))
@@ -133,7 +134,8 @@ export default {
           { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
         ],
         verCode: [
-          { required: true, message: '请输入验证码', trigger: 'blur' }
+          { required: true, message: '请输入验证码', trigger: 'change' },
+          { validator: validVarCode, trigger: 'change' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
