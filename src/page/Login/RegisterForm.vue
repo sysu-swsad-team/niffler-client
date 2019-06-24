@@ -254,6 +254,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.isLoading = true
+          this.isRequestVercodeLoading = true
           let registerParams = {
             name: this.ruleForm.name,
             stuId: this.ruleForm.stuId,
@@ -261,37 +262,42 @@ export default {
             sex: this.ruleForm.sex,
             grade: this.ruleForm.grade,
             major: this.ruleForm.major,
+            code: this.ruleForm.verCode,
             email: this.ruleForm.email,
             password: this.ruleForm.password
           }
           console.log('registerParams', registerParams)
           /* 调用axios注册接口 */
           postRegister(registerParams).then(res => {
-            console.log(res.data)
-            let { code, msg } = res.data
-            if (code === 200) {
-              // 注册成功
+            console.log('postRegister res:', res.data)
+            if (res.status === 200) {
               this.$message({
-                message: '注册成功 ' + msg,
-                type: 'success'
+                message: `${res.data.msg} ${res.status} ${res.statusText} `,
+                type: res.status === 200 ? 'success' : 'error'
               })
               // 调用父组件Login.vue的方法slide，滑动到登录界面
               this.$parent.slide()
-            } else {
-              // 注册失败，弹出element-ui中的提示组件
+            } else if (res.status <= 300) {
               this.$message({
-                message: '注册失败 ' + msg,
-                type: 'error'
+                message: `${res.data.msg} ${res.status} ${res.statusText} `,
+                type: res.status === 200 ? 'success' : 'error'
+              })
+            } else {
+              this.$message({
+                message: `postRegister err1: ${res.status} ${res.statusText} `,
+                type: res.status === 200 ? 'success' : 'error'
               })
             }
             this.isLoading = false
+            this.isRequestVercodeLoading = false
           }).catch(err => {
-            console.log('postRegister err:', err)
+            console.log('postRegister err2:', err)
             this.$message({
-              message: '注册失败 ' + err,
+              message: 'postRegister err2: ' + err,
               type: 'error'
             })
             this.isLoading = false
+            this.isRequestVercodeLoading = false
             return false
           })
         } else {
@@ -300,6 +306,56 @@ export default {
         }
       })
     },
+    // submitForm (formName) {
+    //   this.$refs[formName].validate((valid) => {
+    //     if (valid) {
+    //       this.isLoading = true
+    //       let registerParams = {
+    //         name: this.ruleForm.name,
+    //         stuId: this.ruleForm.stuId,
+    //         birth: this.ruleForm.birth,
+    //         sex: this.ruleForm.sex,
+    //         grade: this.ruleForm.grade,
+    //         major: this.ruleForm.major,
+    //         email: this.ruleForm.email,
+    //         password: this.ruleForm.password
+    //       }
+    //       console.log('registerParams', registerParams)
+    //       /* 调用axios注册接口 */
+    //       postRegister(registerParams).then(res => {
+    //         console.log(res.data)
+    //         let { code, msg } = res.data
+    //         if (code === 200) {
+    //           // 注册成功
+    //           this.$message({
+    //             message: '注册成功 ' + msg,
+    //             type: 'success'
+    //           })
+    //           // 调用父组件Login.vue的方法slide，滑动到登录界面
+    //           this.$parent.slide()
+    //         } else {
+    //           // 注册失败，弹出element-ui中的提示组件
+    //           this.$message({
+    //             message: '注册失败 ' + msg,
+    //             type: 'error'
+    //           })
+    //         }
+    //         this.isLoading = false
+    //       }).catch(err => {
+    //         console.log('postRegister err:', err)
+    //         this.$message({
+    //           message: '注册失败 ' + err,
+    //           type: 'error'
+    //         })
+    //         this.isLoading = false
+    //         return false
+    //       })
+    //     } else {
+    //       console.log('error submit!')
+    //       return false
+    //     }
+    //   })
+    // },
     resetForm (formName) {
       this.$refs[formName].resetFields()
     }
