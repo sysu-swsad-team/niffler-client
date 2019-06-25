@@ -86,6 +86,13 @@ export default {
               type: 'error'
             })
           })
+          // sessionStorage.clear()
+          // getLogout(null).then(res => {
+          //   console.log('logout res:', res)
+          // }).catch(err => {
+          //   console.log('logout err:', err)
+          // })
+          // _this.$router.push('/login')
         }).catch(() => { })
       }
     }

@@ -296,6 +296,7 @@ export default {
       var fd = new FormData()
       fd.append('file', this.dialogImageFile)
       postAvatar(fd).then(res => {
+        console.log(res)
         if (res.status === 200) {
           var profile = res.data.profile
           profile.avatar = `${axios.defaults.baseURL}/${profile.avatar}`
