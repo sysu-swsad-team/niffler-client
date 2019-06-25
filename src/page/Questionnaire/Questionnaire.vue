@@ -80,6 +80,7 @@
 import PageHead from '../components/PageHead'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
 import {queryQN, getQNDetail} from '../../api/api'
+import querystring from 'querystring'
 export default {
   data () {
     return {
@@ -109,22 +110,19 @@ export default {
         title: this.filters.title.replace(/\s*/g, ''),
         issuer: this.filters.issuer.replace(/\s*/g, '')
       }
-      var params = ''
-      if (queryParams.title !== '' && queryParams.issuer !== '') {
-        params += `?title=${queryParams.title}&issuer=${queryParams.issuer}`
-      } else {
-        if (queryParams.title !== '') {
-          params += `?title=${queryParams.title}`
-        } else if (queryParams.issuer !== '') {
-          params += `?issuer=${queryParams.issuer}`
-        }
+      var params = { type: '问卷' }
+      if (queryParams.title !== '') {
+        params.title = queryParams.title
       }
+      if (queryParams.issuer !== '') {
+        params.issuer = queryParams.issuer
+      }
+      params = '?' + querystring.stringify(params)
+      console.log(params)
       queryQN(params).then(res => {
         if (res.status === 200) {
-          // console.log(res.data)
-          let { count, next, previous, results } = res.data
-          console.log('queryQN', count, next, previous)
-          this.questionnaireList = results
+          console.log(res)
+          this.questionnaireList = res.data
           for (var i = 0; i < this.questionnaireList.length; i++) {
             this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
             this.questionnaireList[i].issuer = this.questionnaireList[i].issuer_first_name

@@ -194,7 +194,7 @@ export default {
                 type: res.status === 200 ? 'success' : 'error'
               })
             }
-            // this.getSeconds(5)
+            this.getSeconds(60)
             this.isRequestVercodeLoading = false
             this.isLoading = false
           }).catch(err => {
