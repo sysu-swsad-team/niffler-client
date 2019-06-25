@@ -124,7 +124,7 @@ export default {
           console.log(res)
           this.questionnaireList = res.data
           for (var i = 0; i < this.questionnaireList.length; i++) {
-            this.questionnaireList[i].tag = this.questionnaireList[i].tag_set[0].toString()
+            this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
             this.questionnaireList[i].issuer = this.questionnaireList[i].issuer_first_name
           }
           this.$message({
