@@ -287,9 +287,9 @@ export default {
             this.isLoading = true
             console.log(this.getInfo.email)
             let summitParams = {
-              email: this.getInfo.email,
+              taskType: '问卷',
               title: this.ruleForm.title,
-              tag: this.ruleForm.tag,
+              tag: [this.ruleForm.tag],
               description: this.ruleForm.description,
               maxNumber: this.ruleForm.maxNumber,
               fee: this.ruleForm.fee,

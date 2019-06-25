@@ -92,6 +92,7 @@ export default {
   },
   methods: {
     summitForm (formName) {
+      console.log(this.ruleForm.dueDate.toString())
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$confirm('确定提交该任务吗？', '提示', {

@@ -41,6 +41,7 @@
 
 <script>
 import ModuleCards from './components/ModuleCards'
+import {postLogout} from '../api/api'
 export default {
   data () {
     return {
@@ -66,8 +67,25 @@ export default {
         this.$confirm('确认退出吗？', '提示', {
           // type: 'warning'
         }).then(() => {
-          sessionStorage.clear()
-          _this.$router.push('/login')
+          var param = {}
+          postLogout(param).then(res => {
+            console.log(res.data)
+            let { code, msg } = res.data
+            if (code === 200) {
+              sessionStorage.clear()
+              _this.$router.push('/login')
+            } else {
+              this.$message({
+                message: '发送错误：' + msg,
+                type: 'error'
+              })
+            }
+          }).catch(err => {
+            this.$message({
+              message: err,
+              type: 'error'
+            })
+          })
         }).catch(() => { })
       }
     }

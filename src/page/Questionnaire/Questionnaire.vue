@@ -124,7 +124,7 @@ export default {
           console.log(res)
           this.questionnaireList = res.data
           for (var i = 0; i < this.questionnaireList.length; i++) {
-            this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
+            this.questionnaireList[i].tag = this.questionnaireList[i].tag_set[0].toString()
             this.questionnaireList[i].issuer = this.questionnaireList[i].issuer_first_name
           }
           this.$message({
@@ -170,8 +170,9 @@ export default {
         id: this.questionnaireList[index].id
       }
       getQNDetail(params).then(res => {
-        console.log(res.data)
+        console.log('data in get', res.data)
         let { code, msg, questionnaire } = res.data
+        console.log(questionnaire)
         if (code === 200) {
           this.detailQN = questionnaire
           this.isDetail = true
