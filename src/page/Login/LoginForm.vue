@@ -90,29 +90,24 @@ export default {
           /* 调用axios登录接口 */
           postLogin(loginParams).then(res => {
             this.logining = false
-            console.log(res)
-            console.log(res.data)
-            let { code, msg, email, name, profile } = res.data
-            if (code === 200) {
-              // 登录成功，用户信息就保存在sessionStorage中
-              var user = profile
-              user.email = email
-              user.name = name
+            console.log('postLogin res:', res)
+            if (res.status === 200) {
+              var user = res.data.profile
+              user.email = res.data.email
+              user.name = res.data.name
               user.avatar = `${axios.defaults.baseURL}/${user.avatar}`
-              console.log('user', user)
+              console.log('postLogin user', user)
               sessionStorage.setItem('user', JSON.stringify(user))
-              // sessionStorage.setItem('user', JSON.stringify(user))
               this.$store.dispatch('setUser', user)
               this.$router.push({ path: '/' })
-            } else {
-              // 登录失败，弹出element-ui中的提示组件
-              this.$message({
-                message: msg,
-                type: 'error'
-              })
             }
+            this.$message({
+              message: res.data.msg,
+              type: res.status === 200 ? 'success' : 'error'
+            })
           }).catch(err => {
-            console.log(err)
+            this.logining = false
+            console.log('postLogin catch err:', err)
             return false
           })
         } else {
