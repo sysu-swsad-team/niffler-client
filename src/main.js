@@ -23,10 +23,14 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
-// Mock.init()
 Vue.config.productionTip = false
 
-axios.defaults.baseURL = 'http://127.0.0.1:8000'
+/* 要使用mock模拟数据时，取消下面注释 */
+// Mock.init()
+
+/* axios设置 */
+axios.defaults.baseURL = 'http://129.204.53.183:8000'
+// axios.defaults.baseURL = 'http://127.0.0.1:8000'
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
 axios.defaults.withCredentials = true
@@ -55,7 +59,7 @@ axios.interceptors.request.use((config) => {
   return Promise.reject(error)
 })
 
-/* eslint-disable no-new */
+/* 路由全局守卫 */
 router.beforeEach((to, from, next) => {
   /* 若返回登录界面，则清除sessionStorage数据 */
   if (to.path === '/login') {
@@ -82,6 +86,7 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+/* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,

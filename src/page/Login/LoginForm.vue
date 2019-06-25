@@ -90,6 +90,7 @@ export default {
           /* 调用axios登录接口 */
           postLogin(loginParams).then(res => {
             this.logining = false
+            console.log(res)
             console.log(res.data)
             let { code, msg, email, name, profile } = res.data
             if (code === 200) {

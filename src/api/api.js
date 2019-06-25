@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // config
-// let base = 'http://127.0.0.1:8080'
+// axios.defaults.baseURL = 'http://129.204.53.183:8000'
 
 const header = {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
 
@@ -12,6 +12,10 @@ export const postLogin = params => {
 
 export const postRegister = params => {
   return axios.post('register/', params, header)
+}
+
+export const getLogout = params => {
+  return axios.get('logout/', null, header)
 }
 
 export const postAvatar = params => {

@@ -41,6 +41,8 @@
 
 <script>
 import ModuleCards from './components/ModuleCards'
+import { getLogout } from '../api/api'
+
 export default {
   data () {
     return {
@@ -67,6 +69,11 @@ export default {
           // type: 'warning'
         }).then(() => {
           sessionStorage.clear()
+          getLogout(null).then(res => {
+            console.log('logout res:', res)
+          }).catch(err => {
+            console.log('logout err:', err)
+          })
           _this.$router.push('/login')
         }).catch(() => { })
       }
