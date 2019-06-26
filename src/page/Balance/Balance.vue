@@ -17,7 +17,7 @@
         <div class="demo-image">
           <img :src="getInfo.avatar" class="avatar"/>
         </div>
-        <h4 style="margin: 10px;">闲钱币余额：<strong>{{ getInfo.balance }} 元</strong></h4>
+        <h4 style="margin: 10px;">闲钱币余额：<strong>{{ `${getInfo.balance} (可用: ${getInfo.available_balance})` }} 元</strong></h4>
       </el-row>
       <el-col :span="24" class="toolbar">
         <el-form :inline="true" style="padding-top: 20px; text-align: center;">

@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 // var getStackTrace = function () {
 //   var obj = {}
 //   Error.captureStackTrace(obj, getStackTrace)
@@ -32,5 +34,14 @@ export default {
       }
     }
     return cookieValue
+  },
+  getUserByProfile: function (profile, email = null) {
+    var user = profile
+    if (email) {
+      user.email = email
+    }
+    user.avatar = `${axios.defaults.baseURL}/${user.avatar}`
+    console.log('getUserByProfile user', user)
+    return user
   }
 }
