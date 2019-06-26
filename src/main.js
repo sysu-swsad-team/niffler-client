@@ -7,7 +7,7 @@ import store from './vuex/store'
 import VueRouter from 'vue-router'
 import ElementUI from 'element-ui'
 import axios from 'axios'
-import utils from './utils'
+// import utils from './utils'
 // import Mock from './mock/index'
 
 /* theme */
@@ -29,35 +29,35 @@ Vue.config.productionTip = false
 // Mock.init()
 
 /* axios设置 */
-axios.defaults.baseURL = 'http://129.204.53.183:8000'
-// axios.defaults.baseURL = 'http://127.0.0.1:8000'
+// axios.defaults.baseURL = 'http://129.204.53.183:8000'
+axios.defaults.baseURL = 'http://127.0.0.1:8000'
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
 axios.defaults.withCredentials = true
-axios.interceptors.response.use(
-  response => {
-    sessionStorage.setItem('csrftoken', JSON.stringify(utils.getCookie('csrftoken')))
-    sessionStorage.setItem('sessionid', JSON.stringify(utils.getCookie('sessionid')))
-    console.log('axios.interceptors.response csrftoken:', utils.getCookie('csrftoken'))
-    console.log('axios.interceptors.response sessionid:', utils.getCookie('sessionid'))
-    return response
-  },
-  error => {
-    console.log('axios.interceptors.response', error)
-    // return Promise.reject(error)
-    return error
-  }
-)
-axios.interceptors.request.use((config) => {
-  if (utils.getCookie('csrftoken')) {
-    /* 在头部设置token */
-    config.headers['X-CSRFToken'] = utils.getCookie('csrftoken')
-  }
-  return config
-}, (error) => {
-  console.log(error)
-  return Promise.reject(error)
-})
+// axios.interceptors.response.use(
+//   response => {
+//     sessionStorage.setItem('csrftoken', JSON.stringify(utils.getCookie('csrftoken')))
+//     sessionStorage.setItem('sessionid', JSON.stringify(utils.getCookie('sessionid')))
+//     console.log('axios.interceptors.response csrftoken:', utils.getCookie('csrftoken'))
+//     console.log('axios.interceptors.response sessionid:', utils.getCookie('sessionid'))
+//     return response
+//   },
+//   error => {
+//     console.log('axios.interceptors.response', error)
+//     // return Promise.reject(error)
+//     return error
+//   }
+// )
+// axios.interceptors.request.use((config) => {
+//   if (utils.getCookie('csrftoken')) {
+//     /* 在头部设置token */
+//     config.headers['X-CSRFToken'] = utils.getCookie('csrftoken')
+//   }
+//   return config
+// }, (error) => {
+//   console.log(error)
+//   return Promise.reject(error)
+// })
 
 /* 路由全局守卫 */
 router.beforeEach((to, from, next) => {
