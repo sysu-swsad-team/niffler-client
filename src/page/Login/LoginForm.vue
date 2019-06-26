@@ -49,7 +49,8 @@
 <script>
 /* 引入api */
 import {postLogin} from '../../api/api'
-import axios from 'axios'
+// import axios from 'axios'
+import utils from '../../utils'
 
 export default {
   data () {
@@ -92,12 +93,7 @@ export default {
             this.logining = false
             console.log('postLogin res:', res)
             if (res.status === 200) {
-              var user = res.data.profile
-              user.email = res.data.email
-              user.name = res.data.name
-              user.avatar = `${axios.defaults.baseURL}/${user.avatar}`
-              console.log('postLogin user', user)
-              sessionStorage.setItem('user', JSON.stringify(user))
+              var user = utils.getUserByProfile(res.data.profile, res.data.email)
               this.$store.dispatch('setUser', user)
               this.$router.push({ path: '/' })
             }

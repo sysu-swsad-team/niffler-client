@@ -69,7 +69,7 @@ router.beforeEach((to, from, next) => {
 
   /* 在sessionStorage中提取user */
   let user = JSON.parse(sessionStorage.getItem('user'))
-  console.log(user, to.path, sessionStorage.getItem('token'))
+  console.log('router.beforeEach', user, to.path)
 
   /* 若sessionStorage中没有user，则跳至login页面 */
   if (!user && to.path !== '/login') {

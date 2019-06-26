@@ -2,7 +2,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import avatar from '@/assets/images/login-background.jpg'
 import logo from '@/assets/images/niffler-logo.png'
 
 Vue.use(Vuex)
@@ -10,18 +9,18 @@ Vue.use(Vuex)
 // 要设置的全局访问的state对象
 const state = {
   // 要设置的初始属性值
-  token: '',
   isCollapse: false,
   sysname: 'NIFFLER',
-  name: 'pmlpml', // 用户名即真实姓名
-  avatar: avatar,
-  stuId: 16340000,
-  birth: '1990-02',
-  sex: '男',
-  grade: '大一',
-  major: '软件工程',
-  email: 'pmlpml@niffler.com',
-  balance: 10086, // 闲钱币数量
+  first_name: 'init', // 用户名即真实姓名
+  avatar: 'init',
+  stuId: 'init',
+  birth: 'init',
+  sex: 'init',
+  grade: 'init',
+  major: 'init',
+  email: 'init',
+  balance: 0, // 闲钱币数量
+  available_balance: 0,
   msgNumUnread: 100, // 未读信息数量
   logo: logo
 }
@@ -33,33 +32,10 @@ const getters = {
     return state.isCollapse
   },
   getInfo (state) {
-    return {
-      sysname: state.sysname,
-      name: state.name,
-      avatar: state.avatar,
-      stuId: state.stuId,
-      birth: state.birth,
-      sex: state.sex,
-      grade: state.grade,
-      major: state.major,
-      email: state.email,
-      balance: state.balance,
-      msgNumUnread: state.msgNumUnread,
-      logo: state.logo
-    }
+    return state
   },
   getUser (state) {
-    return {
-      email: state.email,
-      avatar: state.avatar,
-      balance: state.balance,
-      name: state.name,
-      stuId: state.stuId,
-      birth: state.birth,
-      sex: state.sex,
-      grade: state.grade,
-      major: state.major
-    }
+    return state
   }
 }
 
@@ -70,7 +46,7 @@ const mutations = {
     state.isCollapse = !state.isCollapse
   },
   mutationsSetInfo (state, payload) {
-    state[payload['itemName']] = payload['itemValue']
+    state[payload.key] = payload.value
   },
   mutationsSetUser (state, user) {
     for (var key in user) {
@@ -87,10 +63,12 @@ const actions = {
   },
   setInfo (context, payload) {
     context.commit('mutationsSetInfo', payload)
+    /* ****************************************************************** sessionStorage ***** */
     sessionStorage.setItem('user', JSON.stringify(this.getters.getUser))
   },
   setUser (context, user) {
     context.commit('mutationsSetUser', user)
+    /* ****************************************************************** sessionStorage ***** */
     sessionStorage.setItem('user', JSON.stringify(this.getters.getUser))
   }
 }

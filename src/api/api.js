@@ -14,8 +14,12 @@ export const postRegister = params => {
   return axios.post('register/', params, header)
 }
 
-export const getLogout = params => {
+export const getLogout = _params => {
   return axios.get('logout/', null, header)
+}
+
+export const getProfile = _params => {
+  return axios.get('questionnaire/profile/', null, header)
 }
 
 export const postAvatar = params => {

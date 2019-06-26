@@ -297,6 +297,7 @@ export default {
               questions: this.ruleForm.questions
             }
             summitQN(summitParams).then(res => {
+              console.log(res)
               if (res.status === 200) {
                 this.$message({
                   message: '问卷提交成功',
@@ -304,7 +305,7 @@ export default {
                 })
               } else {
                 this.$message({
-                  message: '提交失败' + msg,
+                  message: '提交失败 ' + res.data.msg,
                   type: 'error'
                 })
               }
