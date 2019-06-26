@@ -46,12 +46,13 @@
             disable-transitions>{{ scope.row.tag }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作和活动描述" width="200">
+        <el-table-column label="操作与描述" min-width="200" fit>
           <template slot-scope="scope">
             <el-tooltip placement="top">
               <div slot="content">{{ scope.row.description }}</div>
-              <el-button size="small" type="primary" @click="paticipateErrand(scope.$index)">接取该任务</el-button>
+              <el-button size="small" type="primary" @click="paticipateErrand(scope.$index, scope.row)">接取</el-button>
             </el-tooltip>
+            <el-button size="small" type="danger" @click="claim(scope.$index, scope.row)">举报</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -66,7 +67,7 @@
 </template>
 
 <script>
-import { queryErrand, takeErrand } from '../../api/api'
+import { queryErrand, takeErrand, claimTask } from '../../api/api'
 import PageHead from '../components/PageHead'
 import querystring from 'querystring'
 export default {
@@ -163,7 +164,7 @@ export default {
     filterTag (value, row) {
       return row.tag === value
     },
-    paticipateErrand (index) {
+    paticipateErrand (index, row) {
       // 接受此任务，后端将该任务的接受者设为当前用户，并设置该任务不能再被其他用户接受。注意处理并发事件
       // 即当此时用户发送接受任务请求时，若在此页面重新渲染前，任务已被其他用户先接取，需返回提示信息，接取任务失败
       // var success = true
@@ -172,9 +173,10 @@ export default {
         cancelButtonText: '取消',
         type: 'success'
       }).then(() => {
-        console.log('index', this.errandList[index])
+        /* 注意在表格里获取任务id应该使用row.id (否则排序表格后就乱了) */
+        console.log('index', row.id)
         const postParams = {
-          task_id: this.errandList[index].id + '',
+          task_id: row.id.toString(),
           description: '',
           poll: ''
         }
@@ -184,26 +186,52 @@ export default {
           if (res.status === 200) {
             this.$message({
               type: 'success',
-              message: '任务接取成功，请按要求在规定时间内完成'
+              message: `任务接取成功，请按要求在规定时间内完成 (${res.data.msg})`
             })
           } else {
             this.$message({
-              message: `任务接取失败 ${res.status} ${res.statusText}`,
+              message: `接取失败 ${res.status} ${res.data.msg}`,
               type: 'error'
             })
           }
         }).catch((err) => {
           this.$message({
-            message: `接取任务失败 ${err}`,
+            message: `接取失败 ${err}`,
             type: 'error'
           })
         })
-      }).catch((err) => {
-        this.$message({
-          message: `接取任务失败? ${err}`,
-          type: 'error'
+      }).catch(() => {})
+    },
+    /* 举报任务 */
+    claim (index, row) {
+      this.$confirm('确定举报该任务吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'success'
+      }).then(() => {
+        console.log('index', row.id)
+        const params = row.id + '/'
+        console.log(params)
+        claimTask(params).then(res => {
+          console.log('msg', res.data.msg)
+          if (res.status === 200) {
+            this.$message({
+              type: 'success',
+              message: res.data.msg
+            })
+          } else {
+            this.$message({
+              message: `举报失败 ${res.status} ${res.data.msg}`,
+              type: 'error'
+            })
+          }
+        }).catch((err) => {
+          this.$message({
+            message: `举报失败 ${err}`,
+            type: 'error'
+          })
         })
-      })
+      }).catch(() => {})
     }
   },
   components: {
