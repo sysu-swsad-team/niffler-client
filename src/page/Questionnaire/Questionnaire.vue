@@ -47,12 +47,13 @@
             disable-transitions>{{ scope.row.tag }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作和描述" width="120">
+        <el-table-column label="操作和描述" min-width="200" fit>
           <template slot-scope="scope">
             <el-tooltip placement="top">
               <div slot="content">{{ scope.row.description }}</div>
-              <el-button size="small" type="primary" @click="getQustionnair(scope.$index)">填写问卷</el-button>
+              <el-button size="small" type="primary" @click="getQustionnair(scope.$index, scope.row)">填写</el-button>
             </el-tooltip>
+            <el-button size="small" type="danger" @click="claim(scope.$index, scope.row)">举报</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -79,7 +80,7 @@
 <script>
 import PageHead from '../components/PageHead'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
-import {queryQN, getQNDetail} from '../../api/api'
+import { queryQN, getQNDetail, claimTask } from '../../api/api'
 import querystring from 'querystring'
 export default {
   data () {
@@ -172,7 +173,7 @@ export default {
     handleClose (key, keyPath) {
       // console.log(key, keyPath)
     },
-    getQustionnair (index) {
+    getQustionnair (index, row) {
       // 后端先判断该用户是否已填写此问卷，若已填写，则不能再填写，否则，后端返回问卷细节
       // alert('获取问卷' + this.questionnaireList[index].title)
       // 若已填写，
@@ -182,8 +183,9 @@ export default {
       // this.detailQN = this.questionnaireList[index]
       let params = {
         // email: this.getInfo.email,
-        id: this.questionnaireList[index].id
+        id: row.id
       }
+      console.log(params)
       getQNDetail(params).then(res => {
         console.log('data in get', res.data)
         if (res.status === 200) {
@@ -199,6 +201,37 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    /* 举报任务 */
+    claim (index, row) {
+      this.$confirm('确定举报该问卷吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'success'
+      }).then(() => {
+        console.log('index', row.id)
+        const params = row.id + '/'
+        console.log(params)
+        claimTask(params).then(res => {
+          console.log('msg', res.data.msg)
+          if (res.status === 200) {
+            this.$message({
+              type: 'success',
+              message: res.data.msg
+            })
+          } else {
+            this.$message({
+              message: `举报失败 ${res.status} ${res.data.msg}`,
+              type: 'error'
+            })
+          }
+        }).catch((err) => {
+          this.$message({
+            message: `举报失败 ${err}`,
+            type: 'error'
+          })
+        })
+      }).catch(() => {})
     },
     selsChange: function (sels) {
       this.sels = sels
