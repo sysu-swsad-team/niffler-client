@@ -1,7 +1,7 @@
 <template>
   <el-form>
     <el-form-item label-position="left">
-      <EditQuestionair :ruleForm="ruleForm"></EditQuestionair>
+      <EditQuestionair></EditQuestionair>
     </el-form-item>
   </el-form>
 </template>
@@ -10,17 +10,7 @@
 import EditQuestionair from '../components/EditQuestionair'
 export default {
   data () {
-    return {
-      ruleForm: {
-        title: '',
-        tag: '',
-        description: '',
-        maxNumber: 1,
-        fee: 0.01,
-        dueDate: '',
-        questions: [ ]
-      }
-    }
+    return { }
   },
   methods: { },
   components: {

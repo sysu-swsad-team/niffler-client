@@ -33,7 +33,7 @@
       <el-divider content-position="center">问卷内容</el-divider>
       <el-form-item
         v-for="(question, index) in ruleForm.questions"
-        :label="'问题 ' + index" :key="question.key">
+        :label="'问题 ' + (index + 1)" :key="question.key">
         <div>{{ question.title }}</div>
         <el-form-item v-if="question.type === 0">
           <el-radio-group v-for="(option) in question.options" :key="option.key">
@@ -41,12 +41,12 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item v-if="question.type === 1">
-          <!-- <el-checkbox-group v-for="(option) in question.options" :key="option.key">
+          <el-checkbox-group v-for="(option) in question.options" :key="option.key">
             <el-checkbox>{{ option.value }}</el-checkbox>
-          </el-checkbox-group> -->
-          <el-radio-group v-for="(option) in question.options" :key="option.key">
+          </el-checkbox-group>
+<!--           <el-radio-group v-for="(option) in question.options" :key="option.key">
             <el-radio style="margin: 0 20px 0 20px">{{ option.value }}</el-radio>
-          </el-radio-group>
+          </el-radio-group> -->
         </el-form-item>
         <el-form-item v-if="question.type === 2">
           <el-input placeholder="答案" style="margin-bottom: 5px"></el-input>
@@ -123,17 +123,6 @@ import {summitQN} from '../../api/api'
 
 export default {
   name: 'EditQuestionair',
-  props: {
-    ruleForm: {
-      title: '',
-      tag: '',
-      description: '',
-      maxNumber: 1,
-      fee: 0.01,
-      dueDate: '',
-      questions: [ ]
-    }
-  },
   computed: {
     getInfo () {
       return this.$store.getters.getInfo
@@ -141,6 +130,15 @@ export default {
   },
   data () {
     return {
+      ruleForm: {
+        title: '',
+        tag: '',
+        description: '',
+        maxNumber: 1,
+        fee: 0.01,
+        dueDate: '',
+        questions: [ ]
+      },
       addQuestion: {
         title: '',
         options: [{
