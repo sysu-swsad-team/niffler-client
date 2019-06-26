@@ -68,7 +68,8 @@
 <script>
 import EditQuestionair from '../components/EditQuestionair'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
-import {deleteQN, getMyQN, getMyQNFilter, getQNDetail, deleteBatchQN} from '../../api/api'
+import {deleteQN, queryQN, getMyQNFilter, getQNDetail, deleteBatchQN} from '../../api/api'
+import querystring from 'querystring'
 export default {
   data () {
     return {
