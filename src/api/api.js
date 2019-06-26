@@ -78,6 +78,10 @@ export const takeErrand = params => {
 export const removeErrand = params => {
   return axios.post(`questionnaire/task/cancel/${params.id}/`, params, header)
 }
+
+export const queryParticipant = params => {
+  return axios.get(`questionnaire/profile/${params.id}`, params, header)
+}
 /* ***************** end errand ***************** */
 
 // export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }) }

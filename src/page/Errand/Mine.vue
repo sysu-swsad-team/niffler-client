@@ -45,7 +45,7 @@
 
 <script>
 import Vue from 'vue'
-import { queryErrand, removeErrand } from '../../api/api'
+import { queryErrand, removeErrand, queryParticipant } from '../../api/api'
 import querystring from 'querystring'
 Vue.component('anchored-heading', {
   render: function (createElement) {
@@ -106,10 +106,14 @@ export default {
           //   this.errandList[i].issuer = this.errandList[i].tag_set.issuer_first_name
           // }
           for (var i = 0; i < res.data.length; i++) {
+            var participantName = ''
+            if (res.data[i].participants.length !== 0) {
+              participantName = this.getParticipant(res.data[i].participants[0])
+            }
             this.errandList.push({
               title: res.data[i].title,
               fee: res.data[i].fee,
-              finisher: res.data[i].claimers[0],
+              finisher: participantName,
               dueDate: res.data[i].due_date,
               tag: res.data[i].tag_set[0],
               description: res.data[i].description
@@ -135,6 +139,31 @@ export default {
         })
         this.listLoading = false
       })
+    },
+    getParticipant (id) {
+      var params = {
+        id: id
+      }
+      var participantName = ''
+      queryParticipant(params).then(res => {
+        console.log('participantName', res.data)
+        if (res.status === 200) {
+          console.log('get participantName success')
+          participantName = res.data.first_name
+        } else {
+          this.$message({
+            message: '获取参与者信息失败',
+            type: 'error'
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$message({
+          message: '获取信息失败' + err,
+          type: 'error'
+        })
+      })
+      return participantName
     },
     selsChange: function (sels) {
       this.sels = sels
