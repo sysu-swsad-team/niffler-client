@@ -43,8 +43,11 @@
         <el-input v-model="ruleForm.email" placeholder="请输入您的邮箱"></el-input>
       </el-form-item>
       <el-form-item label="验证码" prop="verCode">
-        <el-input v-model="ruleForm.verCode" style="width: 56%;" placeholder="验证码"></el-input>
-        <el-button type="primary" style="width: 42%; font-size: 12px; letter-spacing: 0px;" @click="getVercode" :disabled="verDisable">{{ verBtnText }}</el-button>
+        <el-input v-model="ruleForm.verCode" style="width: 46%;" placeholder="验证码"></el-input>
+        <el-button type="primary" style="width: 52%; font-size: 12px; letter-spacing: 0px;"
+        @click="getVercode"
+        :loading="isRequestVercodeLoading"
+        :disabled="verDisable">{{ verBtnText }}</el-button>
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="ruleForm.password" show-password placeholder="请输入密码"></el-input>
@@ -63,12 +66,13 @@
 
 <script>
 /* 引入api */
-import {postRegister, postVercode} from '../../api/api'
+import {postRegister, requestSendVercode} from '../../api/api'
 
 export default {
   data () {
     let validID = (rule, value, callback) => {
-      let reg = /[0-9]{8}/
+      /* reg应该加开始符号和结束符号 */
+      let reg = /^[0-9]{8}$/
       if (!reg.test(value)) {
         callback(new Error('学号必须是由8位数字组成'))
       } else {
@@ -76,9 +80,9 @@ export default {
       }
     }
     let validVarCode = (rule, value, callback) => {
-      let reg = /[0-9]{6}/
+      let reg = /^[0-9a-zA-z]{6}$/
       if (!reg.test(value)) {
-        callback(new Error('验证码应为6位数字'))
+        callback(new Error('验证码应为6位字符'))
       } else {
         callback()
       }
@@ -92,6 +96,7 @@ export default {
     }
     return {
       isLoading: false,
+      isRequestVercodeLoading: false,
       ruleForm: {
         name: '',
         stuId: '',
@@ -129,8 +134,8 @@ export default {
           { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
         ],
         verCode: [
-          { required: true, message: '请输入验证码', trigger: 'blur' },
-          { validator: validVarCode, trigger: 'blur' }
+          { required: true, message: '请输入验证码', trigger: 'change' },
+          { validator: validVarCode, trigger: 'change' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -151,6 +156,7 @@ export default {
       let _wait = wait
       if (wait === 0) {
         this.verDisable = false
+        this.isRequestVercodeLoading = false
         this.verBtnText = '获取验证码'
         wait = _wait
       } else {
@@ -166,29 +172,39 @@ export default {
       /* 验证email字段 */
       this.$refs.ruleForm.validateField('email', (errorMessage) => {
         if (errorMessage === '') {
-          let verEmail = {
-            email: this.ruleForm.email
-          }
-          console.log(verEmail)
-          postVercode(verEmail).then(res => {
-            console.log(res.data)
-            let { code, msg } = res.data
-            if (code === 200) {
-              // 验证码发送成功
+          this.isLoading = true
+          this.isRequestVercodeLoading = true
+          var params = `?email=${this.ruleForm.email}`
+          console.log('verEmail', params)
+          requestSendVercode(params).then(res => {
+            console.log('requestSendVercode res:', res)
+            if (res.status === 200) {
               this.$message({
-                message: '验证码已发送 ' + msg,
-                type: 'success'
+                message: `${res.data.msg} ${res.status} ${res.statusText} `,
+                type: res.status === 200 ? 'success' : 'error'
               })
-              this.getSeconds(60)
-            } else {
-              // 验证码发送失败
+            } else if (res.status <= 300) {
               this.$message({
-                message: '验证码发送失败 ' + msg,
-                type: 'error'
+                message: `${res.data.msg} ${res.status} ${res.statusText} `,
+                type: res.status === 200 ? 'success' : 'error'
+              })
+            } else {
+              this.$message({
+                message: `1F ${res.status} ${res.statusText} `,
+                type: res.status === 200 ? 'success' : 'error'
               })
             }
+            this.getSeconds(60)
+            this.isRequestVercodeLoading = false
+            this.isLoading = false
           }).catch(err => {
-            console.log('postVercode err:', err)
+            console.log('requestSendVercode err:', err)
+            this.$message({
+              message: 'F验证码发送失败 ' + err,
+              type: 'error'
+            })
+            this.isRequestVercodeLoading = false
+            this.isLoading = false
           })
         } else {
           console.log('getVercode error submit! errorMessage: ', errorMessage)
@@ -196,10 +212,49 @@ export default {
         }
       })
     },
+    // getVercode () {
+    //   /* 验证email字段 */
+    //   this.$refs.ruleForm.validateField('email', (errorMessage) => {
+    //     if (errorMessage === '') {
+    //       let verEmail = {
+    //         email: this.ruleForm.email
+    //       }
+    //       console.log(verEmail)
+    //       postVercode(verEmail).then(res => {
+    //         console.log(res.data)
+    //         let { code, msg } = res.data
+    //         if (code === 200) {
+    //           // 验证码发送成功
+    //           this.$message({
+    //             message: '验证码已发送 ' + msg,
+    //             type: 'success'
+    //           })
+    //           this.getSeconds(60)
+    //         } else {
+    //           // 验证码发送失败
+    //           this.$message({
+    //             message: '验证码发送失败 ' + msg,
+    //             type: 'error'
+    //           })
+    //         }
+    //       }).catch(err => {
+    //         console.log('postVercode err:', err)
+    //         this.$message({
+    //           message: '验证码发送失败 ' + err,
+    //           type: 'error'
+    //         })
+    //       })
+    //     } else {
+    //       console.log('getVercode error submit! errorMessage: ', errorMessage)
+    //       return false
+    //     }
+    //   })
+    // },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.isLoading = true
+          this.isRequestVercodeLoading = true
           let registerParams = {
             name: this.ruleForm.name,
             stuId: this.ruleForm.stuId,
@@ -207,33 +262,42 @@ export default {
             sex: this.ruleForm.sex,
             grade: this.ruleForm.grade,
             major: this.ruleForm.major,
+            code: this.ruleForm.verCode,
             email: this.ruleForm.email,
             password: this.ruleForm.password
           }
           console.log('registerParams', registerParams)
           /* 调用axios注册接口 */
           postRegister(registerParams).then(res => {
-            console.log(res.data)
-            let { code, msg } = res.data
-            if (code === 200) {
-              // 注册成功
+            console.log('postRegister res:', res.data)
+            if (res.status === 200) {
               this.$message({
-                message: '注册成功 ' + msg,
-                type: 'success'
+                message: `${res.data.msg} ${res.status} ${res.statusText} `,
+                type: res.status === 200 ? 'success' : 'error'
               })
               // 调用父组件Login.vue的方法slide，滑动到登录界面
               this.$parent.slide()
-            } else {
-              // 注册失败，弹出element-ui中的提示组件
+            } else if (res.status <= 300) {
               this.$message({
-                message: '注册失败 ' + msg,
-                type: 'error'
+                message: `${res.data.msg} ${res.status} ${res.statusText} `,
+                type: res.status === 200 ? 'success' : 'error'
+              })
+            } else {
+              this.$message({
+                message: `postRegister err1: ${res.status} ${res.statusText} `,
+                type: res.status === 200 ? 'success' : 'error'
               })
             }
             this.isLoading = false
+            this.isRequestVercodeLoading = false
           }).catch(err => {
-            console.log('postRegister err:', err)
+            console.log('postRegister err2:', err)
+            this.$message({
+              message: 'postRegister err2: ' + err,
+              type: 'error'
+            })
             this.isLoading = false
+            this.isRequestVercodeLoading = false
             return false
           })
         } else {
@@ -242,6 +306,56 @@ export default {
         }
       })
     },
+    // submitForm (formName) {
+    //   this.$refs[formName].validate((valid) => {
+    //     if (valid) {
+    //       this.isLoading = true
+    //       let registerParams = {
+    //         name: this.ruleForm.name,
+    //         stuId: this.ruleForm.stuId,
+    //         birth: this.ruleForm.birth,
+    //         sex: this.ruleForm.sex,
+    //         grade: this.ruleForm.grade,
+    //         major: this.ruleForm.major,
+    //         email: this.ruleForm.email,
+    //         password: this.ruleForm.password
+    //       }
+    //       console.log('registerParams', registerParams)
+    //       /* 调用axios注册接口 */
+    //       postRegister(registerParams).then(res => {
+    //         console.log(res.data)
+    //         let { code, msg } = res.data
+    //         if (code === 200) {
+    //           // 注册成功
+    //           this.$message({
+    //             message: '注册成功 ' + msg,
+    //             type: 'success'
+    //           })
+    //           // 调用父组件Login.vue的方法slide，滑动到登录界面
+    //           this.$parent.slide()
+    //         } else {
+    //           // 注册失败，弹出element-ui中的提示组件
+    //           this.$message({
+    //             message: '注册失败 ' + msg,
+    //             type: 'error'
+    //           })
+    //         }
+    //         this.isLoading = false
+    //       }).catch(err => {
+    //         console.log('postRegister err:', err)
+    //         this.$message({
+    //           message: '注册失败 ' + err,
+    //           type: 'error'
+    //         })
+    //         this.isLoading = false
+    //         return false
+    //       })
+    //     } else {
+    //       console.log('error submit!')
+    //       return false
+    //     }
+    //   })
+    // },
     resetForm (formName) {
       this.$refs[formName].resetFields()
     }
@@ -260,7 +374,7 @@ button, button:hover, button:focus {
   background: $color-primary;
   border: 1px solid currentColor;
   border-radius: 50px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   font-size: 0.8rem;
   letter-spacing: 0.1rem;
 }

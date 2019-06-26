@@ -1,49 +1,48 @@
 import axios from 'axios'
 
 // config
-// let base = 'http://127.0.0.1:8080'
-axios.defaults.baseURL = 'http://127.0.0.1:8000'
-axios.defaults.xsrfCookieName = 'csrftoken'
-axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+// axios.defaults.baseURL = 'http://129.204.53.183:8000'
 
-// user info
 const header = {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
 
+/* ***************** user ***************** */
 export const postLogin = params => {
-  return axios.post('/questionnaire/login/', params, header)
-}
-
-export const deleteQN = params => {
-  return axios.post('/questionnaire/mine/delete/', params, header)
+  return axios.post('login/', params, header)
 }
 
 export const postRegister = params => {
-  return axios.post('/questionnaire/register/', params, header)
+  return axios.post('register/', params, header)
+}
+
+export const getLogout = params => {
+  return axios.get('logout/', null, header)
 }
 
 export const postAvatar = params => {
-  return axios.post('/questionnaire/avatar/', params, {headers: {'Content-Type': 'image/jpeg'}})
+  return axios.post('avatar/', params, {headers: {'Content-Type': 'image/jpeg'}})
+}
+
+/* 点击获取验证码按钮，请求后端发送验证码到邮箱 */
+export const requestSendVercode = params => {
+  return axios.get('register/' + params, null, header)
 }
 
 export const postVercode = params => {
-  return axios.post('/questionnaire/register/vercode/', params, header)
+  return axios.post('questionnaire/register/vercode/', params, header)
 }
+/* ***************** end user ***************** */
 
-// questionnaire
+/* ***************** questionnaire ***************** */
 export const summitQN = params => {
-  return axios.post('questionnaire/create/', params, header)
+  return axios.post('questionnaire/task/', params, header)
 }
 
-export const getAllQN = params => {
-  return axios.get('questionnaire/task/', params, header)
-}
-
-export const getAllQNFilter = params => {
-  return axios.get('questionnaire/filter/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+export const queryQN = params => {
+  return axios.get('questionnaire/task/' + params, null, header)
 }
 
 export const getQNDetail = params => {
-  return axios.get('questionnaire/detail/', params, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+  return axios.get('questionnaire/task/' + params.id + '/', params, header)
 }
 
 export const getMyQN = params => {
@@ -55,13 +54,35 @@ export const getMyQNFilter = params => {
 }
 
 export const deleteBatchQN = params => {
-  return axios.post('questionnaire/mine/batchDelete/', header)
+  return axios.post('questionnaire/mine/batchDelete/', null, header)
 }
 
-// errand
-export const summitErrand = params => {
-  return axios.post('errand/create/', params, header)
+export const deleteQN = params => {
+  return axios.post('/questionnaire/mine/delete/', params, header)
 }
+/* ***************** end questionnaire ***************** */
+
+/* ***************** errand ***************** */
+export const summitErrand = params => {
+  return axios.post('questionnaire/task/', params, header)
+}
+
+export const queryErrand = params => {
+  return axios.get('questionnaire/task/' + params, null, header)
+}
+
+export const takeErrand = params => {
+  return axios.post('questionnaire/participantship/', params, header)
+}
+
+export const removeErrand = params => {
+  return axios.post(`questionnaire/task/cancel/${params.id}/`, params, header)
+}
+
+export const queryParticipant = params => {
+  return axios.get(`questionnaire/profile/${params.id}`, params, header)
+}
+/* ***************** end errand ***************** */
 
 // export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }) }
 

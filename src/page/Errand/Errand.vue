@@ -27,20 +27,19 @@
             <el-input v-model="filters.title" placeholder="活动标题"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="filters.sponsor" placeholder="活动发起者"></el-input>
+            <el-input v-model="filters.issuer" placeholder="活动发起者"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="el-icon-search" @click="getFilter"> 查询</el-button>
+            <el-button type="primary" class="el-icon-search" @click="getErrandList"> 查询</el-button>
           </el-form-item>
         </el-form>
       </el-col>
-      <el-table :data="errandList" highlight-current-row v-loading="listLoading" style="width: 100%;" stripe>
+      <el-table :data="errandList" highlight-current-row v-loading="listLoading" element-loading-text="玩命加载中，请稍等..." element-loading-spinner="el-icon-loading" style="width: 100%;" stripe>
         <el-table-column type="index" width="50"></el-table-column>
-        <el-table-column prop="id" label="ID" width="100" sortable></el-table-column>
         <el-table-column prop="title" label="活动标题" width="200"></el-table-column>
-        <el-table-column prop="sponsor" label="发起者" width="150"></el-table-column>
+        <el-table-column prop="issuer" label="发起者" width="150"></el-table-column>
         <el-table-column prop="fee" label="报酬" width="80" sortable></el-table-column>
-        <el-table-column prop="dueDate" label="结束时间" width="150"></el-table-column>
+        <el-table-column prop="dueDate" label="结束时间" width="200" sortable></el-table-column>
         <el-table-column prop="tag" label="类型" width="100" :filters="[{ text: '快递', value: '快递' }, {text: '外卖', value: '外卖' }]" :filter-method="filterTag" filter-placement="bottom-end">
           <template slot-scope="scope">
             <el-tag :type="scope.row.tag === '快递' ? 'primary' : 'success'"
@@ -51,7 +50,7 @@
           <template slot-scope="scope">
             <el-tooltip placement="top">
               <div slot="content">{{ scope.row.description }}</div>
-              <el-button size="small" type="primary" @click="takeErrand(scope.$index)">接取该任务</el-button>
+              <el-button size="small" type="primary" @click="paticipateErrand(scope.$index)">接取该任务</el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -67,42 +66,18 @@
 </template>
 
 <script>
-/* Errand noun. 差使；差事
-a job that you do for sb that involves going somewhere to take a message, to buy sth, deliver goods, etc. */
+import { queryErrand, takeErrand } from '../../api/api'
 import PageHead from '../components/PageHead'
+import querystring from 'querystring'
 export default {
   data () {
     return {
       filters: {
         title: '',
-        sponsor: ''
+        issuer: ''
       },
       // 加载页面前从后端获取errandList，当前所有可接受活动（假设每个活动只能一个人接取）
-      errandList: [{
-        id: 0,
-        title: '外卖1',
-        sponsor: '14',
-        fee: 0.1,
-        dueDate: '1123-2-2',
-        tag: '外卖',
-        description: '放假哦我啊哈公安局发的'
-      }, {
-        id: 1,
-        title: '外卖2',
-        sponsor: '14',
-        fee: 0.1,
-        dueDate: '1123-2-2',
-        tag: '外卖',
-        description: '放假哦我啊哈公安局发的'
-      }, {
-        id: 3,
-        title: '快递1',
-        sponsor: '14',
-        fee: 0.1,
-        dueDate: '1123-2-2',
-        tag: '快递',
-        description: '放假哦我公安局发的'
-      }],
+      errandList: [ ],
       listLoading: false,
       total: 0
     }
@@ -117,6 +92,62 @@ export default {
     }
   },
   methods: {
+    getErrandList () {
+      this.listLoading = true
+      const queryParams = {
+        /* 去除所有空格 */
+        title: this.filters.title.replace(/\s*/g, ''),
+        issuer: this.filters.issuer.replace(/\s*/g, '')
+      }
+      var params = { type: '跑腿' }
+      if (queryParams.title !== '') {
+        params.title = queryParams.title
+      }
+      if (queryParams.issuer !== '') {
+        params.issuer = queryParams.issuer
+      }
+      params = '?' + querystring.stringify(params)
+      console.log('queryErrand params:', params)
+      queryErrand(params).then(res => {
+        if (res.status === 200) {
+          console.log(res.data)
+          // this.errandList = res.data
+          // for (var i = 0; i < this.errandList.length; i++) {
+          //   this.errandList[i].tag = this.errandList[i].tag_set.toString()
+          //   this.errandList[i].issuer = this.errandList[i].tag_set.issuer_first_name
+          // }
+          for (var i = 0; i < res.data.length; i++) {
+            this.errandList.push({
+              title: res.data[i].title,
+              issuer: res.data[i].issuer_first_name,
+              fee: res.data[i].fee,
+              finisher: res.data[i].claimers[0],
+              dueDate: res.data[i].due_date,
+              tag: res.data[i].tag_set[0],
+              description: res.data[i].description
+            })
+          }
+          this.$message({
+            message: `获取任务成功 ${res.status} ${res.statusText}`,
+            type: 'success'
+          })
+          this.listLoading = false
+        } else {
+          this.$message({
+            message: `获取任务失败 ${res.status} ${res.statusText}`,
+            type: 'error'
+          })
+          this.listLoading = false
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$message({
+          message: '获取任务失败 ' + err,
+          type: 'error'
+        })
+        this.listLoading = false
+      })
+    },
     handleSelect (key, keyPath) {
       // console.log(key, keyPath)
     },
@@ -127,34 +158,57 @@ export default {
       // console.log(key, keyPath)
     },
     handleCurrentChange () { },
-    getFilter () {
-      alert('查询条件' + this.filters)
-    },
     filterTag (value, row) {
       return row.tag === value
     },
-    takeErrand (index) {
+    paticipateErrand (index) {
       // 接受此任务，后端将该任务的接受者设为当前用户，并设置该任务不能再被其他用户接受。注意处理并发事件
       // 即当此时用户发送接受任务请求时，若在此页面重新渲染前，任务已被其他用户先接取，需返回提示信息，接取任务失败
-      var success = true
+      // var success = true
       this.$confirm('确定接取该任务吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'success'
       }).then(() => {
-        if (success) {
-          this.$message({
-            type: 'success',
-            message: '任务接取成功，请按要求在规定时间内完成'
-          })
-        } else {
-          this.$message.error('任务接取失败 + 原因')
+        console.log('index', this.errandList[index])
+        const postParams = {
+          task_id: this.errandList[index].id.toString(),
+          description: '',
+          poll: ''
         }
-      }).catch(() => { })
+        console.log(postParams)
+        takeErrand(postParams).then(res => {
+          console.log('msg', res.data.msg)
+          if (res.status === 200) {
+            this.$message({
+              type: 'success',
+              message: '任务接取成功，请按要求在规定时间内完成'
+            })
+          } else {
+            this.$message({
+              message: `任务接取失败 ${res.status} ${res.statusText}`,
+              type: 'error'
+            })
+          }
+        }).catch((err) => {
+          this.$message({
+            message: `接取任务失败 ${err}`,
+            type: 'error'
+          })
+        })
+      }).catch((err) => {
+        this.$message({
+          message: `接取任务失败? ${err}`,
+          type: 'error'
+        })
+      })
     }
   },
   components: {
     PageHead
+  },
+  mouted () {
+    this.getErrandList()
   }
 }
 </script>

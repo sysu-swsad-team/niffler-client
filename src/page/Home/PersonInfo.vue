@@ -33,13 +33,15 @@
     <!-- 对话框，更改个人信息 -->
     <el-dialog :title="'更改' + dialogTitle" :visible.sync="dialogVisible" @close="dialogResetForm()">
       <el-upload v-if="this.dialogKey === 'avatar'"
-        class="avatar-uploader"
         :action="getBaseUrl + '/questionnaire/avatar/'"
-        :show-file-list="true"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload">
+        :drag="true"
+        :show-file-list="false"
+        :before-upload="beforeAvatarUpload"
+        :http-request="uploadAvatar">
         <img v-if="dialogImageUrl" :src="dialogImageUrl" class="avatar-form">
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处<br/>或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip">只能上传 jpg/png 文件，且不超过 2 MB</div>
       </el-upload>
       <el-form v-if="this.dialogKey === 'name'"
         :model="forms.name" :rules="rules.name" :ref="this.dialogKey" status-icon>
@@ -109,7 +111,7 @@
           <el-input v-model="forms.password.ackPassword" show-password placeholder="请再次输入新密码"></el-input>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div v-if="this.dialogKey !== 'avatar'" slot="footer" class="dialog-footer">
         <el-button @click="dialogCancel()">取 消</el-button>
         <el-button @click="dialogResetForm()">重 置</el-button>
         <el-button type="primary" @click="dialogSubmitForm()">确 定</el-button>
@@ -120,8 +122,8 @@
 
 <script>
 /* 引入api */
-// import {postAvatar} from '../../api/api'
 import axios from 'axios'
+import { postAvatar } from '../../api/api'
 
 export default {
   computed: {
@@ -205,7 +207,8 @@ export default {
       dialogKey: '',
       dialogTitle: '',
       dialogVisible: false,
-      dialogImageUrl: ''
+      dialogImageUrl: null,
+      dialogImageFile: null
     }
   },
   methods: {
@@ -260,6 +263,8 @@ export default {
     /* 重置dialog表单 */
     dialogResetForm () {
       if (this.dialogKey === 'avatar') {
+        this.dialogImageUrl = null
+        this.dialogImageFile = null
         return
       }
       this.$refs[this.dialogKey].resetFields()
@@ -268,55 +273,46 @@ export default {
     dialogCancel () {
       this.dialogVisible = false
     },
-    /* 处理上传照片的函数 */
-    handleAvatarSuccess (res, file) {
-      this.dialogImageUrl = URL.createObjectURL(file.raw)
-      console.log(this.dialogImageUrl)
-    },
+    /* 在图片上传之前的的判断 */
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
-
       if (!isJPG) {
         this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
+      } else if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2 MB!')
       }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      // return isJPG && isLt2M
       if (isJPG && isLt2M) {
         console.log(file)
-
-        // 将文件转化为formdata数据上传
-        var fd = new FormData()
-        fd.append('file', file)
-        console.log(fd)
-        // post上传图片
-        /* 调用axios注册接口 */
-        // postAvatar(fd).then(res => {
-        //   console.log(res.data)
-        //   let { code, imgUrl, msg } = res.data
-        //   if (code === 200) {
-        //     console.log(imgUrl)
-        //     this.$message({
-        //       message: '成功 ' + msg,
-        //       type: 'success'
-        //     })
-        //   } else {
-        //     // 注册失败，弹出element-ui中的提示组件
-        //     this.$message({
-        //       message: '失败 ' + msg,
-        //       type: 'error'
-        //     })
-        //   }
-        // }).catch(err => {
-        //   console.log(err)
-        //   return false
-        // })
+        this.dialogImageFile = file
         return true
       } else {
         return false
       }
+    },
+    /* 覆盖默认的上传行为，实现自定义上传 */
+    uploadAvatar () {
+      // 将文件转化为formdata数据上传
+      var fd = new FormData()
+      fd.append('file', this.dialogImageFile)
+      postAvatar(fd).then(res => {
+        console.log(res)
+        if (res.status === 200) {
+          var profile = res.data.profile
+          profile.avatar = `${axios.defaults.baseURL}/${profile.avatar}`
+          this.$store.dispatch('setUser', profile)
+          this.dialogImageUrl = profile.avatar
+        }
+        this.$message({
+          message: `${res.data.msg} ${res.status} ${res.statusText}`,
+          type: res.status === 200 ? 'success' : 'error'
+        })
+      }).catch(err => {
+        this.$message({
+          message: '失败 ' + err,
+          type: 'error'
+        })
+      })
     },
     /* 表格行的样式设置 */
     rowStyle ({row, rowIndex}) {
@@ -370,32 +366,16 @@ export default {
   color: white;
 }
 
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9 !important;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: $color-primary !important;
-}
-.avatar-uploader-icon {
-  border: 1px dashed #d9d9d9 !important;
-  border-radius: 6px;
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-.avatar-uploader-icon:hover {
-  border-color: $color-primary !important;
-}
 .avatar-form {
-  width: 178px;
-  height: 178px;
+  width: 200px;
+  height: 200px;
   display: block;
+}
+</style>
+
+<style>
+.el-upload-dragger {
+  width: 200px;
+  height: 200px;
 }
 </style>

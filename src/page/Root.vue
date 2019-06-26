@@ -41,6 +41,7 @@
 
 <script>
 import ModuleCards from './components/ModuleCards'
+import { getLogout } from '../api/api'
 export default {
   data () {
     return {
@@ -66,8 +67,27 @@ export default {
         this.$confirm('确认退出吗？', '提示', {
           // type: 'warning'
         }).then(() => {
-          localStorage.removeItem('user')
-          _this.$router.push('/login')
+          getLogout(null).then(res => {
+            console.log(res)
+            if (res.status === 200) {
+              sessionStorage.clear()
+              _this.$router.push('/login')
+              this.$message({
+                message: '登出成功 ' + res.status,
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: '登出错误 ' + res.status,
+                type: 'error'
+              })
+            }
+          }).catch(err => {
+            this.$message({
+              message: '登出错误catch err: ' + err,
+              type: 'error'
+            })
+          })
         }).catch(() => { })
       }
     }
