@@ -127,6 +127,7 @@ export default {
           //   this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
           //   this.questionnaireList[i].issuer = this.questionnaireList[i].issuer_first_name
           // }
+          this.questionnaireList = []
           for (var i = 0; i < res.data.length; i++) {
             this.questionnaireList.push({
               id: res.data[i].id,

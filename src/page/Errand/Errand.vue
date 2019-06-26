@@ -116,6 +116,7 @@ export default {
           //   this.errandList[i].tag = this.errandList[i].tag_set.toString()
           //   this.errandList[i].issuer = this.errandList[i].tag_set.issuer_first_name
           // }
+          this.errandList = []
           for (var i = 0; i < res.data.length; i++) {
             this.errandList.push({
               id: res.data[i].id,
