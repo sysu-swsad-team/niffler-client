@@ -40,9 +40,9 @@
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:left;">
         </el-pagination>
       </el-col>
-      <el-col :span="24" class="toolbar">
+<!--       <el-col :span="24" class="toolbar">
         <el-button type="danger" size="medium" style="margin-top: 5px;" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
-      </el-col>
+      </el-col> -->
       <el-dialog :visible.sync="isEdit" :close-on-click-model="false" :show-close="false" :close-on-press-escape="false" width="60%" height="auto" class="infinite-list" title="问卷编辑">
         <EditQuestionair :ruleForm="editingQN" style="background-color:white;padding:10px"></EditQuestionair>
         <div slot="footer" class="dialog-footer">
