@@ -118,6 +118,7 @@ export default {
           // }
           for (var i = 0; i < res.data.length; i++) {
             this.errandList.push({
+              id: res.data[i].id,
               title: res.data[i].title,
               issuer: res.data[i].issuer_first_name,
               fee: res.data[i].fee,
@@ -172,7 +173,7 @@ export default {
       }).then(() => {
         console.log('index', this.errandList[index])
         const postParams = {
-          task_id: this.errandList[index].id.toString(),
+          task_id: this.errandList[index].id + '',
           description: '',
           poll: ''
         }
@@ -207,7 +208,7 @@ export default {
   components: {
     PageHead
   },
-  mouted () {
+  mounted () {
     this.getErrandList()
   }
 }
