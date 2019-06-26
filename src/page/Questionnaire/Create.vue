@@ -18,13 +18,7 @@ export default {
         maxNumber: 1,
         fee: 0.01,
         dueDate: '',
-        questions: [{
-          title: '',
-          type: -1,
-          options: [{
-            value: ''
-          }]
-        }]
+        questions: [ ]
       }
     }
   },

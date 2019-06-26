@@ -141,6 +141,7 @@ export default {
               questions: res.data[i].poll
             })
           }
+          console.log('list:', this.questionnaireList)
           this.$message({
             message: `获取问卷成功 ${res.status} ${res.statusText}`,
             type: 'success'
@@ -185,15 +186,13 @@ export default {
       }
       getQNDetail(params).then(res => {
         console.log('data in get', res.data)
-        let { code, msg, questionnaire } = res.data
-        console.log(questionnaire)
-        if (code === 200) {
-          this.detailQN = questionnaire
+        if (res.status === 200) {
+          this.detailQN = res.data
           this.isDetail = true
         } else {
           this.$message({
             // 获取失败的原因（已经填写过？）
-            message: msg,
+            message: res.data.msg,
             type: 'error'
           })
         }

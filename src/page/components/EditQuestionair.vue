@@ -33,7 +33,7 @@
       <el-divider content-position="center">问卷内容</el-divider>
       <el-form-item
         v-for="(question, index) in ruleForm.questions"
-        :label="'问题 ' + index" :key="question.key" v-if="index > 0">
+        :label="'问题 ' + index" :key="question.key">
         <div>{{ question.title }}</div>
         <el-form-item v-if="question.type === 0">
           <el-radio-group v-for="(option) in question.options" :key="option.key">
@@ -41,9 +41,12 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item v-if="question.type === 1">
-          <el-checkbox-group v-for="(option) in question.options" :key="option.key">
+          <!-- <el-checkbox-group v-for="(option) in question.options" :key="option.key">
             <el-checkbox>{{ option.value }}</el-checkbox>
-          </el-checkbox-group>
+          </el-checkbox-group> -->
+          <el-radio-group v-for="(option) in question.options" :key="option.key">
+            <el-radio style="margin: 0 20px 0 20px">{{ option.value }}</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item v-if="question.type === 2">
           <el-input placeholder="答案" style="margin-bottom: 5px"></el-input>
@@ -128,13 +131,7 @@ export default {
       maxNumber: 1,
       fee: 0.01,
       dueDate: '',
-      questions: [{
-        title: '',
-        type: -1,
-        options: [{
-          value: ''
-        }]
-      }]
+      questions: [ ]
     }
   },
   computed: {
@@ -291,11 +288,12 @@ export default {
               title: this.ruleForm.title,
               tag: [this.ruleForm.tag],
               description: this.ruleForm.description,
-              maxNumber: this.ruleForm.maxNumber, 
+              maxNumber: this.ruleForm.maxNumber,
               fee: this.ruleForm.fee,
               dueDate: this.ruleForm.dueDate.toString(),
               questions: this.ruleForm.questions
             }
+            console.log('summitParams:', summitParams)
             summitQN(summitParams).then(res => {
               console.log(res)
               if (res.status === 200) {

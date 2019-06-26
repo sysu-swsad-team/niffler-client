@@ -46,7 +46,7 @@ export const queryQN = params => {
 }
 
 export const getQNDetail = params => {
-  return axios.get('questionnaire/task/' + params.id + '/', params, header)
+  return axios.get(`questionnaire/task/${params.id}/`, params, header)
 }
 
 export const getMyQN = params => {
