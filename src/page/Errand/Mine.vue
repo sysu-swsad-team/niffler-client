@@ -111,6 +111,7 @@ export default {
               participantName = this.getParticipant(res.data[i].participants[0])
             }
             this.errandList.push({
+              id: res.data[i].id,
               title: res.data[i].title,
               fee: res.data[i].fee,
               finisher: participantName,
@@ -205,7 +206,7 @@ export default {
     },
     handleCurrentChange () { }
   },
-  mouted () {
+  mounted () {
     this.getErrandList()
   }
 }
