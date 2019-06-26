@@ -36,6 +36,12 @@ export const postVercode = params => {
 }
 /* ***************** end user ***************** */
 
+/* ***************** task: questionnaire and errand ***************** */
+export const claimTask = params => {
+  return axios.post('questionnaire/task/claim/' + params, null, header)
+}
+/* ***************** end task: questionnaire and errand ***************** */
+
 /* ***************** questionnaire ***************** */
 export const summitQN = params => {
   return axios.post('questionnaire/task/', params, header)

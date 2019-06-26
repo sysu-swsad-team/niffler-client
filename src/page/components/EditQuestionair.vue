@@ -291,7 +291,7 @@ export default {
               title: this.ruleForm.title,
               tag: [this.ruleForm.tag],
               description: this.ruleForm.description,
-              maxNumber: this.ruleForm.maxNumber, 
+              maxNumber: this.ruleForm.maxNumber,
               fee: this.ruleForm.fee,
               dueDate: this.ruleForm.dueDate.toString(),
               questions: this.ruleForm.questions
