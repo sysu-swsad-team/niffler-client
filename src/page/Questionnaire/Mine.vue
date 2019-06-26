@@ -68,47 +68,12 @@
 <script>
 import EditQuestionair from '../components/EditQuestionair'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
-import {deleteQN, getMyQN, getMyQNFilter, getQNDetail, deleteBatchQN} from '../../api/api'
+import {deleteQN, queryQN, getMyQNFilter, getQNDetail, deleteBatchQN} from '../../api/api'
+import querystring from 'querystring'
 export default {
   data () {
     return {
-      questionnaireList: [
-        {
-          id: 0,
-          title: '问卷1',
-          description: '问卷1描述',
-          maxNumber: 20,
-          fee: 10,
-          dueDate: '1111-1-1',
-          tag: '学校'
-        }, {
-          id: 1,
-          title: '问卷2',
-          description: '问卷2描述',
-          maxNumber: 20,
-          fee: 10,
-          dueDate: '1111-1-1',
-          tag: '商业'
-        },
-        {
-          id: 3,
-          title: '问卷3',
-          description: '问卷3描述',
-          maxNumber: 10,
-          fee: 50,
-          dueDate: '1131-1-1',
-          tag: '学校'
-        },
-        {
-          id: 4,
-          title: '问卷4',
-          description: '问卷4描述',
-          maxNumber: 30,
-          fee: 4,
-          dueDate: '1131-1-1',
-          tag: '商业'
-        }
-      ],
+      questionnaireList: [ ],
       filters: {
         title: ''
       },
@@ -152,19 +117,36 @@ export default {
         /* 去除所有空格 */
         title: this.filters.title.replace(/\s*/g, '')
       }
-      var params = ''
-      if (queryParams.title !== '') {
-        params += `?title=${queryParams.title}`
+      var params = {
+        type: '问卷',
+        asIssuer: true
       }
-      console.log('queryQN', params)
-      getMyQN(params).then(res => {
+      if (queryParams.title !== '') {
+        params.title = queryParams.title
+      }
+      params = '?' + querystring.stringify(params)
+      console.log(params)
+      queryQN(params).then(res => {
         if (res.status === 200) {
-          console.log(res.data)
-          let { count, next, previous, results } = res.data
-          console.log('queryQN', count, next, previous)
-          this.questionnaireList = results
-          for (var i = 0; i < this.questionnaireList.length; i++) {
-            this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
+          console.log(res)
+          // this.questionnaireList = res.data
+          // for (var i = 0; i < this.questionnaireList.length; i++) {
+          //   this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
+          //   this.questionnaireList[i].issuer = this.questionnaireList[i].issuer_first_name
+          // }
+          this.questionnaireList = []
+          for (var i = 0; i < res.data.length; i++) {
+            this.questionnaireList.push({
+              id: res.data[i].id,
+              title: res.data[i].title,
+              issuer: res.data[i].issuer_first_name,
+              remaining_quota: res.data[i].remaining_quota,
+              fee: res.data[i].fee,
+              due_date: res.data[i].due_date,
+              tag: res.data[i].tag_set.toString(),
+              description: res.data[i].description,
+              questions: res.data[i].poll
+            })
           }
           this.$message({
             message: `获取问卷成功 ${res.status} ${res.statusText}`,

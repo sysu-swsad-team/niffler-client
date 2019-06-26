@@ -122,10 +122,24 @@ export default {
       queryQN(params).then(res => {
         if (res.status === 200) {
           console.log(res)
-          this.questionnaireList = res.data
-          for (var i = 0; i < this.questionnaireList.length; i++) {
-            this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
-            this.questionnaireList[i].issuer = this.questionnaireList[i].issuer_first_name
+          // this.questionnaireList = res.data
+          // for (var i = 0; i < this.questionnaireList.length; i++) {
+          //   this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
+          //   this.questionnaireList[i].issuer = this.questionnaireList[i].issuer_first_name
+          // }
+          this.questionnaireList = []
+          for (var i = 0; i < res.data.length; i++) {
+            this.questionnaireList.push({
+              id: res.data[i].id,
+              title: res.data[i].title,
+              issuer: res.data[i].issuer_first_name,
+              remaining_quota: res.data[i].remaining_quota,
+              fee: res.data[i].fee,
+              due_date: res.data[i].due_date,
+              tag: res.data[i].tag_set.toString(),
+              description: res.data[i].description,
+              questions: res.data[i].poll
+            })
           }
           this.$message({
             message: `获取问卷成功 ${res.status} ${res.statusText}`,

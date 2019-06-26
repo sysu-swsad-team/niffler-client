@@ -105,12 +105,14 @@ export default {
           //   this.errandList[i].tag = this.errandList[i].tag_set.toString()
           //   this.errandList[i].issuer = this.errandList[i].tag_set.issuer_first_name
           // }
+          this.errandList = []
           for (var i = 0; i < res.data.length; i++) {
             var participantName = ''
             if (res.data[i].participants.length !== 0) {
               participantName = this.getParticipant(res.data[i].participants[0])
             }
             this.errandList.push({
+              id: res.data[i].id,
               title: res.data[i].title,
               fee: res.data[i].fee,
               finisher: participantName,
@@ -205,7 +207,7 @@ export default {
     },
     handleCurrentChange () { }
   },
-  mouted () {
+  mounted () {
     this.getErrandList()
   }
 }

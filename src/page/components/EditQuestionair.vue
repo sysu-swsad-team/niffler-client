@@ -297,8 +297,7 @@ export default {
               questions: this.ruleForm.questions
             }
             summitQN(summitParams).then(res => {
-              let { code, msg } = res.data
-              if (code === 200) {
+              if (res.status === 200) {
                 this.$message({
                   message: '问卷提交成功',
                   type: 'success'
