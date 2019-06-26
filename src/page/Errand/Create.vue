@@ -1,7 +1,7 @@
 <template>
     <el-row>
       <el-col :span="24" class="content-wrapper">
-          <el-form :model="ruleForm" :rules="rules" label-position="left" label-width="80px">
+          <el-form :model="ruleForm" :rules="rules" label-position="left" label-width="80px" ref="ruleForm">
             <el-form-item label="标题" prop="title">
               <el-input v-model="ruleForm.title" maxlength="30" show-word-limit></el-input>
             </el-form-item>
@@ -101,29 +101,35 @@ export default {
             type: 'success'
           }).then(() => {
             this.isLoading = true
-            console.log(this.getInfo.email)
             let summitParams = {
-              // email: this.getInfo.email,
+              taskType: '跑腿',
               title: this.ruleForm.title,
-              tag: this.ruleForm.tag,
               description: this.ruleForm.description,
+              dueDate: this.ruleForm.dueDate.toString(),
               fee: this.ruleForm.fee,
-              dueDate: this.ruleForm.dueDate
+              maxNumber: 1,
+              tag: [this.ruleForm.tag],
+              question: ''
             }
+            console.log(summitParams)
             summitErrand(summitParams).then(res => {
               console.log(res.data)
-              let { code, msg } = res.data
-              if (code === 200) {
+              if (res.status === 200) {
                 this.$message({
                   message: '提交成功',
                   type: 'success'
                 })
               } else {
                 this.$message({
-                  message: '提交失败' + msg,
+                  message: `提交 ${res.status} ${res.statusText}`,
                   type: 'error'
                 })
               }
+            })
+          }).catch((err) => {
+            this.$message({
+              message: `接取任务失败? ${err}`,
+              type: 'error'
             })
           })
         }

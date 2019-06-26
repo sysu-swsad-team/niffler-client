@@ -64,11 +64,19 @@ export const deleteQN = params => {
 
 /* ***************** errand ***************** */
 export const summitErrand = params => {
-  return axios.post('errand/create/', params, header)
+  return axios.post('questionnaire/task/', params, header)
 }
 
 export const queryErrand = params => {
-  return axios.get('errand/' + params, null, header)
+  return axios.get('questionnaire/task/' + params, null, header)
+}
+
+export const takeErrand = params => {
+  return axios.post('questionnaire/participantship/', params, header)
+}
+
+export const removeErrand = params => {
+  return axios.post(`questionnaire/task/cancel/${params.id}/`, params, header)
 }
 /* ***************** end errand ***************** */
 
