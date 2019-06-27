@@ -73,18 +73,18 @@ export default {
               sessionStorage.clear()
               _this.$router.push('/login')
               this.$message({
-                message: '登出成功 ' + res.status,
+                message: '登出成功',
                 type: 'success'
               })
             } else {
               this.$message({
-                message: '登出错误 ' + res.status,
+                message: '登出错误',
                 type: 'error'
               })
             }
           }).catch(err => {
             this.$message({
-              message: '登出错误catch err: ' + err,
+              message: '登出错误' + err,
               type: 'error'
             })
           })

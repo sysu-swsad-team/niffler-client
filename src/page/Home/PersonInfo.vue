@@ -248,7 +248,7 @@ export default {
         }
       }).catch(err => {
         this.$message({
-          message: '获取个人信息失败' + err,
+          message: '获取个人信息错误' + err,
           type: 'error'
         })
         this.isLoading = false
@@ -284,7 +284,7 @@ export default {
             })
           }).catch(err => {
             this.$message({
-              message: '修改失败 ' + err,
+              message: '更改信息错误' + err,
               type: 'error'
             })
           })
@@ -340,7 +340,7 @@ export default {
         })
       }).catch(err => {
         this.$message({
-          message: '失败 ' + err,
+          message: '上传照片错误' + err,
           type: 'error'
         })
       })
