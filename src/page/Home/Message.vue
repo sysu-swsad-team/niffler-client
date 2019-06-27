@@ -1,10 +1,11 @@
 <template>
     <el-row>
       <el-col :span="24">
+        （功能待开发，敬请期待）
         <div v-infinite-scroll="load" infinite-scroll-disabled="disabled">
           <el-card v-bind:key="i" v-for="i in count" style="margin-bottom: 5px;">
             <h5>消息 {{ i }}</h5>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            欢迎加入 NIFFLER !
           </el-card>
         </div>
         <p v-if="loading" style="text-align: center;">加载中...</p>
@@ -75,7 +76,7 @@
 //     }
 //   }
 // })
-const msgNum = 20
+const msgNum = 1
 const msgLoadStep = 2
 export default {
   data () {

@@ -21,7 +21,7 @@ const state = {
   email: 'init',
   balance: 0, // 闲钱币数量
   available_balance: 0,
-  msgNumUnread: 100, // 未读信息数量
+  msgNumUnread: 1, // 未读信息数量
   logo: logo
 }
 

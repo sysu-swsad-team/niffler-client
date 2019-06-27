@@ -29,7 +29,7 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-dialog :visible.sync="isWithdraw" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="50%" title="提现" :center="true">
+      <el-dialog :visible.sync="isWithdraw" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="50%" title="提现">
         <el-form :model="withdrawForm" label-width="100px" class="demo-dynamic">
           <el-form-item label="支付宝账号:" prop="account">
             <el-input v-model="withdrawForm.account" auto-complete="off" placeholder="为了能顺利提现，请确保输入您的支付宝账号"></el-input>
@@ -43,13 +43,16 @@
           <el-button size="medium" @click.native="isWithdraw = false">取消</el-button>
         </div>
       </el-dialog>
-      <el-dialog :visible.sync="isRecharge" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="40%" title="充值" :center="true">
-        <el-row style="text-align: center; padding-top: 20px;">
-        <div class="demo-image">
-          <vue-qr :logo-src="config.logo" :text="config.text" :margin="5" :auto-color="true" :size="200" :dot-scale="1"></vue-qr>
+      <el-dialog :visible.sync="isRecharge" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="40%" title="充值">
+        <el-form :model="rechargeForm" :rules="rechargeRules" ref="rechargeForm" status-icon>
+          <el-form-item label="充值金额" prop="rechargeMoney">
+            <el-input-number v-model="rechargeForm.rechargeMoney" :min="0.01" :max="9999.0" :step="0.01"></el-input-number>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" size="medium" @click.native="commitRecharge">确认</el-button>
+          <el-button size="medium" @click.native="isRecharge = false">取消</el-button>
         </div>
-        <h4 style="margin: 10px;">请扫码充值</h4>
-      </el-row>
       </el-dialog>
     </template>
     <router-view v-else></router-view>
@@ -60,6 +63,7 @@
 <script>
 import PageHead from '../components/PageHead'
 import VueQr from 'vue-qr'
+import { makePayment } from '../../api/api'
 export default {
   data () {
     return {
@@ -68,6 +72,14 @@ export default {
       withdrawForm: {
         account: '',
         money: 0
+      },
+      rechargeForm: {
+        rechargeMoney: ''
+      },
+      rechargeRules: {
+        rechargeMoney: [
+          { required: true, message: '请输入充值金额', trigger: 'change' }
+        ]
       },
       config: {
         value: 'www.baidu.com',
@@ -119,6 +131,28 @@ export default {
         })
         this.isWithdraw = false
       }).catch(() => { })
+    },
+    commitRecharge () {
+      this.$refs.rechargeForm.validate((valid) => {
+        this.$message({
+          type: 'success',
+          message: '功能待开发，敬请期待'
+        })
+        // if (valid) {
+        //   console.log(this.rechargeForm.rechargeMoney)
+        //   let params = { amount: this.rechargeForm.rechargeMoney.toString() }
+        //   console.log(params)
+        //   makePayment(params).then(res => {
+        //     console.log(res)
+        //   }).catch(err => {
+        //     console.log(err)
+        //     return false
+        //   })
+        // } else {
+        //   console.log('error submit!')
+        //   return false
+        // }
+      })
     }
   },
   components: {

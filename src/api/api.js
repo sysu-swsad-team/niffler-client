@@ -76,3 +76,8 @@ export const queryParticipant = params => {
   return axios.get(`questionnaire/profile/${params.id}`, params, header)
 }
 /* ***************** end errand ***************** */
+
+/* balance */
+export const makePayment = params => {
+  return axios.get('payment/', params, header)
+}
