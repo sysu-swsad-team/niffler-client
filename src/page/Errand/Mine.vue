@@ -178,7 +178,6 @@ export default {
               message: '删除成功',
               type: 'success'
             })
-            this.getErrandList()
           } else {
             this.$message({
               message: `删除失败 ${res.data.msg}`,

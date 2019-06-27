@@ -29,13 +29,13 @@
           <template slot-scope="scope">
             <el-tooltip placement="top">
               <div slot="content">{{ scope.row.description }}</div>
-              <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="primary" @click="checkQustionnair(scope.$index)">查看</el-button>
+              <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="primary" @click="checkQustionnair(scope.row.id)">查看</el-button>
               <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info">已取消</el-button>
               <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info">已过期</el-button>
               <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning">被举报</el-button>
-              <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success" @click="checkQustionnair(scope.$index)">已结束</el-button>
+              <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success" @click="checkQustionnair(scope.row.id)">已结束</el-button>
             </el-tooltip>
-          <el-button :disabled="scope.row.status !== 'UNDERWAY'" size="small" type="danger" @click="deleteQuestionnair(scope.$index)">取消问卷</el-button>
+          <el-button :disabled="scope.row.status !== 'UNDERWAY'" size="small" type="danger" @click="deleteQuestionnair(scope.row.id)">取消问卷</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -52,10 +52,11 @@
         </div>
       </el-dialog>
       <el-dialog :visible.sync="isCheck" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷填写情况" :center="true">
-        <el-table :data="answerList" style="width: 100%" stripe highlight-current-row height="250">
-          <el-table-column prop="id" label="问卷ID" width="80"></el-table-column>
-          <el-table-column v-for="(answers, index) in answerList.answers" :prop="answers" :label="'问题' + index" width="50" :key="index"></el-table-column>
+        <el-table v-if="answerList.length > 0" :data="answerList" style="width: 100%" stripe highlight-current-row height="250">
+          <el-table-column prop="userName" label="回答者" width="150"></el-table-column>
+          <el-table-column v-for="(an, index) in answerList.answer" prop="an" :label="index" width="80" :key="index"></el-table-column>
         </el-table>
+        <div v-else>暂无人填写该问卷</div>
       </el-dialog>
       <el-dialog :visible.sync="isLookOver" :close-on-click-model="true" :show-close="true" :close-on-press-escape="true" width="80%" height="auto" class="infinite-list" title="问卷详细内容" :center="true" append-to-body>
         <el-col :span="24" class="content-wrapper" style="background-color: #eee;padding: 10px; margin: 0px;">
@@ -142,7 +143,7 @@ export default {
       isEdit: false,
       isCheck: false,
       isLookOver: false,
-      answerList: { },
+      answerList: [],
       detailQN: { },
       total: 0,
       listLoading: false
@@ -218,7 +219,7 @@ export default {
       // 根据this.questionnaireList[index].id 从后端获取完整问卷，存放在editingQN中
       this.isEdit = true
     },
-    deleteQuestionnair (index) {
+    deleteQuestionnair (id) {
       event.cancelBubble = true
       // 根据this.questionnaireList[index].id 想后端请求删除该问卷，如果返回success，在前端的
       // this.questionnaireList删除对应问卷
@@ -226,19 +227,17 @@ export default {
         type: 'warning'
       }).then(() => {
         let para = {
-          email: this.getInfo.email,
-          id: this.questionnaireList[index].id
+          id: id
         }
-        cancelTask(para).then((res) => {
-          let { code, msg } = res.data
-          if (code === 200) {
+        cancelTask(para).then(res => {
+          if (res.status === 200) {
             this.$message({
               message: '删除成功',
               type: 'success'
             })
           } else {
             this.$message({
-              message: msg,
+              message: `删除失败 ${res.data.msg}`,
               type: 'error'
             })
           }
@@ -251,11 +250,37 @@ export default {
         })
       })
     },
-    checkQustionnair (index) {
+    checkQustionnair (id) {
       // 根据this.questionnaireList[index].id 向后端求情该问卷的所有填写情况，如果返回success，则
       // 弹出对话框，以表格的形式{'id', 'Q1', 'Q2',...}显示，建议dialog为Fullscreen,存于answerList
-      this.isCheck = true
       event.cancelBubble = true
+      let params = {
+        id: id
+      }
+      getQNDetail(params).then(res => {
+        console.log('data:', res.data)
+        this.answerList = []
+        if (res.status === 200) {
+          for (var i = 0; i < res.data.questionnaire.participantship_set.length; i++) {
+            this.answerList.push({
+              userName: res.data.questionnaire.participantship_set[i].userName,
+              answer: JSON.parse(res.data.questionnaire.participantship_set[i].answer)
+            })
+          }
+          console.log(this.answerList)
+          this.isCheck = true
+        } else {
+          this.$message({
+            message: '获取问卷失败' + res.data.msg,
+            type: 'error'
+          })
+        }
+      }).catch(err => {
+        this.$message({
+          message: '获取问卷失败' + err,
+          type: 'error'
+        })
+      })
     },
     filterTag (value, row) {
       return row.tag === value
