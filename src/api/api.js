@@ -48,61 +48,31 @@ export const claimTask = params => {
 export const cancelTask = params => {
   return axios.post(`questionnaire/task/cancel/${params.id}/`, null, header)
 }
+
+export const queryTask = params => {
+  return axios.get('questionnaire/task/' + params, null, header)
+}
+
+export const summitTask = params => {
+  return axios.post('questionnaire/task/', params, header)
+}
 /* ***************** end task: questionnaire and errand ***************** */
 
 /* ***************** questionnaire ***************** */
-export const summitQN = params => {
-  return axios.post('questionnaire/task/', params, header)
-}
-
-export const queryQN = params => {
-  return axios.get('questionnaire/task/' + params, null, header)
-}
 
 export const getQNDetail = params => {
   return axios.get(`questionnaire/task/${params.id}/`, params, header)
 }
 
-export const getMyQN = params => {
-  return axios.get('questionnaire/mine/', params, header)
-}
-
-export const getMyQNFilter = params => {
-  return axios.get('questionnaire/mine/filter', params, header)
-}
-
 /* ***************** end questionnaire ***************** */
 
 /* ***************** errand ***************** */
-export const summitErrand = params => {
-  return axios.post('questionnaire/task/', params, header)
-}
-
-export const queryErrand = params => {
-  return axios.get('questionnaire/task/' + params, null, header)
-}
 
 export const takeErrand = params => {
   return axios.post('questionnaire/participantship/', params, header)
-}
-
-export const removeErrand = params => {
-  return axios.post(`questionnaire/task/cancel/${params.id}/`, params, header)
 }
 
 export const queryParticipant = params => {
   return axios.get(`questionnaire/profile/${params.id}`, params, header)
 }
 /* ***************** end errand ***************** */
-
-// export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }) }
-
-// export const getUserListPage = params => { return axios.get(`${base}/user/listpage`, { params: params }) }
-
-// export const removeUser = params => { return axios.get(`${base}/user/remove`, { params: params }) }
-
-// export const batchRemoveUser = params => { return axios.get(`${base}/user/batchremove`, { params: params }) }
-
-// export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }) }
-
-// export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }) }

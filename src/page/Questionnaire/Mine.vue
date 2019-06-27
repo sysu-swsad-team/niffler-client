@@ -72,7 +72,7 @@
 <script>
 import EditQuestionair from '../components/EditQuestionair'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
-import { queryQN, getQNDetail, cancelTask } from '../../api/api'
+import { queryTask, getQNDetail, cancelTask } from '../../api/api'
 import querystring from 'querystring'
 export default {
   data () {
@@ -129,7 +129,7 @@ export default {
       }
       params = '?' + querystring.stringify(params)
       console.log(params)
-      queryQN(params).then(res => {
+      queryTask(params).then(res => {
         if (res.status === 200) {
           console.log(res)
           this.questionnaireList = []

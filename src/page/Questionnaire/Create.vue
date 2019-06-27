@@ -119,7 +119,7 @@
 
 <script>
 /* 引入api */
-import {summitQN} from '../../api/api'
+import {summitTask} from '../../api/api'
 
 export default {
   computed: {
@@ -291,7 +291,7 @@ export default {
               questions: JSON.stringify(this.ruleForm.questions)
             }
             console.log('summitParams:', summitParams)
-            summitQN(summitParams).then(res => {
+            summitTask(summitParams).then(res => {
               console.log(res)
               if (res.status === 200) {
                 this.$message({

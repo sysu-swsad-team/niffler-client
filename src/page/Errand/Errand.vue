@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { queryErrand, takeErrand, claimTask } from '../../api/api'
+import { queryTask, takeErrand, claimTask } from '../../api/api'
 import PageHead from '../components/PageHead'
 import querystring from 'querystring'
 export default {
@@ -112,8 +112,8 @@ export default {
         params.issuer = queryParams.issuer
       }
       params = '?' + querystring.stringify(params)
-      console.log('queryErrand params:', params)
-      queryErrand(params).then(res => {
+      console.log('queryTask params:', params)
+      queryTask(params).then(res => {
         if (res.status === 200) {
           console.log(res.data)
           // this.errandList = res.data

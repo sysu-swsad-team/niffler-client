@@ -36,7 +36,7 @@
 
 <script>
 import Vue from 'vue'
-import {summitErrand} from '../../api/api'
+import {summitTask} from '../../api/api'
 Vue.component('anchored-heading', {
   render: function (createElement) {
     return createElement(
@@ -112,7 +112,7 @@ export default {
               question: ''
             }
             console.log(summitParams)
-            summitErrand(summitParams).then(res => {
+            summitTask(summitParams).then(res => {
               console.log(res.data)
               if (res.status === 200) {
                 this.$message({
