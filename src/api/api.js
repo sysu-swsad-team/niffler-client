@@ -42,11 +42,11 @@ export const postVercode = params => {
 
 /* ***************** task: questionnaire and errand ***************** */
 export const claimTask = params => {
-  return axios.post('questionnaire/task/claim/' + params, null, header)
+  return axios.post(`questionnaire/task/claim/${params.id}/`, null, header)
 }
 
 export const cancelTask = params => {
-  return axios.post('questionnaire/task/cancel/' + params, null, header)
+  return axios.post(`questionnaire/task/cancel/${params.id}/`, null, header)
 }
 /* ***************** end task: questionnaire and errand ***************** */
 

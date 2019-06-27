@@ -217,10 +217,7 @@ export default {
         cancelButtonText: '取消',
         type: 'success'
       }).then(() => {
-        console.log('index', row.id)
-        const params = row.id + '/'
-        console.log(params)
-        claimTask(params).then(res => {
+        claimTask({id: row.id}).then(res => {
           console.log('msg', res.data.msg)
           if (res.status === 200) {
             this.$message({

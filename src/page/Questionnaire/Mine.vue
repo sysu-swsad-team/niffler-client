@@ -37,7 +37,7 @@
             <div slot="content">{{ scope.row.description }}</div>
             <el-button size="small" type="primary" @click="checkQustionnair(scope.$index, scope.row)">查看</el-button>
           </el-tooltip>
-          <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="danger" @click="cancelTask(scope.$index, scope.row)">取消问卷</el-button>
+          <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="danger" @click="cancelQN(scope.$index, scope.row)">取消问卷</el-button>
           <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info" disabled style="width:68px">已取消</el-button>
           <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info" disabled style="width:68px">已过期</el-button>
           <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning" disabled style="width:68px">被举报</el-button>
@@ -179,14 +179,14 @@ export default {
 
       // alert('获取问卷' + this.questionnaireList[index].title)
     },
-    cancelTask (index, row) {
+    cancelQN (index, row) {
       event.cancelBubble = true
       // 根据this.questionnaireList[index].id 想后端请求删除该问卷，如果返回success，在前端的
       // this.questionnaireList删除对应问卷
       this.$confirm('确认删除该问卷吗？', '提示', {
         type: 'warning'
       }).then(() => {
-        cancelTask(row.id + '/').then((res) => {
+        cancelTask({id: row.id}).then((res) => {
           console.log(res)
           this.$message({
             message: `${res.data.msg} ${res.status}`,
