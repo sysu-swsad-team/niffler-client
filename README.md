@@ -2,10 +2,6 @@
 
 > niffler client, a vue.js project
 
-## Theme color \#1D365D
-
-<div style="background-color: #1D365D; width: 250px; color: white; text-align:center;">主题颜色<br>#1D365D</div>
-
 ## Build Setup
 
 ``` bash
@@ -32,18 +28,6 @@ npm test
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
-
-
-
-## 版本说明
-
-> 尽量按照以下版本安装，否则可能会出错
-
-- node.js v8.9.0
-- npm 6.9.0
-- vue@2.6.10
-- vue-router@3.0.6
-- element-ui@2.8.2
 
 
 
@@ -77,21 +61,7 @@ npm run dev
 
 
 
+## Theme color \#1D365D
 
+<div style="background-color: #1D365D; width: 250px; color: white; text-align:center;">Theme color<br>#1D365D</div>
 
-## 2019.5.15
-
-> by wuzht
-
-- 2019.5.25 更改了登录界面 by chain
-
-### Done
-
-实现了简单的登录界面和主页面原型，待修改
-
-### TODO
-
-* 改善代码
-* 登录认证
-* 注册账号
-* 完善主页面（任务发布、查看等）

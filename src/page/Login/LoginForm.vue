@@ -8,7 +8,7 @@
       <el-form-item prop="password">
         <el-input type="password" show-password v-model="ruleForm.password" placeholder="Password"></el-input>
       </el-form-item>
-      <div class="link"><a href="#" @click="isRememberPW = true">忘记密码?</a></div>
+      <div class="link"><a href="/#/login" @click="isRememberPW = true">忘记密码?</a></div>
       <el-form-item style="width:100%">
         <el-button
         :loading="logining"
