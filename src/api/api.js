@@ -44,6 +44,10 @@ export const postVercode = params => {
 export const claimTask = params => {
   return axios.post('questionnaire/task/claim/' + params, null, header)
 }
+
+export const cancelTask = params => {
+  return axios.post('questionnaire/task/cancel/' + params, null, header)
+}
 /* ***************** end task: questionnaire and errand ***************** */
 
 /* ***************** questionnaire ***************** */
@@ -67,13 +71,6 @@ export const getMyQNFilter = params => {
   return axios.get('questionnaire/mine/filter', params, header)
 }
 
-export const deleteBatchQN = params => {
-  return axios.post('questionnaire/mine/batchDelete/', null, header)
-}
-
-export const deleteQN = params => {
-  return axios.post('/questionnaire/mine/delete/', params, header)
-}
 /* ***************** end questionnaire ***************** */
 
 /* ***************** errand ***************** */

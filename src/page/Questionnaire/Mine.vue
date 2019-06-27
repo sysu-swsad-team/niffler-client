@@ -14,7 +14,6 @@
     :data="questionnaireList"
     :row-style="rowStyle"
     highlight-current-row
-    @selection-change="selsChange"
     style="width: 100%;"
     stripe
     @row-click="lookOverQN"
@@ -36,13 +35,13 @@
         <template slot-scope="scope">
           <el-tooltip placement="top">
             <div slot="content">{{ scope.row.description }}</div>
-            <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="primary" style="width:68px" @click="checkQustionnair(scope.$index)">查看</el-button>
-            <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info" style="width:68px">已取消</el-button>
-            <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info" style="width:68px">已过期</el-button>
-            <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning" style="width:68px">被举报</el-button>
-            <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success" style="width:68px">已结束</el-button>
+            <el-button size="small" type="primary" @click="checkQustionnair(scope.$index, scope.row)">查看</el-button>
           </el-tooltip>
-        <el-button :disabled="scope.row.status !== 'UNDERWAY'" size="small" type="danger" @click="deleteQuestionnair(scope.$index)">取消问卷</el-button>
+          <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="danger" @click="cancelTask(scope.$index, scope.row)">取消问卷</el-button>
+          <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info" disabled style="width:68px">已取消</el-button>
+          <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info" disabled style="width:68px">已过期</el-button>
+          <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning" disabled style="width:68px">被举报</el-button>
+          <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success" disabled style="width:68px">已结束</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -50,9 +49,6 @@
       <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
       </el-pagination>
     </el-col>
-  <!--       <el-col :span="24" class="toolbar">
-      <el-button type="danger" size="medium" style="margin-top: 5px;" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
-    </el-col> -->
     <el-dialog :visible.sync="isEdit" :close-on-click-model="false" :show-close="false" :close-on-press-escape="false" width="60%" height="auto" class="infinite-list" title="问卷编辑">
       <EditQuestionair :ruleForm="editingQN" style="background-color:white;padding:10px"></EditQuestionair>
       <div slot="footer" class="dialog-footer">
@@ -76,7 +72,7 @@
 <script>
 import EditQuestionair from '../components/EditQuestionair'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
-import {deleteQN, queryQN, getMyQNFilter, getQNDetail, deleteBatchQN} from '../../api/api'
+import { queryQN, getQNDetail, cancelTask } from '../../api/api'
 import querystring from 'querystring'
 export default {
   data () {
@@ -136,11 +132,6 @@ export default {
       queryQN(params).then(res => {
         if (res.status === 200) {
           console.log(res)
-          // this.questionnaireList = res.data
-          // for (var i = 0; i < this.questionnaireList.length; i++) {
-          //   this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
-          //   this.questionnaireList[i].issuer = this.questionnaireList[i].issuer_first_name
-          // }
           this.questionnaireList = []
           for (var i = 0; i < res.data.length; i++) {
             this.questionnaireList.push({
@@ -182,66 +173,37 @@ export default {
       this.page = val
       this.getQNList()
     },
-    getFilter () {
-      // 从后端根据查询条件获取对应的问卷，放在questionnaireList中
-      // alert('查询条件' + this.filters)
-      let params = {
-        email: this.getInfo.email,
-        filters: this.filters
-      }
-      getMyQNFilter(params).then(res => {
-        console.log(res.data)
-        let { code, msg, questionnaires } = res.data
-        if (code === 200) {
-          this.questionnaireList = questionnaires
-        } else {
-          this.$message({
-            message: '获取问卷失败' + msg,
-            type: 'error'
-          })
-        }
-      }).catch(err => {
-        console.log(err)
-      })
-    },
     editQustionnair (index) {
       // 根据this.questionnaireList[index].id 从后端获取完整问卷，存放在editingQN中
       this.isEdit = true
 
       // alert('获取问卷' + this.questionnaireList[index].title)
     },
-    deleteQuestionnair (index) {
+    cancelTask (index, row) {
       event.cancelBubble = true
       // 根据this.questionnaireList[index].id 想后端请求删除该问卷，如果返回success，在前端的
       // this.questionnaireList删除对应问卷
       this.$confirm('确认删除该问卷吗？', '提示', {
         type: 'warning'
       }).then(() => {
-        let para = {
-          email: this.getInfo.email,
-          id: this.questionnaireList[index].id
-        }
-        deleteQN(para).then((res) => {
-          console.log(res.data)
-          let { code, msg } = res.data
-          if (code === 200) {
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            })
-          } else {
-            this.$message({
-              message: msg,
-              type: 'error'
-            })
-          }
+        cancelTask(row.id + '/').then((res) => {
+          console.log(res)
+          this.$message({
+            message: `${res.data.msg} ${res.status}`,
+            type: res.status === 200 ? 'success' : 'error'
+          })
+          this.getQNList()
         }).catch(err => {
           console.log(err)
+          this.$message({
+            message: `错误 err`,
+            type: 'error'
+          })
         })
-      })
+      }).catch(() => {})
     },
-    checkQustionnair (index) {
-      // 根据this.questionnaireList[index].id 向后端求情该问卷的所有填写情况，如果返回success，则
+    checkQustionnair (index, row) {
+      // 根据row.id 向后端求情该问卷的所有填写情况，如果返回success，则
       // 弹出对话框，以表格的形式{'id', 'Q1', 'Q2',...}显示，建议dialog为Fullscreen,存于answerList
       this.isCheck = true
       event.cancelBubble = true
@@ -251,35 +213,6 @@ export default {
     },
     filterTask (value, row) {
       return row.status === value
-    },
-    batchRemove () {
-      // 根据sels中的下标，找到对应问卷的id，传给后端进行删除，
-      // 返回成功再在重新请求questionnaireList
-      this.$confirm('确认删除该问卷吗？', '提示', {
-        type: 'warning'
-      }).then(() => {
-        let para = {
-          email: this.getInfo.email,
-          id: this.sels
-        }
-        deleteBatchQN(para).then((res) => {
-          console.log(res.data)
-          let { code, msg } = res.data
-          if (code === 200) {
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            })
-          } else {
-            this.$message({
-              message: msg,
-              type: 'error'
-            })
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      })
     },
     summitEdit () {
       if (this.editingQN.title === '') {
