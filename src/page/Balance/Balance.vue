@@ -134,24 +134,22 @@ export default {
     },
     commitRecharge () {
       this.$refs.rechargeForm.validate((valid) => {
-        this.$message({
-          type: 'success',
-          message: '功能待开发，敬请期待'
-        })
-        // if (valid) {
-        //   console.log(this.rechargeForm.rechargeMoney)
-        //   let params = { amount: this.rechargeForm.rechargeMoney.toString() }
-        //   console.log(params)
-        //   makePayment(params).then(res => {
-        //     console.log(res)
-        //   }).catch(err => {
-        //     console.log(err)
-        //     return false
-        //   })
-        // } else {
-        //   console.log('error submit!')
-        //   return false
-        // }
+        // this.$message({
+        //   type: 'success',
+        //   message: '功能待开发，敬请期待'
+        // })
+        if (valid) {
+          console.log(this.rechargeForm.rechargeMoney)
+          makePayment(this.rechargeForm.rechargeMoney).then(res => {
+            console.log(res)
+          }).catch(err => {
+            console.log(err)
+            return false
+          })
+        } else {
+          console.log('error submit!')
+          return false
+        }
       })
     }
   },

@@ -78,6 +78,6 @@ export const queryParticipant = params => {
 /* ***************** end errand ***************** */
 
 /* balance */
-export const makePayment = params => {
-  return axios.get('payment/', params, header)
+export const makePayment = amount => {
+  return axios.get(`payment/?amount=${amount}/`, null, header)
 }

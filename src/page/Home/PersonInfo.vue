@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-button type="primary" @click="getAndUpdateProfile()">刷新</el-button>
+    <!-- <el-button type="primary" @click="getAndUpdateProfile()">刷新</el-button> -->
     <el-table
     :data="personInfoList"
     :show-header="false"
