@@ -84,7 +84,7 @@
 <script>
 import PageHead from '../components/PageHead'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
-import { queryQN, getQNDetail, claimTask } from '../../api/api'
+import { queryTask, getQNDetail, claimTask } from '../../api/api'
 import querystring from 'querystring'
 export default {
   data () {
@@ -123,7 +123,7 @@ export default {
       }
       params = '?' + querystring.stringify(params)
       console.log(params)
-      queryQN(params).then(res => {
+      queryTask(params).then(res => {
         if (res.status === 200) {
           console.log(res)
           // this.questionnaireList = res.data
@@ -223,10 +223,7 @@ export default {
         cancelButtonText: '取消',
         type: 'success'
       }).then(() => {
-        console.log('index', row.id)
-        const params = row.id + '/'
-        console.log(params)
-        claimTask(params).then(res => {
+        claimTask({id: row.id}).then(res => {
           console.log('msg', res.data.msg)
           if (res.status === 200) {
             this.$message({

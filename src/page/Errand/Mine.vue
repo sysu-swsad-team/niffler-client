@@ -27,7 +27,7 @@
           <template slot-scope="scope">
             <el-tooltip placement="top">
               <div slot="content">{{ scope.row.description }}</div>
-              <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="danger" @click="deleteErrand(scope.$index)">取消任务</el-button>
+              <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="danger" @click="cancelErrand(scope.$index, scope.row)">取消任务</el-button>
               <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info">已取消</el-button>
               <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info">已过期</el-button>
               <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning">被举报</el-button>
@@ -48,7 +48,7 @@
 
 <script>
 import Vue from 'vue'
-import { queryErrand, removeErrand } from '../../api/api'
+import { queryTask, cancelTask } from '../../api/api'
 import querystring from 'querystring'
 Vue.component('anchored-heading', {
   render: function (createElement) {
@@ -99,7 +99,7 @@ export default {
       }
       params = '?' + querystring.stringify(params)
       console.log('myErrand params:', params)
-      queryErrand(params).then(res => {
+      queryTask(params).then(res => {
         console.log('res', res.data)
         if (res.status === 200) {
           // this.errandList = res.data
@@ -180,7 +180,7 @@ export default {
     batchRemove () {
       // 根据sels中的下标，找到对应问卷的id，传给后端进行删除，返回成功再在前端questionnaireList进行删除
     },
-    deleteErrand (index) {
+    cancelErrand (index, row) {
       // 根据this.errandList[index].id 想后端请求删除的活动，如果返回success，在前端的
       // this.errandList删除对应活动
       event.cancelBubble = true
@@ -190,10 +190,10 @@ export default {
         type: 'warning'
       }).then(() => {
         const params = {
-          id: this.errandList[index].id
+          id: row.id
         }
         console.log(params)
-        removeErrand(params).then(res => {
+        cancelTask(params).then(res => {
           console.log(res)
           if (res.status === 200) {
             this.$message({
