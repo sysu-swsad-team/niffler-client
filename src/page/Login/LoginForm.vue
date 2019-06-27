@@ -13,11 +13,7 @@
         <el-button
         :loading="logining"
         @click.native.prevent="handleLogin"
-        type="primary" class="form-btn">学生登录</el-button>
-        <el-button
-        :loading="logining"
-        @click.native.prevent="handleLogin"
-        type="primary" class="form-btn">商家登录</el-button>
+        type="primary" class="form-btn">Sign in</el-button>
       </el-form-item>
       <!-- <button type="button" @click="loginStudent">学生登录</button>
       <button type="button" @click="loginStudent">商家登录</button> -->
@@ -120,9 +116,9 @@ export default {
 @import '~scss_vars';
 .form-btn, .form-btn:hover, .form-btn:focus {
   text-align: center;
-  height: 54px;
-  width: 49%;
-  margin: 0 auto;
+  height: 55px;
+  width: 60%;
+  margin: 0 20%;
   // padding: 19.5px 44px;
   padding: 0px;
   outline: none;

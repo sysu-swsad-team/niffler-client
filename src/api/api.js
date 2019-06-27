@@ -22,6 +22,10 @@ export const getProfile = _params => {
   return axios.get('questionnaire/profile/', null, header)
 }
 
+export const changeProfile = params => {
+  return axios.post('questionnaire/profile/', params, header)
+}
+
 export const postAvatar = params => {
   return axios.post('avatar/', params, {headers: {'Content-Type': 'image/jpeg'}})
 }
