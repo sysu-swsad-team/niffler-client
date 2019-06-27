@@ -48,7 +48,7 @@
 
 <script>
 import Vue from 'vue'
-import { queryErrand, removeErrand, queryParticipant } from '../../api/api'
+import { queryErrand, removeErrand } from '../../api/api'
 import querystring from 'querystring'
 Vue.component('anchored-heading', {
   render: function (createElement) {
@@ -111,7 +111,7 @@ export default {
           for (var i = 0; i < res.data.length; i++) {
             var participantName = ''
             if (res.data[i].participants.length !== 0) {
-              participantName = this.getParticipant(res.data[i].participants[0])
+              participantName = res.data[i].participants[0][1]
             }
             this.errandList.push({
               id: res.data[i].id,
@@ -146,31 +146,31 @@ export default {
         this.listLoading = false
       })
     },
-    getParticipant (id) {
-      var params = {
-        id: id
-      }
-      var participantName = ''
-      queryParticipant(params).then(res => {
-        console.log('participantName', res.data)
-        if (res.status === 200) {
-          console.log('get participantName success')
-          participantName = res.data.first_name
-        } else {
-          this.$message({
-            message: '获取参与者信息失败',
-            type: 'error'
-          })
-        }
-      }).catch(err => {
-        console.log(err)
-        this.$message({
-          message: '获取信息失败' + err,
-          type: 'error'
-        })
-      })
-      return participantName
-    },
+    // getParticipant (id) {
+    //   var params = {
+    //     id: id
+    //   }
+    //   var participantName = ''
+    //   queryParticipant(params).then(res => {
+    //     console.log('participantName', res.data)
+    //     if (res.status === 200) {
+    //       console.log('get participantName success')
+    //       participantName = res.data.first_name
+    //     } else {
+    //       this.$message({
+    //         message: '获取参与者信息失败',
+    //         type: 'error'
+    //       })
+    //     }
+    //   }).catch(err => {
+    //     console.log(err)
+    //     this.$message({
+    //       message: '获取信息失败' + err,
+    //       type: 'error'
+    //     })
+    //   })
+    //   return participantName
+    // },
     filterTag (value, row) {
       return row.tag === value
     },
