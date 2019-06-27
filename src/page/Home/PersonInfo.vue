@@ -194,7 +194,7 @@ export default {
       },
       rules: {
         first_name: {first_name: [{ required: true, message: '请输入姓名', trigger: 'blur' }]},
-        stuId: {stuId: [{ required: true, message: '请输入学号', trigger: 'blur' }, { validator: validID, trigger: 'change' }]},
+        stuId: {stuId: [{ required: true, message: '请输入学号', trigger: 'change' }, { validator: validID, trigger: 'change' }]},
         birth: {birth: [{ required: true, message: '请输入出生年月', trigger: 'blur' }]},
         sex: {sex: [{ required: true, message: '请选择性别', trigger: 'blur' }]},
         grade: {grade: [{ required: true, message: '请选择年级', trigger: 'blur' }]},
@@ -272,8 +272,8 @@ export default {
             console.log('changeProfile res:', res)
             if (res.status === 200) {
               var profile = res.data.profile
-              profile.avatar = `${axios.defaults.baseURL}/${profile.avatar}`
-              this.$store.dispatch('setUser', profile)
+              var user = utils.getUserByProfile(profile)
+              this.$store.dispatch('setUser', user)
               /* close dialog */
               this.dialogVisible = false
             }

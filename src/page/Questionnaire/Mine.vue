@@ -12,7 +12,16 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-table :data="questionnaireList" highlight-current-row @selection-change="selsChange" style="width: 100%;" stripe @row-click="lookOverQN" v-loading="listLoading" element-loading-spinner="el-icon-loading">
+      <el-table
+      :data="questionnaireList"
+      :row-style="rowStyle"
+      highlight-current-row
+      @selection-change="selsChange"
+      style="width: 100%;"
+      stripe
+      @row-click="lookOverQN"
+      v-loading="listLoading"
+      element-loading-spinner="el-icon-loading">
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column type="index" width="50"></el-table-column>
@@ -331,6 +340,10 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    /* 表格行的样式设置 */
+    rowStyle ({row, rowIndex}) {
+      return 'cursor: pointer;'
     }
   },
   created () {
