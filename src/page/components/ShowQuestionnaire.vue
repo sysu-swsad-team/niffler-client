@@ -30,20 +30,20 @@
       <el-divider content-position="center">问卷内容</el-divider>
       <el-form-item
         v-for="(question, index) in ruleForm.questions"
-        :label="'问题 ' + index" :key="question.key" v-if="index > 0">
+        :label="'问题 ' + index" :key="question.key">
         <div>{{ question.title }}</div>
         <el-form-item v-if="question.type === 0">
-          <el-radio-group v-for="(option) in question.options" :key="option.key">
-            <el-radio style="margin: 0 20px 0 20px">{{ option.value }}</el-radio>
+          <el-radio-group v-for="(option) in question.options" v-model="answer" :key="option.key" @change="putAnswer(index)">
+            <el-radio style="margin: 0 20px 0 20px" :label="option.value"></el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item v-if="question.type === 1">
-          <el-checkbox-group v-for="(option) in question.options" :key="option.key">
-            <el-checkbox>{{ option.value }}</el-checkbox>
+          <el-checkbox-group v-model="answer" @change="putAnswer(index)">
+            <el-checkbox v-for="(option) in question.options" :key="option.key" :label="option.key">{{ option.value }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item v-if="question.type === 2">
-          <el-input style="margin-bottom: 5px"></el-input>
+          <el-input style="margin-bottom: 5px" v-model="answer"></el-input>
         </el-form-item>
       </el-form-item>
     </el-form>
@@ -54,25 +54,25 @@
 export default {
   name: 'ShowQuestionnaire',
   props: {
-    ruleForm: {
-      title: '',
-      description: '',
-      maxNumber: 1,
-      fee: 0.01,
-      dueDate: '',
-      questions: [{
-        title: '',
-        type: -1,
-        options: [{
-          value: ''
-        }]
-      }]
-    },
+    ruleForm: '',
     isDisable: false
   },
   data () {
-    return { }
+    return {
+      summitForm: {
+        id: ruleForm.id,
+        answers: [ ]
+      },
+      answer: ''
+    }
   },
-  methods: { }
+  methods: {
+    putAnswer (index) {
+      summitForm.answers.push({
+        index: index,
+        value: this.answer
+      })
+    }
+  }
 }
 </script>

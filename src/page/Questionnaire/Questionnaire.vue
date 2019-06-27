@@ -68,7 +68,7 @@
 
       <el-dialog :visible.sync="isDetail" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="80%" class="infinite-list" title="问卷填写" :center="true">
         <el-divider></el-divider>
-        <ShowQuestionnaire :ruleForm="detailQN" :isDisable="true" style="background-color: #eee;padding: 10px;"></ShowQuestionnaire>
+        <ShowQuestionnaire :ruleForm="detailQN" :isDisable="false" style="background-color: #eee;padding: 10px;"></ShowQuestionnaire>
         <el-divider></el-divider>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" size="medium" @click.native="commiteAnswer"  style="padding-top: 10px">提交</el-button>
@@ -194,7 +194,16 @@ export default {
       getQNDetail(params).then(res => {
         console.log('data in get', res.data)
         if (res.status === 200) {
-          this.detailQN = res.data
+          this.detailQN = {
+            id: res.data.questionnaire.id,
+            title: res.data.questionnaire.title,
+            description: res.data.questionnaire.description,
+            maxNumber: res.data.questionnaire.participant_quota,
+            fee: res.data.questionnaire.fee,
+            dueDate: res.data.questionnaire.due_date,
+            questions: JSON.parse(res.data.questionnaire.poll)
+          }
+          console.log(this.detailQN)
           this.isDetail = true
         } else {
           this.$message({
