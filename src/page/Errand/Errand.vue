@@ -46,11 +46,15 @@
             disable-transitions>{{ scope.row.tag }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作与描述" min-width="200" fit>
+        <el-table-column label="操作与描述" min-width="200" fit prop="status" :filters="[{text: '进行中', value: 'UNDERWAY'}, {text: '已取消', value: 'CANCELLED'}, {text: '已过期', value: 'CLOSED'}, {text: '被举报', value: 'INVALID'}, {text: '已完成', value: 'QUOTA FULL'}]" :filter-method="filterTask" filter-placement="bottom-end">
           <template slot-scope="scope">
             <el-tooltip placement="top">
               <div slot="content">{{ scope.row.description }}</div>
-              <el-button size="small" type="primary" @click="paticipateErrand(scope.$index, scope.row)">接取</el-button>
+              <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="primary" @click="paticipateErrand(scope.$index, scope.row)">接取</el-button>
+              <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info">已取消</el-button>
+              <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info">已过期</el-button>
+              <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning">被举报</el-button>
+              <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success">已结束</el-button>
             </el-tooltip>
             <el-button size="small" type="danger" @click="claim(scope.$index, scope.row)">举报</el-button>
           </template>
@@ -127,7 +131,8 @@ export default {
               finisher: res.data[i].claimers[0],
               dueDate: res.data[i].due_date,
               tag: res.data[i].tag_set[0],
-              description: res.data[i].description
+              description: res.data[i].description,
+              status: res.data[i].status
             })
           }
           this.$message({
@@ -163,6 +168,9 @@ export default {
     handleCurrentChange () { },
     filterTag (value, row) {
       return row.tag === value
+    },
+    filterTask (value, row) {
+      return row.status === value
     },
     paticipateErrand (index, row) {
       // 接受此任务，后端将该任务的接受者设为当前用户，并设置该任务不能再被其他用户接受。注意处理并发事件
