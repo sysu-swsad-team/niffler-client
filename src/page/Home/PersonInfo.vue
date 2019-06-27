@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-button type="primary" @click="updateProfile()">刷新</el-button>
+    <el-button type="primary" @click="getAndUpdateProfile()">刷新</el-button>
     <el-table
     :data="personInfoList"
     :show-header="false"
@@ -124,7 +124,7 @@
 <script>
 /* 引入api */
 import axios from 'axios'
-import { getProfile, postAvatar } from '../../api/api'
+import { getProfile, changeProfile, postAvatar } from '../../api/api'
 import utils from '../../utils'
 
 export default {
@@ -155,7 +155,7 @@ export default {
   },
   data () {
     let validID = (rule, value, callback) => {
-      let reg = /[0-9]{8}/
+      let reg = /^[0-9]{8}$/
       if (!reg.test(value)) {
         callback(new Error('学号必须是由8位数字组成'))
       } else {
@@ -194,7 +194,7 @@ export default {
       },
       rules: {
         first_name: {first_name: [{ required: true, message: '请输入姓名', trigger: 'blur' }]},
-        stuId: {stuId: [{ required: true, message: '请输入学号', trigger: 'blur' }, { validator: validID, trigger: 'blur' }]},
+        stuId: {stuId: [{ required: true, message: '请输入学号', trigger: 'blur' }, { validator: validID, trigger: 'change' }]},
         birth: {birth: [{ required: true, message: '请输入出生年月', trigger: 'blur' }]},
         sex: {sex: [{ required: true, message: '请选择性别', trigger: 'blur' }]},
         grade: {grade: [{ required: true, message: '请选择年级', trigger: 'blur' }]},
@@ -214,11 +214,7 @@ export default {
   },
   methods: {
     isAllowClick (key) {
-      if (key === 'balance' || key === 'email') {
-        return false
-      } else {
-        return true
-      }
+      return key !== 'balance' && key !== 'email'
     },
     selectionChange: function (selection) {
     },
@@ -232,12 +228,12 @@ export default {
       this.dialogVisible = true
     },
     /* 更新profile */
-    updateProfile () {
+    getAndUpdateProfile () {
       this.isLoading = true
       getProfile(null).then(res => {
         if (res.status === 200) {
           this.isLoading = false
-          console.log('updateProfile getProfile res:', res)
+          console.log('getAndUpdateProfile getProfile res:', res)
           var profile = res.data
           var user = utils.getUserByProfile(profile)
           this.$store.dispatch('setUser', user)
@@ -253,10 +249,10 @@ export default {
         }
       }).catch(err => {
         this.isLoading = false
-        console.log('updateProfile getProfile catch err:', err)
+        console.log('getAndUpdateProfile getProfile catch err:', err)
       })
     },
-    /* 提交dialog表单 */
+    /* 提交dialog表单，修改个人信息 */
     dialogSubmitForm () {
       if (this.dialogKey === 'avatar' || this.dialogKey === 'password') {
         /* TODO: avatar和password的处理 */
@@ -266,20 +262,32 @@ export default {
       /* 表单验证 */
       this.$refs[this.dialogKey].validate((valid) => {
         if (valid) {
-          console.log('dialogSubmitForm', this.dialogKey, this.forms[this.dialogKey][this.dialogKey])
+          var params = {
+            key: this.dialogKey,
+            value: this.forms[this.dialogKey][this.dialogKey]
+          }
+          console.log('dialogSubmitForm params:', params)
           /* TODO: 提交表单，修改个人信息 */
-
-          /* 在Vuex store中修改 */
-          this.$store.dispatch('setInfo', {key: this.dialogKey, value: this.forms[this.dialogKey][this.dialogKey]})
-
-          /* close dialog */
-          this.dialogVisible = false
-
-          /* 成功提示消息 */
-          this.$message({
-            message: '更改成功',
-            type: 'success'
-          })
+          changeProfile(params).then(res => {
+            console.log('changeProfile res:', res)
+            if (res.status === 200) {
+              var profile = res.data.profile
+              profile.avatar = `${axios.defaults.baseURL}/${profile.avatar}`
+              this.$store.dispatch('setUser', profile)
+              /* close dialog */
+              this.dialogVisible = false
+            }
+            /* 提示消息 */
+            this.$message({
+              message: `${res.data.msg}`,
+              type: res.status === 200 ? 'success' : 'error'
+            })
+          }).catch(err => {
+            this.$message({
+              message: '修改失败 ' + err,
+              type: 'error'
+            })
+          }) 
         } else {
           console.log('error submit!!')
           return false
@@ -330,7 +338,7 @@ export default {
           this.dialogImageUrl = profile.avatar
         }
         this.$message({
-          message: `${res.data.msg} ${res.status} ${res.statusText}`,
+          message: `${res.data.msg}`,
           type: res.status === 200 ? 'success' : 'error'
         })
       }).catch(err => {
@@ -358,7 +366,7 @@ export default {
     }
   },
   mounted () {
-    this.updateProfile()
+    this.getAndUpdateProfile()
   }
 }
 </script>

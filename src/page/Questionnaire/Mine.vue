@@ -333,7 +333,7 @@ export default {
       })
     }
   },
-  mouted () {
+  created () {
     this.getQNList()
   },
   components: {
