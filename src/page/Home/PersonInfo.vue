@@ -233,7 +233,6 @@ export default {
       getProfile(null).then(res => {
         if (res.status === 200) {
           this.isLoading = false
-          console.log('getAndUpdateProfile getProfile res:', res)
           var profile = res.data
           var user = utils.getUserByProfile(profile)
           this.$store.dispatch('setUser', user)
@@ -248,8 +247,11 @@ export default {
           })
         }
       }).catch(err => {
+        this.$message({
+          message: '获取个人信息失败' + err,
+          type: 'error'
+        })
         this.isLoading = false
-        console.log('getAndUpdateProfile getProfile catch err:', err)
       })
     },
     /* 提交dialog表单，修改个人信息 */
@@ -266,10 +268,8 @@ export default {
             key: this.dialogKey,
             value: this.forms[this.dialogKey][this.dialogKey]
           }
-          console.log('dialogSubmitForm params:', params)
           /* TODO: 提交表单，修改个人信息 */
           changeProfile(params).then(res => {
-            console.log('changeProfile res:', res)
             if (res.status === 200) {
               var profile = res.data.profile
               var user = utils.getUserByProfile(profile)
@@ -289,7 +289,6 @@ export default {
             })
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -317,7 +316,6 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2 MB!')
       }
       if (isJPG && isLt2M) {
-        console.log(file)
         this.dialogImageFile = file
         return true
       } else {
@@ -330,7 +328,6 @@ export default {
       var fd = new FormData()
       fd.append('file', this.dialogImageFile)
       postAvatar(fd).then(res => {
-        console.log(res)
         if (res.status === 200) {
           var profile = res.data.profile
           profile.avatar = `${axios.defaults.baseURL}/${profile.avatar}`

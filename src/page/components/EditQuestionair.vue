@@ -44,9 +44,6 @@
           <el-checkbox-group v-for="(option) in question.options" :key="option.key">
             <el-checkbox>{{ option.value }}</el-checkbox>
           </el-checkbox-group>
-<!--           <el-radio-group v-for="(option) in question.options" :key="option.key">
-            <el-radio style="margin: 0 20px 0 20px">{{ option.value }}</el-radio>
-          </el-radio-group> -->
         </el-form-item>
         <el-form-item v-if="question.type === 2">
           <el-input placeholder="答案" style="margin-bottom: 5px"></el-input>
@@ -254,7 +251,6 @@ export default {
       if (this.addQuestion.title === '') {
         this.$message.error('请输入题目！')
       } else {
-        console.log(this.ruleForm.questions)
         this.ruleForm.questions.push({
           title: this.addQuestion.title,
           type: this.addType,
@@ -280,7 +276,6 @@ export default {
             type: 'success'
           }).then(() => {
             this.isLoading = true
-            console.log(this.getInfo.email)
             let summitParams = {
               taskType: '问卷',
               title: this.ruleForm.title,
@@ -291,9 +286,7 @@ export default {
               dueDate: this.ruleForm.dueDate.toString(),
               questions: this.ruleForm.questions
             }
-            console.log('summitParams:', summitParams)
             summitTask(summitParams).then(res => {
-              console.log(res)
               if (res.status === 200) {
                 this.$message({
                   message: '问卷提交成功',
@@ -307,13 +300,15 @@ export default {
               }
               this.isLoading = false
             }).catch(err => {
-              console.log(err)
+              this.$message({
+                message: '提交失败 ' + err,
+                type: 'error'
+              })
               this.isLoading = false
               return false
             })
           })
         } else {
-          console.log('error submit')
           this.isLoading = false
           return false
         }

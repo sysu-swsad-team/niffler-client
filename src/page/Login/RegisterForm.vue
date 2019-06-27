@@ -175,9 +175,7 @@ export default {
           this.isLoading = true
           this.isRequestVercodeLoading = true
           var params = `?email=${this.ruleForm.email}`
-          console.log('verEmail', params)
           requestSendVercode(params).then(res => {
-            console.log('requestSendVercode res:', res)
             if (res.status === 200) {
               this.$message({
                 message: `${res.data.msg} ${res.status} ${res.statusText} `,
@@ -198,7 +196,6 @@ export default {
             this.isRequestVercodeLoading = false
             this.isLoading = false
           }).catch(err => {
-            console.log('requestSendVercode err:', err)
             this.$message({
               message: 'F验证码发送失败 ' + err,
               type: 'error'
@@ -207,49 +204,10 @@ export default {
             this.isLoading = false
           })
         } else {
-          console.log('getVercode error submit! errorMessage: ', errorMessage)
           return false
         }
       })
     },
-    // getVercode () {
-    //   /* 验证email字段 */
-    //   this.$refs.ruleForm.validateField('email', (errorMessage) => {
-    //     if (errorMessage === '') {
-    //       let verEmail = {
-    //         email: this.ruleForm.email
-    //       }
-    //       console.log(verEmail)
-    //       postVercode(verEmail).then(res => {
-    //         console.log(res.data)
-    //         let { code, msg } = res.data
-    //         if (code === 200) {
-    //           // 验证码发送成功
-    //           this.$message({
-    //             message: '验证码已发送 ' + msg,
-    //             type: 'success'
-    //           })
-    //           this.getSeconds(60)
-    //         } else {
-    //           // 验证码发送失败
-    //           this.$message({
-    //             message: '验证码发送失败 ' + msg,
-    //             type: 'error'
-    //           })
-    //         }
-    //       }).catch(err => {
-    //         console.log('postVercode err:', err)
-    //         this.$message({
-    //           message: '验证码发送失败 ' + err,
-    //           type: 'error'
-    //         })
-    //       })
-    //     } else {
-    //       console.log('getVercode error submit! errorMessage: ', errorMessage)
-    //       return false
-    //     }
-    //   })
-    // },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -266,10 +224,8 @@ export default {
             email: this.ruleForm.email,
             password: this.ruleForm.password
           }
-          console.log('registerParams', registerParams)
           /* 调用axios注册接口 */
           postRegister(registerParams).then(res => {
-            console.log('postRegister res:', res.data)
             if (res.status === 200) {
               this.$message({
                 message: `${res.data.msg} ${res.status} ${res.statusText} `,
@@ -291,7 +247,6 @@ export default {
             this.isLoading = false
             this.isRequestVercodeLoading = false
           }).catch(err => {
-            console.log('postRegister err2:', err)
             this.$message({
               message: 'postRegister err2: ' + err,
               type: 'error'
@@ -301,61 +256,10 @@ export default {
             return false
           })
         } else {
-          console.log('error submit!')
           return false
         }
       })
     },
-    // submitForm (formName) {
-    //   this.$refs[formName].validate((valid) => {
-    //     if (valid) {
-    //       this.isLoading = true
-    //       let registerParams = {
-    //         name: this.ruleForm.name,
-    //         stuId: this.ruleForm.stuId,
-    //         birth: this.ruleForm.birth,
-    //         sex: this.ruleForm.sex,
-    //         grade: this.ruleForm.grade,
-    //         major: this.ruleForm.major,
-    //         email: this.ruleForm.email,
-    //         password: this.ruleForm.password
-    //       }
-    //       console.log('registerParams', registerParams)
-    //       /* 调用axios注册接口 */
-    //       postRegister(registerParams).then(res => {
-    //         console.log(res.data)
-    //         let { code, msg } = res.data
-    //         if (code === 200) {
-    //           // 注册成功
-    //           this.$message({
-    //             message: '注册成功 ' + msg,
-    //             type: 'success'
-    //           })
-    //           // 调用父组件Login.vue的方法slide，滑动到登录界面
-    //           this.$parent.slide()
-    //         } else {
-    //           // 注册失败，弹出element-ui中的提示组件
-    //           this.$message({
-    //             message: '注册失败 ' + msg,
-    //             type: 'error'
-    //           })
-    //         }
-    //         this.isLoading = false
-    //       }).catch(err => {
-    //         console.log('postRegister err:', err)
-    //         this.$message({
-    //           message: '注册失败 ' + err,
-    //           type: 'error'
-    //         })
-    //         this.isLoading = false
-    //         return false
-    //       })
-    //     } else {
-    //       console.log('error submit!')
-    //       return false
-    //     }
-    //   })
-    // },
     resetForm (formName) {
       this.$refs[formName].resetFields()
     }

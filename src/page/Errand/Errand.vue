@@ -54,7 +54,7 @@
               <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info">已取消</el-button>
               <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info">已过期</el-button>
               <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning">被举报</el-button>
-              <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success">已结束</el-button>
+              <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success">已被接</el-button>
             </el-tooltip>
             <el-button size="small" type="danger" @click="claim(scope.$index, scope.row)">举报</el-button>
           </template>
@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { queryTask, takeErrand, claimTask } from '../../api/api'
+import { queryTask, takeInTask, claimTask } from '../../api/api'
 import PageHead from '../components/PageHead'
 import querystring from 'querystring'
 export default {
@@ -112,15 +112,8 @@ export default {
         params.issuer = queryParams.issuer
       }
       params = '?' + querystring.stringify(params)
-      console.log('queryTask params:', params)
       queryTask(params).then(res => {
         if (res.status === 200) {
-          console.log(res.data)
-          // this.errandList = res.data
-          // for (var i = 0; i < this.errandList.length; i++) {
-          //   this.errandList[i].tag = this.errandList[i].tag_set.toString()
-          //   this.errandList[i].issuer = this.errandList[i].tag_set.issuer_first_name
-          // }
           this.errandList = []
           for (var i = 0; i < res.data.length; i++) {
             this.errandList.push({
@@ -129,7 +122,7 @@ export default {
               issuer: res.data[i].issuer_first_name,
               fee: res.data[i].fee,
               finisher: res.data[i].claimers[0],
-              dueDate: res.data[i].due_date,
+              dueDate: this.convertUTCTimeToLocalTime(res.data[i].due_date),
               tag: res.data[i].tag_set[0],
               description: res.data[i].description,
               status: res.data[i].status
@@ -148,13 +141,31 @@ export default {
           this.listLoading = false
         }
       }).catch(err => {
-        console.log(err)
         this.$message({
           message: '获取任务失败 ' + err,
           type: 'error'
         })
         this.listLoading = false
       })
+    },
+    convertUTCTimeToLocalTime (UTCDateString) {
+      if (!UTCDateString) {
+        return '-'
+      }
+      function formatFunc (str) {
+        return str > 9 ? str : '0' + str
+      }
+      var date2 = new Date(UTCDateString)
+      var year = date2.getFullYear()
+      var mon = formatFunc(date2.getMonth() + 1)
+      var day = formatFunc(date2.getDate())
+      var hour = date2.getHours()
+      var noon = hour >= 12 ? 'PM' : 'AM'
+      hour = hour >= 12 ? hour - 12 : hour
+      hour = formatFunc(hour)
+      var min = formatFunc(date2.getMinutes())
+      var dateStr = year + '-' + mon + '-' + day + ' ' + hour + ':' + min + ' ' + noon
+      return dateStr
     },
     handleSelect (key, keyPath) {
       // console.log(key, keyPath)
@@ -175,22 +186,18 @@ export default {
     paticipateErrand (index, row) {
       // 接受此任务，后端将该任务的接受者设为当前用户，并设置该任务不能再被其他用户接受。注意处理并发事件
       // 即当此时用户发送接受任务请求时，若在此页面重新渲染前，任务已被其他用户先接取，需返回提示信息，接取任务失败
-      // var success = true
       this.$confirm('确定接取该任务吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'success'
       }).then(() => {
         /* 注意在表格里获取任务id应该使用row.id (否则排序表格后就乱了) */
-        console.log('index', row.id)
         const postParams = {
           task_id: row.id.toString(),
           description: '',
           poll: ''
         }
-        console.log(postParams)
-        takeErrand(postParams).then(res => {
-          console.log('msg', res.data.msg)
+        takeInTask(postParams).then(res => {
           if (res.status === 200) {
             this.$message({
               type: 'success',
@@ -202,6 +209,7 @@ export default {
               type: 'error'
             })
           }
+          this.getErrandList()
         }).catch((err) => {
           this.$message({
             message: `接取失败 ${err}`,
@@ -218,7 +226,6 @@ export default {
         type: 'success'
       }).then(() => {
         claimTask({id: row.id}).then(res => {
-          console.log('msg', res.data.msg)
           if (res.status === 200) {
             this.$message({
               type: 'success',
@@ -230,6 +237,7 @@ export default {
               type: 'error'
             })
           }
+          this.getErrandList()
         }).catch((err) => {
           this.$message({
             message: `举报失败 ${err}`,

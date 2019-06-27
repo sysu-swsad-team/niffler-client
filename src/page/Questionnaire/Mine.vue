@@ -17,8 +17,8 @@
         <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
         <el-table-column prop="remaining_quota" label="剩余量" width="100" sortable></el-table-column>
         <el-table-column prop="fee" label="费用" width="80" sortable></el-table-column>
-        <el-table-column prop="created_date" label="结束日期" width="200"></el-table-column>
-        <el-table-column prop="due_date" label="结束日期" width="200"></el-table-column>
+        <el-table-column prop="created_date" label="创建日期" width="200" sortable></el-table-column>
+        <el-table-column prop="due_date" label="结束日期" width="200" sortable></el-table-column>
         <el-table-column prop="tag" label="标签" width="100" :filters="[{ text: '商业', value: '商业' }, {text: '学校', value: '学校' }]" :filter-method="filterTag" filter-placement="bottom-end">
           <template slot-scope="scope">
             <el-tag :type="scope.row.tag === '商业' ? 'primary' : 'success'"
@@ -33,7 +33,7 @@
               <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info">已取消</el-button>
               <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info">已过期</el-button>
               <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning">被举报</el-button>
-              <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success">已结束</el-button>
+              <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success" @click="checkQustionnair(scope.$index)">已结束</el-button>
             </el-tooltip>
           <el-button :disabled="scope.row.status !== 'UNDERWAY'" size="small" type="danger" @click="deleteQuestionnair(scope.$index)">取消问卷</el-button>
           </template>
@@ -43,9 +43,6 @@
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:left;">
         </el-pagination>
       </el-col>
-<!--       <el-col :span="24" class="toolbar">
-        <el-button type="danger" size="medium" style="margin-top: 5px;" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
-      </el-col> -->
       <el-dialog :visible.sync="isEdit" :close-on-click-model="false" :show-close="false" :close-on-press-escape="false" width="60%" height="auto" class="infinite-list" title="问卷编辑">
         <EditQuestionair :ruleForm="editingQN" style="background-color:white;padding:10px"></EditQuestionair>
         <div slot="footer" class="dialog-footer">
@@ -54,14 +51,13 @@
           <el-button type="warning" size="medium" @click="cancelEdit">取消</el-button>
         </div>
       </el-dialog>
-      <el-dialog :visible.sync="isCheck" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷填写情况">
-        <el-table :data="answerList" style="width: 100%" stripe highlight-current-row>
+      <el-dialog :visible.sync="isCheck" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷填写情况" :center="true">
+        <el-table :data="answerList" style="width: 100%" stripe highlight-current-row height="250">
           <el-table-column prop="id" label="问卷ID" width="80"></el-table-column>
           <el-table-column v-for="(answers, index) in answerList.answers" :prop="answers" :label="'问题' + index" width="50" :key="index"></el-table-column>
         </el-table>
       </el-dialog>
       <el-dialog :visible.sync="isLookOver" :close-on-click-model="true" :show-close="true" :close-on-press-escape="true" width="80%" height="auto" class="infinite-list" title="问卷详细内容" :center="true" append-to-body>
-<!--         <ShowQuestionnaire :ruleForm="detailQN" style="background-color: #eee;padding: 10px; margin: 0px;"></ShowQuestionnaire> -->
         <el-col :span="24" class="content-wrapper" style="background-color: #eee;padding: 10px; margin: 0px;">
           <el-form :model="detailQN" label-position="left" label-width="80px" disabled style="font-weight: bold;" >
             <el-form-item label="题目：" prop="title">
@@ -176,15 +172,8 @@ export default {
         params.title = queryParams.title
       }
       params = '?' + querystring.stringify(params)
-      console.log(params)
       queryTask(params).then(res => {
         if (res.status === 200) {
-          console.log(res)
-          // this.questionnaireList = res.data
-          // for (var i = 0; i < this.questionnaireList.length; i++) {
-          //   this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
-          //   this.questionnaireList[i].issuer = this.questionnaireList[i].issuer_first_name
-          // }
           this.questionnaireList = []
           for (var i = 0; i < res.data.length; i++) {
             this.questionnaireList.push({
@@ -193,28 +182,27 @@ export default {
               issuer: res.data[i].issuer_first_name,
               remaining_quota: res.data[i].remaining_quota,
               fee: res.data[i].fee,
-              due_date: res.data[i].due_date,
+              due_date: this.convertUTCTimeToLocalTime(res.data[i].due_date),
               tag: res.data[i].tag_set.toString(),
               description: res.data[i].description,
               questions: res.data[i].poll,
               status: res.data[i].status,
-              created_date: res.data[i].created_date
+              created_date: this.convertUTCTimeToLocalTime(res.data[i].created_date)
             })
           }
           this.$message({
-            message: `获取问卷成功 ${res.status} ${res.statusText}`,
+            message: `获取问卷成功`,
             type: 'success'
           })
           this.listLoading = false
         } else {
           this.$message({
-            message: `获取问卷失败 ${res.status} ${res.statusText}`,
+            message: `获取问卷失败 ${res.data.msg}`,
             type: 'error'
           })
           this.listLoading = false
         }
       }).catch(err => {
-        console.log(err)
         this.$message({
           message: '获取问卷失败 ' + err,
           type: 'error'
@@ -226,33 +214,9 @@ export default {
       this.page = val
       this.getQNList()
     },
-    // getFilter () {
-    //   // 从后端根据查询条件获取对应的问卷，放在questionnaireList中
-    //   // alert('查询条件' + this.filters)
-    //   let params = {
-    //     email: this.getInfo.email,
-    //     filters: this.filters
-    //   }
-    //   getMyQNFilter(params).then(res => {
-    //     console.log(res.data)
-    //     let { code, msg, questionnaires } = res.data
-    //     if (code === 200) {
-    //       this.questionnaireList = questionnaires
-    //     } else {
-    //       this.$message({
-    //         message: '获取问卷失败' + msg,
-    //         type: 'error'
-    //       })
-    //     }
-    //   }).catch(err => {
-    //     console.log(err)
-    //   })
-    // },
     editQustionnair (index) {
       // 根据this.questionnaireList[index].id 从后端获取完整问卷，存放在editingQN中
       this.isEdit = true
-
-      // alert('获取问卷' + this.questionnaireList[index].title)
     },
     deleteQuestionnair (index) {
       event.cancelBubble = true
@@ -266,7 +230,6 @@ export default {
           id: this.questionnaireList[index].id
         }
         cancelTask(para).then((res) => {
-          console.log(res.data)
           let { code, msg } = res.data
           if (code === 200) {
             this.$message({
@@ -279,8 +242,12 @@ export default {
               type: 'error'
             })
           }
+          this.getQNList()
         }).catch(err => {
-          console.log(err)
+          this.$message({
+            message: err,
+            type: 'error'
+          })
         })
       })
     },
@@ -296,35 +263,6 @@ export default {
     filterTask (value, row) {
       return row.status === value
     },
-    // batchRemove () {
-    //   // 根据sels中的下标，找到对应问卷的id，传给后端进行删除，
-    //   // 返回成功再在重新请求questionnaireList
-    //   this.$confirm('确认删除该问卷吗？', '提示', {
-    //     type: 'warning'
-    //   }).then(() => {
-    //     let para = {
-    //       email: this.getInfo.email,
-    //       id: this.sels
-    //     }
-    //     deleteBatchQN(para).then((res) => {
-    //       console.log(res.data)
-    //       let { code, msg } = res.data
-    //       if (code === 200) {
-    //         this.$message({
-    //           message: '删除成功',
-    //           type: 'success'
-    //         })
-    //       } else {
-    //         this.$message({
-    //           message: msg,
-    //           type: 'error'
-    //         })
-    //       }
-    //     }).catch(err => {
-    //       console.log(err)
-    //     })
-    //   })
-    // },
     summitEdit () {
       if (this.editingQN.title === '') {
         this.$message.error('请输入问卷标题')
@@ -361,17 +299,31 @@ export default {
       }
       this.isEdit = false
     },
+    convertUTCTimeToLocalTime (UTCDateString) {
+      if (!UTCDateString) {
+        return '-'
+      }
+      function formatFunc (str) {
+        return str > 9 ? str : '0' + str
+      }
+      var date2 = new Date(UTCDateString)
+      var year = date2.getFullYear()
+      var mon = formatFunc(date2.getMonth() + 1)
+      var day = formatFunc(date2.getDate())
+      var hour = date2.getHours()
+      var noon = hour >= 12 ? 'PM' : 'AM'
+      hour = hour >= 12 ? hour - 12 : hour
+      hour = formatFunc(hour)
+      var min = formatFunc(date2.getMinutes())
+      var dateStr = year + '-' + mon + '-' + day + ' ' + hour + ':' + min + ' ' + noon
+      return dateStr
+    },
     lookOverQN: function (row) {
       // 通过row.id获取问卷详细内容,放于detailQN
-      // this.isLookOver = true
-      // this.detailQN = row
       let params = {
-        // email: this.getInfo.email,
         id: row.id
       }
       getQNDetail(params).then(res => {
-        console.log(res.data)
-        // let { code, msg, questionnaire } = res.data
         if (res.status === 200) {
           this.detailQN = {
             id: res.data.questionnaire.id,
@@ -390,7 +342,10 @@ export default {
           })
         }
       }).catch(err => {
-        console.log(err)
+        this.$message({
+          message: '获取问卷失败' + err,
+          type: 'error'
+        })
       })
     }
   },

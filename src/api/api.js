@@ -56,6 +56,10 @@ export const queryTask = params => {
 export const summitTask = params => {
   return axios.post('questionnaire/task/', params, header)
 }
+
+export const takeInTask = params => {
+  return axios.post('questionnaire/participantship/', params, header)
+}
 /* ***************** end task: questionnaire and errand ***************** */
 
 /* ***************** questionnaire ***************** */
@@ -67,10 +71,6 @@ export const getQNDetail = params => {
 /* ***************** end questionnaire ***************** */
 
 /* ***************** errand ***************** */
-
-export const takeErrand = params => {
-  return axios.post('questionnaire/participantship/', params, header)
-}
 
 export const queryParticipant = params => {
   return axios.get(`questionnaire/profile/${params.id}`, params, header)

@@ -22,7 +22,6 @@
 //   methods: {
 //     check () {
 //       this.checked = !this.checked
-//       console.log(this.checked)
 //     }
 //   },
 //   render () {

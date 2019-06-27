@@ -68,7 +68,6 @@ export default {
           // type: 'warning'
         }).then(() => {
           getLogout(null).then(res => {
-            console.log(res)
             if (res.status === 200) {
               /* ****************************************************************** sessionStorage ***** */
               sessionStorage.clear()

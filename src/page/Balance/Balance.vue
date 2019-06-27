@@ -97,10 +97,6 @@ export default {
     handleClose (key, keyPath) {
       // console.log(key, keyPath)
     },
-    handleCurrentChange () { },
-    getFilter () {
-      alert('查询条件' + this.filters)
-    },
     withdraw () {
       this.isWithdraw = true
     },

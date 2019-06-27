@@ -31,7 +31,7 @@
               <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info">已取消</el-button>
               <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info">已过期</el-button>
               <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning">被举报</el-button>
-              <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success">已完成</el-button>
+              <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success">已被接</el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -40,9 +40,6 @@
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
         </el-pagination>
       </el-col>
-<!--       <el-col :span="24" class="toolbar">
-        <el-button type="danger" size="medium" style="margin-top: 5px;" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
-      </el-col> -->
     </el-row>
 </template>
 
@@ -98,15 +95,8 @@ export default {
         params.title = queryParams.title
       }
       params = '?' + querystring.stringify(params)
-      console.log('myErrand params:', params)
       queryTask(params).then(res => {
-        console.log('res', res.data)
         if (res.status === 200) {
-          // this.errandList = res.data
-          // for (var i = 0; i < this.errandList.length; i++) {
-          //   this.errandList[i].tag = this.errandList[i].tag_set.toString()
-          //   this.errandList[i].issuer = this.errandList[i].tag_set.issuer_first_name
-          // }
           this.errandList = []
           for (var i = 0; i < res.data.length; i++) {
             var participantName = ''
@@ -118,27 +108,26 @@ export default {
               title: res.data[i].title,
               fee: res.data[i].fee,
               finisher: participantName,
-              due_date: res.data[i].due_date,
-              created_date: res.data[i].created_date,
+              due_date: this.convertUTCTimeToLocalTime(res.data[i].due_date),
+              created_date: this.convertUTCTimeToLocalTime(res.data[i].created_date),
               tag: res.data[i].tag_set[0],
               description: res.data[i].description,
               status: res.data[i].status
             })
           }
           this.$message({
-            message: `获取任务成功 ${res.status} ${res.statusText}`,
+            message: `获取任务成功`,
             type: 'success'
           })
           this.listLoading = false
         } else {
           this.$message({
-            message: `获取任务失败 ${res.status} ${res.statusText}`,
+            message: `获取任务失败 ${res.data.msg}`,
             type: 'error'
           })
           this.listLoading = false
         }
       }).catch(err => {
-        console.log(err)
         this.$message({
           message: '获取任务失败 ' + err,
           type: 'error'
@@ -146,39 +135,30 @@ export default {
         this.listLoading = false
       })
     },
-    // getParticipant (id) {
-    //   var params = {
-    //     id: id
-    //   }
-    //   var participantName = ''
-    //   queryParticipant(params).then(res => {
-    //     console.log('participantName', res.data)
-    //     if (res.status === 200) {
-    //       console.log('get participantName success')
-    //       participantName = res.data.first_name
-    //     } else {
-    //       this.$message({
-    //         message: '获取参与者信息失败',
-    //         type: 'error'
-    //       })
-    //     }
-    //   }).catch(err => {
-    //     console.log(err)
-    //     this.$message({
-    //       message: '获取信息失败' + err,
-    //       type: 'error'
-    //     })
-    //   })
-    //   return participantName
-    // },
+    convertUTCTimeToLocalTime (UTCDateString) {
+      if (!UTCDateString) {
+        return '-'
+      }
+      function formatFunc (str) {
+        return str > 9 ? str : '0' + str
+      }
+      var date2 = new Date(UTCDateString)
+      var year = date2.getFullYear()
+      var mon = formatFunc(date2.getMonth() + 1)
+      var day = formatFunc(date2.getDate())
+      var hour = date2.getHours()
+      var noon = hour >= 12 ? 'PM' : 'AM'
+      hour = hour >= 12 ? hour - 12 : hour
+      hour = formatFunc(hour)
+      var min = formatFunc(date2.getMinutes())
+      var dateStr = year + '-' + mon + '-' + day + ' ' + hour + ':' + min + ' ' + noon
+      return dateStr
+    },
     filterTag (value, row) {
       return row.tag === value
     },
     filterTask (value, row) {
       return row.status === value
-    },
-    batchRemove () {
-      // 根据sels中的下标，找到对应问卷的id，传给后端进行删除，返回成功再在前端questionnaireList进行删除
     },
     cancelErrand (index, row) {
       // 根据this.errandList[index].id 想后端请求删除的活动，如果返回success，在前端的
@@ -192,9 +172,7 @@ export default {
         const params = {
           id: row.id
         }
-        console.log(params)
         cancelTask(params).then(res => {
-          console.log(res)
           if (res.status === 200) {
             this.$message({
               message: '删除成功',
@@ -207,6 +185,7 @@ export default {
               type: 'error'
             })
           }
+          this.getErrandList()
         }).catch(err => {
           this.$message({
             message: '删除失败' + err,

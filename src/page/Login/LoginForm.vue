@@ -15,8 +15,6 @@
         @click.native.prevent="handleLogin"
         type="primary" class="form-btn">Sign in</el-button>
       </el-form-item>
-      <!-- <button type="button" @click="loginStudent">学生登录</button>
-      <button type="button" @click="loginStudent">商家登录</button> -->
    </el-form>
    <el-form v-else :model="ruleForm2" status-icon ref="ruleForm2" class="demo-ruleForm" label-width="85px" size="mini">
     <el-form-item label="邮箱" prop="email" :rules="{ required: true }">
@@ -37,7 +35,6 @@
         <el-button  @click="isRememberPW = true" style="margin:0 auto; width: 45%; padding: 10px; color: #000; background-color: #fff;">取消</el-button>
       </el-form-item>
     </el-form>
-   <!-- <div class="link"><router-link to="/register" :underline="false">原注册页面</router-link></div> -->
   </el-col>
 </el-row>
 </template>
@@ -87,7 +84,6 @@ export default {
           /* 调用axios登录接口 */
           postLogin(loginParams).then(res => {
             this.logining = false
-            console.log('postLogin res:', res)
             if (res.status === 200) {
               var user = utils.getUserByProfile(res.data.profile, res.data.email)
               this.$store.dispatch('setUser', user)
@@ -98,12 +94,14 @@ export default {
               type: res.status === 200 ? 'success' : 'error'
             })
           }).catch(err => {
+            this.$message({
+              message: err,
+              type: 'error'
+            })
             this.logining = false
-            console.log('postLogin catch err:', err)
             return false
           })
         } else {
-          console.log('error submit!')
           return false
         }
       })

@@ -112,7 +112,7 @@
         </el-col>
         <el-divider></el-divider>
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" size="medium" @click.native="commiteAnswer"  style="padding-top: 10px">提交</el-button>
+          <el-button type="primary" size="medium" @click.native="commiteAnswer(detailQN.id)"  style="padding-top: 10px">提交</el-button>
           <el-button type="warning" size="medium" @click.native="isDetail = false"  style="padding-top: 10px">取消</el-button>
         </div>
       </el-dialog>
@@ -125,7 +125,7 @@
 <script>
 import PageHead from '../components/PageHead'
 import ShowQuestionnaire from '../components/ShowQuestionnaire'
-import { queryTask, getQNDetail, claimTask } from '../../api/api'
+import { queryTask, getQNDetail, claimTask, takeInTask } from '../../api/api'
 import querystring from 'querystring'
 export default {
   data () {
@@ -164,15 +164,8 @@ export default {
         params.issuer = queryParams.issuer
       }
       params = '?' + querystring.stringify(params)
-      console.log(params)
       queryTask(params).then(res => {
         if (res.status === 200) {
-          console.log(res)
-          // this.questionnaireList = res.data
-          // for (var i = 0; i < this.questionnaireList.length; i++) {
-          //   this.questionnaireList[i].tag = this.questionnaireList[i].tag_set.toString()
-          //   this.questionnaireList[i].issuer = this.questionnaireList[i].issuer_first_name
-          // }
           this.questionnaireList = []
           for (var i = 0; i < res.data.length; i++) {
             this.questionnaireList.push({
@@ -181,15 +174,13 @@ export default {
               issuer: res.data[i].issuer_first_name,
               remaining_quota: res.data[i].remaining_quota,
               fee: res.data[i].fee,
-              due_date: res.data[i].due_date,
+              due_date: this.convertUTCTimeToLocalTime(res.data[i].due_date),
               tag: res.data[i].tag_set.toString(),
               description: res.data[i].description,
               questions: res.data[i].poll,
               status: res.data[i].status
             })
-            console.log(res.data[i].due_date)
           }
-          console.log('list:', this.questionnaireList)
           this.$message({
             message: `获取问卷成功 ${res.status} ${res.statusText}`,
             type: 'success'
@@ -203,13 +194,31 @@ export default {
           this.listLoading = false
         }
       }).catch(err => {
-        console.log(err)
         this.$message({
           message: '获取问卷失败 ' + err,
           type: 'error'
         })
         this.listLoading = false
       })
+    },
+    convertUTCTimeToLocalTime (UTCDateString) {
+      if (!UTCDateString) {
+        return '-'
+      }
+      function formatFunc (str) {
+        return str > 9 ? str : '0' + str
+      }
+      var date2 = new Date(UTCDateString)
+      var year = date2.getFullYear()
+      var mon = formatFunc(date2.getMonth() + 1)
+      var day = formatFunc(date2.getDate())
+      var hour = date2.getHours()
+      var noon = hour >= 12 ? 'PM' : 'AM'
+      hour = hour >= 12 ? hour - 12 : hour
+      hour = formatFunc(hour)
+      var min = formatFunc(date2.getMinutes())
+      var dateStr = year + '-' + mon + '-' + day + ' ' + hour + ':' + min + ' ' + noon
+      return dateStr
     },
     handleSelect (key, keyPath) {
       // console.log(key, keyPath)
@@ -226,15 +235,10 @@ export default {
       // 若已填写，
       // this.$message.error('您已填过此问卷')
       // 若未填写。渲染问卷
-      // this.isDetail = true
-      // this.detailQN = this.questionnaireList[index]
       let params = {
-        // email: this.getInfo.email,
         id: row.id
       }
-      console.log(params)
       getQNDetail(params).then(res => {
-        console.log('data in get', res.data)
         this.answer = []
         if (res.status === 200) {
           this.detailQN = {
@@ -253,7 +257,6 @@ export default {
               this.answer.push('')
             }
           }
-          console.log(this.detailQN)
           this.isDetail = true
         } else {
           this.$message({
@@ -263,7 +266,11 @@ export default {
           })
         }
       }).catch(err => {
-        console.log(err)
+        this.$message({
+          // 获取失败的原因（已经填写过？）
+          message: err,
+          type: 'error'
+        })
       })
     },
     /* 举报任务 */
@@ -274,7 +281,6 @@ export default {
         type: 'success'
       }).then(() => {
         claimTask({id: row.id}).then(res => {
-          console.log('msg', res.data.msg)
           if (res.status === 200) {
             this.$message({
               type: 'success',
@@ -286,6 +292,7 @@ export default {
               type: 'error'
             })
           }
+          this.getQNList()
         }).catch((err) => {
           this.$message({
             message: `举报失败 ${err}`,
@@ -304,20 +311,41 @@ export default {
       this.page = val
       this.getQNList()
     },
-    commiteAnswer () {
+    commiteAnswer (id) {
       // 提交问卷答案
       this.$confirm('确定提交问卷吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'success'
       }).then(() => {
-        console.log('answer:', this.answer)
-        this.$message({
-          type: 'success',
-          message: '问卷已提交'
+        const params = {
+          task_id: id + '',
+          description: '',
+          poll: JSON.stringify(this.answer)
+        }
+        takeInTask(params).then(res => {
+          if (res.status === 200) {
+            this.$message({
+              type: 'success',
+              message: '问卷填写成功'
+            })
+          } else {
+            this.$message({
+              type: 'error',
+              message: `问卷填写失败 ${res.data.msg}`
+            })
+          }
+          this.getQNList()
+        }).catch(err => {
+          this.$message({
+            message: `填写失败 ${err}`,
+            type: 'error'
+          })
         })
         this.isDetail = false
-      }).catch(() => { })
+      }).catch(() => {
+        this.isDetail = false
+      })
     }
   },
   components: {
