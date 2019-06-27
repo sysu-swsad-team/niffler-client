@@ -125,7 +125,7 @@ export default {
             })
           }).catch((err) => {
             this.$message({
-              message: `接取任务失败? ${err}`,
+              message: `接取任务失败 ${err}`,
               type: 'error'
             })
           })

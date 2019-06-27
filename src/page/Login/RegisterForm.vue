@@ -178,17 +178,17 @@ export default {
           requestSendVercode(params).then(res => {
             if (res.status === 200) {
               this.$message({
-                message: `${res.data.msg} ${res.status} ${res.statusText} `,
+                message: `${res.data.msg}`,
                 type: res.status === 200 ? 'success' : 'error'
               })
             } else if (res.status <= 300) {
               this.$message({
-                message: `${res.data.msg} ${res.status} ${res.statusText} `,
+                message: `${res.data.msg}`,
                 type: res.status === 200 ? 'success' : 'error'
               })
             } else {
               this.$message({
-                message: `1F ${res.status} ${res.statusText} `,
+                message: `发送验证码错误`,
                 type: res.status === 200 ? 'success' : 'error'
               })
             }
@@ -197,7 +197,7 @@ export default {
             this.isLoading = false
           }).catch(err => {
             this.$message({
-              message: 'F验证码发送失败 ' + err,
+              message: '验证码发送错误' + err,
               type: 'error'
             })
             this.isRequestVercodeLoading = false
@@ -228,19 +228,19 @@ export default {
           postRegister(registerParams).then(res => {
             if (res.status === 200) {
               this.$message({
-                message: `${res.data.msg} ${res.status} ${res.statusText} `,
+                message: `${res.data.msg}`,
                 type: res.status === 200 ? 'success' : 'error'
               })
               // 调用父组件Login.vue的方法slide，滑动到登录界面
               this.$parent.slide()
             } else if (res.status <= 300) {
               this.$message({
-                message: `${res.data.msg} ${res.status} ${res.statusText} `,
+                message: `${res.data.msg}`,
                 type: res.status === 200 ? 'success' : 'error'
               })
             } else {
               this.$message({
-                message: `postRegister err1: ${res.status} ${res.statusText} `,
+                message: `注册失败`,
                 type: res.status === 200 ? 'success' : 'error'
               })
             }
@@ -248,7 +248,7 @@ export default {
             this.isRequestVercodeLoading = false
           }).catch(err => {
             this.$message({
-              message: 'postRegister err2: ' + err,
+              message: '注册错误' + err,
               type: 'error'
             })
             this.isLoading = false

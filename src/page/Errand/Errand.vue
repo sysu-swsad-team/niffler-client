@@ -129,13 +129,13 @@ export default {
             })
           }
           this.$message({
-            message: `获取任务成功 ${res.status} ${res.statusText}`,
+            message: `获取任务成功`,
             type: 'success'
           })
           this.listLoading = false
         } else {
           this.$message({
-            message: `获取任务失败 ${res.status} ${res.statusText}`,
+            message: `获取任务失败`,
             type: 'error'
           })
           this.listLoading = false
@@ -205,7 +205,7 @@ export default {
             })
           } else {
             this.$message({
-              message: `接取失败 ${res.status} ${res.data.msg}`,
+              message: `接取失败 ${res.data.msg}`,
               type: 'error'
             })
           }
@@ -233,7 +233,7 @@ export default {
             })
           } else {
             this.$message({
-              message: `举报失败 ${res.status} ${res.data.msg}`,
+              message: `举报失败 ${res.data.msg}`,
               type: 'error'
             })
           }
