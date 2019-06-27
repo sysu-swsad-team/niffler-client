@@ -1,6 +1,6 @@
 <template>
   <el-col :span="24" class="content-wrapper">
-    <el-form :model="ruleForm" ref="ruleForm" label-position="left" label-width="80px" :disabled="isDisable" style="font-weight: bold;" >
+    <el-form :model="ruleForm" ref="ruleForm" label-position="left" label-width="80px" disabled style="font-weight: bold;" >
       <el-form-item label="题目：" prop="title">
         <p>{{ ruleForm.title }}</p>
       </el-form-item>
@@ -30,22 +30,23 @@
       <el-divider content-position="center">问卷内容</el-divider>
       <el-form-item
         v-for="(question, index) in ruleForm.questions"
-        :label="'问题 ' + index" :key="question.key">
-        <div>{{ question.title }}</div>
+        :label="(index + 1) + ''" :key="index">
         <el-form-item v-if="question.type === 0">
-          <el-radio-group v-for="(option) in question.options" v-model="answer" :key="option.key" @change="putAnswer(index)">
-            <el-radio style="margin: 0 20px 0 20px" :label="option.value"></el-radio>
-          </el-radio-group>
+          <h6>（单选）{{ question.title }}</h6>
+          <el-radio v-for="(option, indexP) in question.options" :key="indexP" :label="indexP + ''">{{ option.value }}</el-radio>
         </el-form-item>
         <el-form-item v-if="question.type === 1">
-          <el-checkbox-group v-model="answer" @change="putAnswer(index)">
-            <el-checkbox v-for="(option) in question.options" :key="option.key" :label="option.key">{{ option.value }}</el-checkbox>
+          <h6>（多选）{{ question.title }}</h6>
+          <el-checkbox-group>
+            <el-checkbox v-for="(option, indexP) in question.options" :key="indexP" :label="indexP + ''">{{ option.value }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item v-if="question.type === 2">
-          <el-input style="margin-bottom: 5px" v-model="answer"></el-input>
+          <h6>（填空）{{ question.title }}</h6>
+          <el-input style="margin-bottom: 5px"></el-input>
         </el-form-item>
       </el-form-item>
+      <el-divider></el-divider>
     </el-form>
   </el-col>
 </template>
@@ -54,25 +55,11 @@
 export default {
   name: 'ShowQuestionnaire',
   props: {
-    ruleForm: '',
-    isDisable: false
+    ruleForm: {}
   },
   data () {
-    return {
-      summitForm: {
-        id: ruleForm.id,
-        answers: [ ]
-      },
-      answer: ''
-    }
+    return { }
   },
-  methods: {
-    putAnswer (index) {
-      summitForm.answers.push({
-        index: index,
-        value: this.answer
-      })
-    }
-  }
+  methods: { }
 }
 </script>

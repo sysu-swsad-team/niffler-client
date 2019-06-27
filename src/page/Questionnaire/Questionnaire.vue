@@ -66,9 +66,50 @@
         </el-pagination>
       </el-col>
 
-      <el-dialog :visible.sync="isDetail" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="80%" class="infinite-list" title="问卷填写" :center="true">
+      <el-dialog :visible.sync="isDetail" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="80%" title="问卷填写" :center="true">
         <el-divider></el-divider>
-        <ShowQuestionnaire :ruleForm="detailQN" :isDisable="false" style="background-color: #eee;padding: 10px;"></ShowQuestionnaire>
+        <el-col :span="24" class="content-wrapper">
+          <el-form :model="detailQN" label-position="left" label-width="80px" style="font-weight: bold;" >
+            <el-form-item label="题目：" prop="title">
+              <p>{{ detailQN.title }}</p>
+            </el-form-item>
+            <el-form-item label="简介：" prop="description">
+              <div>{{ detailQN.description }}</div>
+            </el-form-item>
+            <el-form-item lable-width="10px">
+              <el-col :span="7" :offset="1">
+                <el-form-item label="每份金额：" label-width="150px">
+                  <span>{{ detailQN.fee }} 元</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="7" :offset="1">
+                <el-form-item label="标签：" label-width="80px">
+                  <el-tag type="success">学校</el-tag>
+                </el-form-item>
+              </el-col>
+            </el-form-item>
+            <el-divider content-position="center">问卷内容</el-divider>
+            <el-form-item
+              v-for="(question, index) in detailQN.questions" :label="(index + 1) + ''" :key="index">
+              <el-form-item v-if="question.type === 0">
+                <h6>（单选）{{ question.title }}</h6>
+                <el-radio-group v-model="answer[index]">
+                  <el-radio v-for="(option, indexP) in question.options" :key="indexP" :label="option.value">{{ option.value }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item v-if="question.type === 1">
+                <h6>（多选）{{ question.title }}</h6>
+                <el-checkbox-group v-model="answer[index]">
+                  <el-checkbox v-for="(option, indexP) in question.options" :key="indexP" :label="indexP + ''">{{ option.value }}</el-checkbox>
+                </el-checkbox-group>
+              </el-form-item>
+              <el-form-item v-if="question.type === 2">
+                <h6>（填空）{{ question.title }}</h6>
+                <el-input style="margin-bottom: 5px" v-model="answer[index]"></el-input>
+              </el-form-item>
+            </el-form-item>
+          </el-form>
+        </el-col>
         <el-divider></el-divider>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" size="medium" @click.native="commiteAnswer"  style="padding-top: 10px">提交</el-button>
@@ -97,7 +138,8 @@ export default {
       listLoading: false,
       total: 0,
       isDetail: false,
-      detailQN: { }
+      detailQN: { },
+      answer: []
     }
   },
   computed: {
@@ -193,6 +235,7 @@ export default {
       console.log(params)
       getQNDetail(params).then(res => {
         console.log('data in get', res.data)
+        this.answer = []
         if (res.status === 200) {
           this.detailQN = {
             id: res.data.questionnaire.id,
@@ -202,6 +245,13 @@ export default {
             fee: res.data.questionnaire.fee,
             dueDate: res.data.questionnaire.due_date,
             questions: JSON.parse(res.data.questionnaire.poll)
+          }
+          for (var i = 0; i < this.detailQN.questions.length; i++) {
+            if (this.detailQN.questions[i].type === 1) {
+              this.answer.push([])
+            } else {
+              this.answer.push('')
+            }
           }
           console.log(this.detailQN)
           this.isDetail = true
@@ -261,6 +311,7 @@ export default {
         cancelButtonText: '取消',
         type: 'success'
       }).then(() => {
+        console.log('answer:', this.answer)
         this.$message({
           type: 'success',
           message: '问卷已提交'
