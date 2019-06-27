@@ -14,8 +14,16 @@ export const postRegister = params => {
   return axios.post('register/', params, header)
 }
 
-export const getLogout = params => {
+export const getLogout = _params => {
   return axios.get('logout/', null, header)
+}
+
+export const getProfile = _params => {
+  return axios.get('questionnaire/profile/', null, header)
+}
+
+export const changeProfile = params => {
+  return axios.post('questionnaire/profile/', params, header)
 }
 
 export const postAvatar = params => {
@@ -32,66 +40,44 @@ export const postVercode = params => {
 }
 /* ***************** end user ***************** */
 
-/* ***************** questionnaire ***************** */
-export const summitQN = params => {
-  return axios.post('questionnaire/task/', params, header)
+/* ***************** task: questionnaire and errand ***************** */
+export const claimTask = params => {
+  return axios.post(`questionnaire/task/claim/${params.id}/`, null, header)
 }
 
-export const queryQN = params => {
+export const cancelTask = params => {
+  return axios.post(`questionnaire/task/cancel/${params.id}/`, null, header)
+}
+
+export const queryTask = params => {
   return axios.get('questionnaire/task/' + params, null, header)
 }
 
+export const summitTask = params => {
+  return axios.post('questionnaire/task/', params, header)
+}
+
+export const takeInTask = params => {
+  return axios.post('questionnaire/participantship/', params, header)
+}
+/* ***************** end task: questionnaire and errand ***************** */
+
+/* ***************** questionnaire ***************** */
+
 export const getQNDetail = params => {
-  return axios.get('questionnaire/task/' + params.id + '/', params, header)
+  return axios.get(`questionnaire/task/${params.id}/`, params, header)
 }
 
-export const getMyQN = params => {
-  return axios.get('questionnaire/mine/', params, header)
-}
-
-export const getMyQNFilter = params => {
-  return axios.get('questionnaire/mine/filter', params, header)
-}
-
-export const deleteBatchQN = params => {
-  return axios.post('questionnaire/mine/batchDelete/', null, header)
-}
-
-export const deleteQN = params => {
-  return axios.post('/questionnaire/mine/delete/', params, header)
-}
 /* ***************** end questionnaire ***************** */
 
 /* ***************** errand ***************** */
-export const summitErrand = params => {
-  return axios.post('questionnaire/task/', params, header)
-}
-
-export const queryErrand = params => {
-  return axios.get('questionnaire/task/' + params, null, header)
-}
-
-export const takeErrand = params => {
-  return axios.post('questionnaire/participantship/', params, header)
-}
-
-export const removeErrand = params => {
-  return axios.post(`questionnaire/task/cancel/${params.id}/`, params, header)
-}
 
 export const queryParticipant = params => {
   return axios.get(`questionnaire/profile/${params.id}`, params, header)
 }
 /* ***************** end errand ***************** */
 
-// export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }) }
-
-// export const getUserListPage = params => { return axios.get(`${base}/user/listpage`, { params: params }) }
-
-// export const removeUser = params => { return axios.get(`${base}/user/remove`, { params: params }) }
-
-// export const batchRemoveUser = params => { return axios.get(`${base}/user/batchremove`, { params: params }) }
-
-// export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }) }
-
-// export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }) }
+/* balance */
+export const makePayment = amount => {
+  return axios.get(`payment/?amount=${amount}/`, null, header)
+}

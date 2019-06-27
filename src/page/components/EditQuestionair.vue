@@ -33,7 +33,7 @@
       <el-divider content-position="center">问卷内容</el-divider>
       <el-form-item
         v-for="(question, index) in ruleForm.questions"
-        :label="'问题 ' + index" :key="question.key" v-if="index > 0">
+        :label="'问题 ' + (index + 1)" :key="question.key">
         <div>{{ question.title }}</div>
         <el-form-item v-if="question.type === 0">
           <el-radio-group v-for="(option) in question.options" :key="option.key">
@@ -116,27 +116,10 @@
 
 <script>
 /* 引入api */
-import {summitQN} from '../../api/api'
+import {summitTask} from '../../api/api'
 
 export default {
   name: 'EditQuestionair',
-  props: {
-    ruleForm: {
-      title: '',
-      tag: '',
-      description: '',
-      maxNumber: 1,
-      fee: 0.01,
-      dueDate: '',
-      questions: [{
-        title: '',
-        type: -1,
-        options: [{
-          value: ''
-        }]
-      }]
-    }
-  },
   computed: {
     getInfo () {
       return this.$store.getters.getInfo
@@ -144,6 +127,15 @@ export default {
   },
   data () {
     return {
+      ruleForm: {
+        title: '',
+        tag: '',
+        description: '',
+        maxNumber: 1,
+        fee: 0.01,
+        dueDate: '',
+        questions: [ ]
+      },
       addQuestion: {
         title: '',
         options: [{
@@ -259,7 +251,6 @@ export default {
       if (this.addQuestion.title === '') {
         this.$message.error('请输入题目！')
       } else {
-        console.log(this.ruleForm.questions)
         this.ruleForm.questions.push({
           title: this.addQuestion.title,
           type: this.addType,
@@ -285,7 +276,6 @@ export default {
             type: 'success'
           }).then(() => {
             this.isLoading = true
-            console.log(this.getInfo.email)
             let summitParams = {
               taskType: '问卷',
               title: this.ruleForm.title,
@@ -293,31 +283,32 @@ export default {
               description: this.ruleForm.description,
               maxNumber: this.ruleForm.maxNumber,
               fee: this.ruleForm.fee,
-              dueDate: this.ruleForm.dueDate,
+              dueDate: this.ruleForm.dueDate.toString(),
               questions: this.ruleForm.questions
             }
-            summitQN(summitParams).then(res => {
-              let { code, msg } = res.data
-              if (code === 200) {
+            summitTask(summitParams).then(res => {
+              if (res.status === 200) {
                 this.$message({
                   message: '问卷提交成功',
                   type: 'success'
                 })
               } else {
                 this.$message({
-                  message: '提交失败' + msg,
+                  message: '提交失败 ' + res.data.msg,
                   type: 'error'
                 })
               }
               this.isLoading = false
             }).catch(err => {
-              console.log(err)
+              this.$message({
+                message: '提交失败 ' + err,
+                type: 'error'
+              })
               this.isLoading = false
               return false
             })
           })
         } else {
-          console.log('error submit')
           this.isLoading = false
           return false
         }

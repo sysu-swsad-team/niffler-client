@@ -36,7 +36,7 @@
 
 <script>
 import Vue from 'vue'
-import {summitErrand} from '../../api/api'
+import {summitTask} from '../../api/api'
 Vue.component('anchored-heading', {
   render: function (createElement) {
     return createElement(
@@ -92,7 +92,6 @@ export default {
   },
   methods: {
     summitForm (formName) {
-      console.log(this.ruleForm.dueDate.toString())
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$confirm('确定提交该任务吗？', '提示', {
@@ -111,9 +110,7 @@ export default {
               tag: [this.ruleForm.tag],
               question: ''
             }
-            console.log(summitParams)
-            summitErrand(summitParams).then(res => {
-              console.log(res.data)
+            summitTask(summitParams).then(res => {
               if (res.status === 200) {
                 this.$message({
                   message: '提交成功',
@@ -121,7 +118,7 @@ export default {
                 })
               } else {
                 this.$message({
-                  message: `提交 ${res.status} ${res.statusText}`,
+                  message: `提交 ${res.data.msg}`,
                   type: 'error'
                 })
               }
