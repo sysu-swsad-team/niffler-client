@@ -22,26 +22,30 @@
       @row-click="lookOverQN"
       v-loading="listLoading"
       element-loading-spinner="el-icon-loading">
-        <el-table-column type="selection" width="55">
-        </el-table-column>
+        <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" width="50"></el-table-column>
         <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
-        <el-table-column prop="maxNumber" label="剩余量" width="100" sortable></el-table-column>
+        <el-table-column prop="remaining_quota" label="剩余量" width="100" sortable></el-table-column>
         <el-table-column prop="fee" label="费用" width="80" sortable></el-table-column>
-        <el-table-column prop="dueDate" label="结束日期" width="150"></el-table-column>
+        <el-table-column prop="created_date" label="结束日期" width="200"></el-table-column>
+        <el-table-column prop="due_date" label="结束日期" width="200"></el-table-column>
         <el-table-column prop="tag" label="标签" width="100" :filters="[{ text: '商业', value: '商业' }, {text: '学校', value: '学校' }]" :filter-method="filterTag" filter-placement="bottom-end">
           <template slot-scope="scope">
             <el-tag :type="scope.row.tag === '商业' ? 'primary' : 'success'"
             disable-transitions>{{ scope.row.tag }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作和描述" width="150">
+        <el-table-column label="操作和描述" width="200" prop="status" :filters="[{text: '进行中', value: 'UNDERWAY'}, {text: '已取消', value: 'CANCELLED'}, {text: '已过期', value: 'CLOSED'}, {text: '被举报', value: 'INVALID'}, {text: '已完成', value: 'QUOTA FULL'}]" :filter-method="filterTask" filter-placement="bottom-end">
           <template slot-scope="scope">
             <el-tooltip placement="top">
               <div slot="content">{{ scope.row.description }}</div>
-              <el-button size="small" type="primary" @click="checkQustionnair(scope.$index)">查看</el-button>
+              <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="primary" @click="checkQustionnair(scope.$index)">查看</el-button>
+              <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info">已取消</el-button>
+              <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info">已过期</el-button>
+              <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning">被举报</el-button>
+              <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success">已结束</el-button>
             </el-tooltip>
-          <el-button size="small" type="danger" @click="deleteQuestionnair(scope.$index)">删除</el-button>
+          <el-button :disabled="scope.row.status !== 'UNDERWAY'" size="small" type="danger" @click="deleteQuestionnair(scope.$index)">取消问卷</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -100,7 +104,6 @@ export default {
           }]
         }]
       },
-      sels: [],
       isEdit: false,
       isCheck: false,
       isLookOver: false,
@@ -154,7 +157,9 @@ export default {
               due_date: res.data[i].due_date,
               tag: res.data[i].tag_set.toString(),
               description: res.data[i].description,
-              questions: res.data[i].poll
+              questions: res.data[i].poll,
+              status: res.data[i].status,
+              created_date: res.data[i].created_date
             })
           }
           this.$message({
@@ -246,11 +251,11 @@ export default {
       this.isCheck = true
       event.cancelBubble = true
     },
-    selsChange: function (sels) {
-      this.sels = sels
-    },
     filterTag (value, row) {
       return row.tag === value
+    },
+    filterTask (value, row) {
+      return row.status === value
     },
     batchRemove () {
       // 根据sels中的下标，找到对应问卷的id，传给后端进行删除，
@@ -346,7 +351,7 @@ export default {
       return 'cursor: pointer;'
     }
   },
-  created () {
+  mounted () {
     this.getQNList()
   },
   components: {

@@ -35,12 +35,12 @@
         v-for="(question, index) in ruleForm.questions"
         :label="'问题 ' + (index + 1)" :key="question.key">
         <div>{{ question.title }}</div>
-        <el-form-item v-if="question.type === 0">
+        <el-form-item v-if="question.type === 0" disabled="true">
           <el-radio-group v-for="(option) in question.options" :key="option.key">
             <el-radio style="margin: 0 20px 0 20px">{{ option.value }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-if="question.type === 1">
+        <el-form-item v-if="question.type === 1" disabled="true">
 <!--           <el-checkbox-group>
             <el-checkbox v-for="(option, index) in question.options" :key="option.key" :label="index">{{ option.value }}</el-checkbox>
           </el-checkbox-group> -->

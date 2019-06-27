@@ -10,25 +10,28 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-table :data="errandList" highlight-current-row @selection-change="selsChange" style="width: 100%;" stripe>
-        <el-table-column type="selection" width="55">
-        </el-table-column>
+      <el-table :data="errandList" highlight-current-row style="width: 100%;" stripe>
         <el-table-column type="index" width="50"></el-table-column>
         <el-table-column prop="title" label="活动标题" width="200"></el-table-column>
         <el-table-column prop="fee" label="报酬" width="80" sortable></el-table-column>
         <el-table-column prop="finisher" label="接取者" width="100"></el-table-column>
-        <el-table-column prop="dueDate" label="结束日期" width="150" sortable></el-table-column>
+        <el-table-column prop="due_date" label="结束日期" width="200" sortable></el-table-column>
+        <el-table-column prop="created_date" label="创建日期" width="200" sortable></el-table-column>
         <el-table-column prop="tag" label="类型" width="100" :filters="[{ text: '快递', value: '快递' }, {text: '外卖', value: '外卖' }]" :filter-method="filterTag" filter-placement="bottom-end">
           <template slot-scope="scope">
             <el-tag :type="scope.row.tag === '快递' ? 'primary' : 'success'"
             disable-transitions>{{ scope.row.tag }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作和描述" width="150">
+        <el-table-column label="操作和描述" width="200" prop="status" :filters="[{text: '进行中', value: 'UNDERWAY'}, {text: '已取消', value: 'CANCELLED'}, {text: '已过期', value: 'CLOSED'}, {text: '被举报', value: 'INVALID'}, {text: '已完成', value: 'QUOTA FULL'}]" :filter-method="filterTask" filter-placement="bottom-end">
           <template slot-scope="scope">
             <el-tooltip placement="top">
               <div slot="content">{{ scope.row.description }}</div>
-              <el-button size="small" type="danger" @click="deleteErrand(scope.$index)">删除</el-button>
+              <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="danger" @click="deleteErrand(scope.$index)">取消任务</el-button>
+              <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info">已取消</el-button>
+              <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info">已过期</el-button>
+              <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning">被举报</el-button>
+              <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success">已完成</el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -68,7 +71,6 @@ export default {
         title: ''
       },
       errandList: [ ],
-      sels: [],
       total: 1
     }
   },
@@ -116,9 +118,11 @@ export default {
               title: res.data[i].title,
               fee: res.data[i].fee,
               finisher: participantName,
-              dueDate: res.data[i].due_date,
+              due_date: res.data[i].due_date,
+              created_date: res.data[i].created_date,
               tag: res.data[i].tag_set[0],
-              description: res.data[i].description
+              description: res.data[i].description,
+              status: res.data[i].status
             })
           }
           this.$message({
@@ -167,11 +171,11 @@ export default {
       })
       return participantName
     },
-    selsChange: function (sels) {
-      this.sels = sels
-    },
     filterTag (value, row) {
       return row.tag === value
+    },
+    filterTask (value, row) {
+      return row.status === value
     },
     batchRemove () {
       // 根据sels中的下标，找到对应问卷的id，传给后端进行删除，返回成功再在前端questionnaireList进行删除
@@ -180,28 +184,34 @@ export default {
       // 根据this.errandList[index].id 想后端请求删除的活动，如果返回success，在前端的
       // this.errandList删除对应活动
       event.cancelBubble = true
-      const params = {
-        id: this.errandList[index].id
-      }
-      console.log(params)
-      removeErrand(params).then(res => {
-        console.log(res)
-        if (res.status === 200) {
+      this.$confirm('确定取消该任务吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const params = {
+          id: this.errandList[index].id
+        }
+        console.log(params)
+        removeErrand(params).then(res => {
+          console.log(res)
+          if (res.status === 200) {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            this.getErrandList()
+          } else {
+            this.$message({
+              message: `删除失败 ${res.data.msg}`,
+              type: 'error'
+            })
+          }
+        }).catch(err => {
           this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-          this.getErrandList()
-        } else {
-          this.$message({
-            message: `删除失败 ${res.status} ${res.statusText}`,
+            message: '删除失败' + err,
             type: 'error'
           })
-        }
-      }).catch(err => {
-        this.$message({
-          message: '删除失败' + err,
-          type: 'error'
         })
       })
     },
