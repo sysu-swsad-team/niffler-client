@@ -288,7 +288,7 @@ export default {
               maxNumber: this.ruleForm.maxNumber,
               fee: this.ruleForm.fee,
               dueDate: this.ruleForm.dueDate.toString(),
-              questions: this.ruleForm.questions
+              questions: JSON.stringify(this.ruleForm.questions)
             }
             console.log('summitParams:', summitParams)
             summitQN(summitParams).then(res => {
