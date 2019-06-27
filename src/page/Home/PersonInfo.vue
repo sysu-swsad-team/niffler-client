@@ -254,8 +254,8 @@ export default {
     },
     /* 提交dialog表单，修改个人信息 */
     dialogSubmitForm () {
-      if (this.dialogKey === 'avatar' || this.dialogKey === 'password') {
-        /* TODO: avatar和password的处理 */
+      if (this.dialogKey === 'password') {
+        /* TODO: password的处理 */
         this.dialogVisible = false
         return
       }

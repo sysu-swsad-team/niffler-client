@@ -1,80 +1,76 @@
 <template>
-<el-col :span="24" class="main">
-  <section class="content-container">
-    <template>
-      <el-col :span="24" class="toolbar" sytle="padding-bottom: 0px;">
-        <el-form :inline="true" :model="filters">
-          <el-form-item>
-            <el-input v-model="filters.title" placeholder="问卷标题"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" class="el-icon-search" @click="getQNList"> 查询</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-      <el-table
-      :data="questionnaireList"
-      :row-style="rowStyle"
-      highlight-current-row
-      @selection-change="selsChange"
-      style="width: 100%;"
-      stripe
-      @row-click="lookOverQN"
-      v-loading="listLoading"
-      element-loading-spinner="el-icon-loading">
-        <el-table-column type="index" width="50"></el-table-column>
-        <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
-        <el-table-column prop="remaining_quota" label="剩余量" width="100" sortable></el-table-column>
-        <el-table-column prop="fee" label="费用" width="80" sortable></el-table-column>
-        <el-table-column prop="created_date" label="创建日期" width="250"></el-table-column>
-        <el-table-column prop="due_date" label="结束日期" width="200"></el-table-column>
-        <el-table-column prop="tag" label="标签" width="100" :filters="[{ text: '商业', value: '商业' }, {text: '学校', value: '学校' }]" :filter-method="filterTag" filter-placement="bottom-end">
-          <template slot-scope="scope">
-            <el-tag :type="scope.row.tag === '商业' ? 'primary' : 'success'"
-            disable-transitions>{{ scope.row.tag }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作和描述" min-width="200" fit prop="status" :filters="[{text: '进行中', value: 'UNDERWAY'}, {text: '已取消', value: 'CANCELLED'}, {text: '已过期', value: 'CLOSED'}, {text: '被举报', value: 'INVALID'}, {text: '已完成', value: 'QUOTA FULL'}]" :filter-method="filterTask" filter-placement="bottom-end">
-          <template slot-scope="scope">
-            <el-tooltip placement="top">
-              <div slot="content">{{ scope.row.description }}</div>
-              <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="primary" style="width:68px" @click="checkQustionnair(scope.$index)">查看</el-button>
-              <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info" style="width:68px">已取消</el-button>
-              <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info" style="width:68px">已过期</el-button>
-              <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning" style="width:68px">被举报</el-button>
-              <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success" style="width:68px">已结束</el-button>
-            </el-tooltip>
-          <el-button :disabled="scope.row.status !== 'UNDERWAY'" size="small" type="danger" @click="deleteQuestionnair(scope.$index)">取消问卷</el-button>
-          </template>
-        </el-table-column>
+  <el-row>
+    <el-col :span="24" class="toolbar" sytle="padding-bottom: 0px;">
+      <el-form :inline="true" :model="filters">
+        <el-form-item>
+          <el-input v-model="filters.title" placeholder="问卷标题"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" class="el-icon-search" @click="getQNList"> 查询</el-button>
+        </el-form-item>
+      </el-form>
+    </el-col>
+    <el-table
+    :data="questionnaireList"
+    :row-style="rowStyle"
+    highlight-current-row
+    @selection-change="selsChange"
+    style="width: 100%;"
+    stripe
+    @row-click="lookOverQN"
+    v-loading="listLoading"
+    element-loading-spinner="el-icon-loading">
+      <el-table-column type="index" width="50"></el-table-column>
+      <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
+      <el-table-column prop="remaining_quota" label="剩余量" width="100" sortable></el-table-column>
+      <el-table-column prop="fee" label="费用" width="80" sortable></el-table-column>
+      <el-table-column prop="created_date" label="创建日期" width="250"></el-table-column>
+      <el-table-column prop="due_date" label="结束日期" width="200"></el-table-column>
+      <el-table-column prop="tag" label="标签" width="100" :filters="[{ text: '商业', value: '商业' }, {text: '学校', value: '学校' }]" :filter-method="filterTag" filter-placement="bottom-end">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.tag === '商业' ? 'primary' : 'success'"
+          disable-transitions>{{ scope.row.tag }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作和描述" min-width="200" fit prop="status" :filters="[{text: '进行中', value: 'UNDERWAY'}, {text: '已取消', value: 'CANCELLED'}, {text: '已过期', value: 'CLOSED'}, {text: '被举报', value: 'INVALID'}, {text: '已完成', value: 'QUOTA FULL'}]" :filter-method="filterTask" filter-placement="bottom-end">
+        <template slot-scope="scope">
+          <el-tooltip placement="top">
+            <div slot="content">{{ scope.row.description }}</div>
+            <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="primary" style="width:68px" @click="checkQustionnair(scope.$index)">查看</el-button>
+            <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info" style="width:68px">已取消</el-button>
+            <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info" style="width:68px">已过期</el-button>
+            <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning" style="width:68px">被举报</el-button>
+            <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success" style="width:68px">已结束</el-button>
+          </el-tooltip>
+        <el-button :disabled="scope.row.status !== 'UNDERWAY'" size="small" type="danger" @click="deleteQuestionnair(scope.$index)">取消问卷</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-col :span="24" class="toolbar">
+      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
+      </el-pagination>
+    </el-col>
+  <!--       <el-col :span="24" class="toolbar">
+      <el-button type="danger" size="medium" style="margin-top: 5px;" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
+    </el-col> -->
+    <el-dialog :visible.sync="isEdit" :close-on-click-model="false" :show-close="false" :close-on-press-escape="false" width="60%" height="auto" class="infinite-list" title="问卷编辑">
+      <EditQuestionair :ruleForm="editingQN" style="background-color:white;padding:10px"></EditQuestionair>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" size="medium" @click="summitEdit">提交</el-button>
+        <el-button type="primary" size="medium" @click="resetEdit">重置</el-button>
+        <el-button type="warning" size="medium" @click="cancelEdit">取消</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog :visible.sync="isCheck" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷填写情况">
+      <el-table :data="answerList" style="width: 100%" stripe highlight-current-row>
+        <el-table-column prop="id" label="问卷ID" width="80"></el-table-column>
+        <el-table-column v-for="(answers, index) in answerList.answers" :prop="answers" :label="'问题' + index" width="50" :key="index"></el-table-column>
       </el-table>
-      <el-col :span="24" class="toolbar">
-        <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:left;">
-        </el-pagination>
-      </el-col>
-<!--       <el-col :span="24" class="toolbar">
-        <el-button type="danger" size="medium" style="margin-top: 5px;" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
-      </el-col> -->
-      <el-dialog :visible.sync="isEdit" :close-on-click-model="false" :show-close="false" :close-on-press-escape="false" width="60%" height="auto" class="infinite-list" title="问卷编辑">
-        <EditQuestionair :ruleForm="editingQN" style="background-color:white;padding:10px"></EditQuestionair>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" size="medium" @click="summitEdit">提交</el-button>
-          <el-button type="primary" size="medium" @click="resetEdit">重置</el-button>
-          <el-button type="warning" size="medium" @click="cancelEdit">取消</el-button>
-        </div>
-      </el-dialog>
-      <el-dialog :visible.sync="isCheck" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷填写情况">
-        <el-table :data="answerList" style="width: 100%" stripe highlight-current-row>
-          <el-table-column prop="id" label="问卷ID" width="80"></el-table-column>
-          <el-table-column v-for="(answers, index) in answerList.answers" :prop="answers" :label="'问题' + index" width="50" :key="index"></el-table-column>
-        </el-table>
-      </el-dialog>
-      <el-dialog :visible.sync="isLookOver" :close-on-click-model="true" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷详细内容">
-        <ShowQuestionnaire :ruleForm="detailQN" :isDisable="false" style="background-color:white;padding:10px"></ShowQuestionnaire>
-      </el-dialog>
-    </template>
-  </section>
-</el-col>
+    </el-dialog>
+    <el-dialog :visible.sync="isLookOver" :close-on-click-model="true" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷详细内容">
+      <ShowQuestionnaire :ruleForm="detailQN" :isDisable="false" style="background-color:white;padding:10px"></ShowQuestionnaire>
+    </el-dialog>
+  </el-row>
 </template>
 
 <script>
