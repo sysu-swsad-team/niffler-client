@@ -287,7 +287,7 @@ export default {
               message: '修改失败 ' + err,
               type: 'error'
             })
-          }) 
+          })
         } else {
           console.log('error submit!!')
           return false
