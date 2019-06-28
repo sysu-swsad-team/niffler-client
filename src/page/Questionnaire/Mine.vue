@@ -52,9 +52,13 @@
         </div>
       </el-dialog>
       <el-dialog :visible.sync="isCheck" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷填写情况" :center="true">
-        <el-table v-if="answerList.length > 0" :data="answerList" style="width: 100%" stripe highlight-current-row height="250">
+        <el-table v-if="answerList.length > 0" :data="answerList" style="width: 100%" stripe highlight-current-row max-height="500" fit border>
           <el-table-column prop="userName" label="回答者" width="150"></el-table-column>
-          <el-table-column v-for="(an, index) in answerList.answer" prop="an" :label="index" width="80" :key="index"></el-table-column>
+          <el-table-column label="问题的答案">
+            <template slot-scope="scope">
+              <el-table-column v-for="(an, index) in scope.row.answer" :label="'问题' + index" width="100" :key="index">{{ an }}</el-table-column>
+            </template>
+          </el-table-column>
         </el-table>
         <div v-else>暂无人填写该问卷</div>
       </el-dialog>
