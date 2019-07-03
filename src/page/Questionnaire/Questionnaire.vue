@@ -39,7 +39,7 @@
         <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
         <el-table-column prop="issuer" label="发起者" width="150" sortable></el-table-column>
         <el-table-column prop="remaining_quota" label="剩余量" width="100" sortable></el-table-column>
-        <el-table-column prop="fee" label="报酬（闲钱币个数）" width="100" sortable></el-table-column>
+        <el-table-column prop="fee" label="闲钱币" width="100" sortable></el-table-column>
         <el-table-column prop="due_date" label="结束日期" width="200" sortable></el-table-column>
         <el-table-column prop="tag" label="标签" width="100" :filters="[{ text: '商业', value: '商业' }, {text: '学校', value: '学校' }]" :filter-method="filterTag" filter-placement="bottom-end">
           <template slot-scope="scope">

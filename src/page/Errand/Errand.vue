@@ -38,7 +38,7 @@
         <el-table-column type="index" width="50"></el-table-column>
         <el-table-column prop="title" label="活动标题" width="200"></el-table-column>
         <el-table-column prop="issuer" label="发起者" width="150"></el-table-column>
-        <el-table-column prop="fee" label="报酬（闲钱币个数）" width="100" sortable></el-table-column>
+        <el-table-column prop="fee" label="闲钱币" width="100" sortable></el-table-column>
         <el-table-column prop="dueDate" label="结束时间" width="200" sortable></el-table-column>
         <el-table-column prop="tag" label="类型" width="100" :filters="[{ text: '快递', value: '快递' }, {text: '外卖', value: '外卖' }]" :filter-method="filterTag" filter-placement="bottom-end">
           <template slot-scope="scope">

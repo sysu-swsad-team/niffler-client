@@ -10,7 +10,7 @@
             </el-form-item>
             <el-form-item>
               <el-col :span="11">
-                <el-form-item label="任务报酬(闲钱币个数)" prop="fee" label-width="120px">
+                <el-form-item label="闲钱币：" prop="fee" label-width="120px">
                   <el-input-number v-model="ruleForm.fee" :min="1" :max="9999" :step="1"></el-input-number>
                 </el-form-item>
               </el-col>
