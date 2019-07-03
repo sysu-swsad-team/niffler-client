@@ -23,7 +23,7 @@
             disable-transitions>{{ scope.row.tag }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作和描述" width="200" prop="status" :filters="[{text: '进行中', value: 'UNDERWAY'}, {text: '已取消', value: 'CANCELLED'}, {text: '已过期', value: 'CLOSED'}, {text: '被举报', value: 'INVALID'}, {text: '已完成', value: 'QUOTA FULL'}]" :filter-method="filterTask" filter-placement="bottom-end">
+        <el-table-column label="操作和描述" min-width="200" prop="status" :filters="[{text: '进行中', value: 'UNDERWAY'}, {text: '已取消', value: 'CANCELLED'}, {text: '已过期', value: 'CLOSED'}, {text: '被举报', value: 'INVALID'}, {text: '已完成', value: 'QUOTA FULL'}]" :filter-method="filterTask" filter-placement="bottom-end">
           <template slot-scope="scope">
             <el-tooltip placement="top">
               <div slot="content">{{ scope.row.description }}</div>

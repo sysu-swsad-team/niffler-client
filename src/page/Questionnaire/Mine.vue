@@ -1,121 +1,117 @@
 <template>
-<el-col :span="24" class="main">
-  <section class="content-container">
-    <template>
-      <el-col :span="24" class="toolbar" sytle="padding-bottom: 0px;">
-        <el-form :inline="true" :model="filters">
-          <el-form-item>
-            <el-input v-model="filters.title" placeholder="问卷标题"></el-input>
+<el-row>
+  <el-col :span="24" class="toolbar" sytle="padding-bottom: 0px;">
+    <el-form :inline="true" :model="filters">
+      <el-form-item>
+        <el-input v-model="filters.title" placeholder="问卷标题"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" class="el-icon-search" @click="getQNList"> 查询</el-button>
+      </el-form-item>
+    </el-form>
+  </el-col>
+  <el-table :data="questionnaireList" highlight-current-row style="width: 100%;" stripe @row-click="lookOverQN" v-loading="listLoading" element-loading-spinner="el-icon-loading">
+    <el-table-column type="index" width="50"></el-table-column>
+    <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
+    <el-table-column prop="remaining_quota" label="剩余量" width="100" sortable></el-table-column>
+    <el-table-column prop="fee" label="报酬（闲钱币个数）" width="100" sortable></el-table-column>
+    <el-table-column prop="created_date" label="创建日期" width="200" sortable></el-table-column>
+    <el-table-column prop="due_date" label="结束日期" width="200" sortable></el-table-column>
+    <el-table-column prop="tag" label="标签" width="100" :filters="[{ text: '商业', value: '商业' }, {text: '学校', value: '学校' }]" :filter-method="filterTag" filter-placement="bottom-end">
+      <template slot-scope="scope">
+        <el-tag :type="scope.row.tag === '商业' ? 'primary' : 'success'"
+        disable-transitions>{{ scope.row.tag }}</el-tag>
+      </template>
+    </el-table-column>
+    <el-table-column label="操作和描述" min-width="200" prop="status" :filters="[{text: '进行中', value: 'UNDERWAY'}, {text: '已取消', value: 'CANCELLED'}, {text: '已过期', value: 'CLOSED'}, {text: '被举报', value: 'INVALID'}, {text: '已完成', value: 'QUOTA FULL'}]" :filter-method="filterTask" filter-placement="bottom-end">
+      <template slot-scope="scope">
+        <el-tooltip placement="top">
+          <div slot="content">{{ scope.row.description }}</div>
+          <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="primary" @click="checkQustionnair(scope.row.id)">查看</el-button>
+          <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info">已取消</el-button>
+          <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info">已过期</el-button>
+          <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning">被举报</el-button>
+          <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success" @click="checkQustionnair(scope.row.id)">已结束</el-button>
+        </el-tooltip>
+      <el-button :disabled="scope.row.status !== 'UNDERWAY'" size="small" type="danger" @click="deleteQuestionnair(scope.row.id)">取消问卷</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+  <el-col :span="24" class="toolbar">
+    <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:left;">
+    </el-pagination>
+  </el-col>
+  <el-dialog :visible.sync="isEdit" :close-on-click-model="false" :show-close="false" :close-on-press-escape="false" width="60%" height="auto" class="infinite-list" title="问卷编辑">
+    <EditQuestionair :ruleForm="editingQN" style="background-color:white;padding:10px"></EditQuestionair>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" size="medium" @click="summitEdit">提交</el-button>
+      <el-button type="primary" size="medium" @click="resetEdit">重置</el-button>
+      <el-button type="warning" size="medium" @click="cancelEdit">取消</el-button>
+    </div>
+  </el-dialog>
+  <el-dialog :visible.sync="isCheck" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷填写情况" :center="true">
+    <el-table v-if="answerList.length > 0" :data="answerList" style="width: 100%" stripe highlight-current-row max-height="500" fit border>
+      <el-table-column prop="userName" label="回答者" width="150"></el-table-column>
+      <el-table-column label="问题的答案">
+        <template slot-scope="scope">
+          <el-table-column v-for="(an, index) in scope.row.answer" :label="'问题' + index" width="100" :key="index">{{ an }}</el-table-column>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div v-else>暂无人填写该问卷</div>
+  </el-dialog>
+  <el-dialog :visible.sync="isLookOver" :close-on-click-model="true" :show-close="true" :close-on-press-escape="true" width="80%" height="auto" class="infinite-list" title="问卷详细内容" :center="true" append-to-body>
+    <el-col :span="24" class="content-wrapper" style="background-color: #eee;padding: 10px; margin: 0px;">
+      <el-form :model="detailQN" label-position="left" label-width="80px" disabled style="font-weight: bold;" >
+        <el-form-item label="题目：" prop="title">
+          <p>{{ detailQN.title }}</p>
+        </el-form-item>
+        <el-form-item label="简介：" prop="description">
+          <div>{{ detailQN.description }}</div>
+        </el-form-item>
+        <el-form-item label="结束时间：" prop="dueDate" label-width="120px">
+          <span>{{ detailQN.dueDate }}</span>
+        </el-form-item>
+        <el-form-item lable-width="10px">
+          <el-col :span="7">
+            <el-form-item label="最大填写份数：" label-width="150px">
+              <span>{{ detailQN.maxNumber }} 份</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7" :offset="1">
+            <el-form-item label="报酬（闲钱币个数）" label-width="160px">
+              <span>{{ detailQN.fee }}</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7" :offset="1">
+            <el-form-item label="标签：" label-width="80px">
+              <el-tag type="success">学校</el-tag>
+            </el-form-item>
+          </el-col>
+        </el-form-item>
+        <el-divider content-position="center">问卷内容</el-divider>
+        <el-form-item
+          v-for="(question, index) in detailQN.questions" :label="(index + 1) + ''" :key="index">
+          <el-form-item v-if="question.type === 0">
+            <h6>（单选）{{ question.title }}</h6>
+            <el-radio v-for="(option, indexP) in question.options" :key="indexP" :label="indexP + ''">{{ option.value }}</el-radio>
           </el-form-item>
-          <el-form-item>
-            <el-button type="primary" class="el-icon-search" @click="getQNList"> 查询</el-button>
+          <el-form-item v-if="question.type === 1">
+            <h6>（多选）{{ question.title }}</h6>
+            <el-checkbox-group>
+              <el-checkbox v-for="(option, indexP) in question.options" :key="indexP" :label="indexP + ''">{{ option.value }}</el-checkbox>
+            </el-checkbox-group>
           </el-form-item>
-        </el-form>
-      </el-col>
-      <el-table :data="questionnaireList" highlight-current-row style="width: 100%;" stripe @row-click="lookOverQN" v-loading="listLoading" element-loading-spinner="el-icon-loading">
-        <el-table-column type="index" width="50"></el-table-column>
-        <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
-        <el-table-column prop="remaining_quota" label="剩余量" width="100" sortable></el-table-column>
-        <el-table-column prop="fee" label="报酬（闲钱币个数）" width="100" sortable></el-table-column>
-        <el-table-column prop="created_date" label="创建日期" width="200" sortable></el-table-column>
-        <el-table-column prop="due_date" label="结束日期" width="200" sortable></el-table-column>
-        <el-table-column prop="tag" label="标签" width="100" :filters="[{ text: '商业', value: '商业' }, {text: '学校', value: '学校' }]" :filter-method="filterTag" filter-placement="bottom-end">
-          <template slot-scope="scope">
-            <el-tag :type="scope.row.tag === '商业' ? 'primary' : 'success'"
-            disable-transitions>{{ scope.row.tag }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作和描述" width="200" prop="status" :filters="[{text: '进行中', value: 'UNDERWAY'}, {text: '已取消', value: 'CANCELLED'}, {text: '已过期', value: 'CLOSED'}, {text: '被举报', value: 'INVALID'}, {text: '已完成', value: 'QUOTA FULL'}]" :filter-method="filterTask" filter-placement="bottom-end">
-          <template slot-scope="scope">
-            <el-tooltip placement="top">
-              <div slot="content">{{ scope.row.description }}</div>
-              <el-button v-if="scope.row.status === 'UNDERWAY'" size="small" type="primary" @click="checkQustionnair(scope.row.id)">查看</el-button>
-              <el-button v-if="scope.row.status === 'CANCELLED'" size="small" type="info">已取消</el-button>
-              <el-button v-if="scope.row.status === 'CLOSED'" size="small" type="info">已过期</el-button>
-              <el-button v-if="scope.row.status === 'INVALID'" size="small" type="warning">被举报</el-button>
-              <el-button v-if="scope.row.status === 'QUOTA FULL'" size="small" type="success" @click="checkQustionnair(scope.row.id)">已结束</el-button>
-            </el-tooltip>
-          <el-button :disabled="scope.row.status !== 'UNDERWAY'" size="small" type="danger" @click="deleteQuestionnair(scope.row.id)">取消问卷</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-col :span="24" class="toolbar">
-        <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:left;">
-        </el-pagination>
-      </el-col>
-      <el-dialog :visible.sync="isEdit" :close-on-click-model="false" :show-close="false" :close-on-press-escape="false" width="60%" height="auto" class="infinite-list" title="问卷编辑">
-        <EditQuestionair :ruleForm="editingQN" style="background-color:white;padding:10px"></EditQuestionair>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" size="medium" @click="summitEdit">提交</el-button>
-          <el-button type="primary" size="medium" @click="resetEdit">重置</el-button>
-          <el-button type="warning" size="medium" @click="cancelEdit">取消</el-button>
-        </div>
-      </el-dialog>
-      <el-dialog :visible.sync="isCheck" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷填写情况" :center="true">
-        <el-table v-if="answerList.length > 0" :data="answerList" style="width: 100%" stripe highlight-current-row max-height="500" fit border>
-          <el-table-column prop="userName" label="回答者" width="150"></el-table-column>
-          <el-table-column label="问题的答案">
-            <template slot-scope="scope">
-              <el-table-column v-for="(an, index) in scope.row.answer" :label="'问题' + index" width="100" :key="index">{{ an }}</el-table-column>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div v-else>暂无人填写该问卷</div>
-      </el-dialog>
-      <el-dialog :visible.sync="isLookOver" :close-on-click-model="true" :show-close="true" :close-on-press-escape="true" width="80%" height="auto" class="infinite-list" title="问卷详细内容" :center="true" append-to-body>
-        <el-col :span="24" class="content-wrapper" style="background-color: #eee;padding: 10px; margin: 0px;">
-          <el-form :model="detailQN" label-position="left" label-width="80px" disabled style="font-weight: bold;" >
-            <el-form-item label="题目：" prop="title">
-              <p>{{ detailQN.title }}</p>
-            </el-form-item>
-            <el-form-item label="简介：" prop="description">
-              <div>{{ detailQN.description }}</div>
-            </el-form-item>
-            <el-form-item label="结束时间：" prop="dueDate" label-width="120px">
-              <span>{{ detailQN.dueDate }}</span>
-            </el-form-item>
-            <el-form-item lable-width="10px">
-              <el-col :span="7">
-                <el-form-item label="最大填写份数：" label-width="150px">
-                  <span>{{ detailQN.maxNumber }} 份</span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="7" :offset="1">
-                <el-form-item label="报酬（闲钱币个数）" label-width="160px">
-                  <span>{{ detailQN.fee }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="7" :offset="1">
-                <el-form-item label="标签：" label-width="80px">
-                  <el-tag type="success">学校</el-tag>
-                </el-form-item>
-              </el-col>
-            </el-form-item>
-            <el-divider content-position="center">问卷内容</el-divider>
-            <el-form-item
-              v-for="(question, index) in detailQN.questions" :label="(index + 1) + ''" :key="index">
-              <el-form-item v-if="question.type === 0">
-                <h6>（单选）{{ question.title }}</h6>
-                <el-radio v-for="(option, indexP) in question.options" :key="indexP" :label="indexP + ''">{{ option.value }}</el-radio>
-              </el-form-item>
-              <el-form-item v-if="question.type === 1">
-                <h6>（多选）{{ question.title }}</h6>
-                <el-checkbox-group>
-                  <el-checkbox v-for="(option, indexP) in question.options" :key="indexP" :label="indexP + ''">{{ option.value }}</el-checkbox>
-                </el-checkbox-group>
-              </el-form-item>
-              <el-form-item v-if="question.type === 2">
-                <h6>（填空）{{ question.title }}</h6>
-                <el-input style="margin-bottom: 5px"></el-input>
-              </el-form-item>
-            </el-form-item>
-            <el-divider></el-divider>
-          </el-form>
-        </el-col>
-      </el-dialog>
-    </template>
-  </section>
-</el-col>
+          <el-form-item v-if="question.type === 2">
+            <h6>（填空）{{ question.title }}</h6>
+            <el-input style="margin-bottom: 5px"></el-input>
+          </el-form-item>
+        </el-form-item>
+        <el-divider></el-divider>
+      </el-form>
+    </el-col>
+  </el-dialog>
+</el-row>
 </template>
 
 <script>
