@@ -50,7 +50,9 @@ const mutations = {
   },
   mutationsSetUser (state, user) {
     for (var key in user) {
-      state[key] = user[key]
+      if (key !== 'isCollapse') {
+        state[key] = user[key]
+      }
     }
   }
 }

@@ -4,7 +4,7 @@
     <el-menu default-active="1" class="el-menu-vertical-demo"
       @open="handleOpen" @close="handleClose" @select="handleSelect" :collapse="isCollapse"
       :collapse-transition="true">
-      <el-menu-item index="1" @click="$router.push('/errand')">
+      <el-menu-item index="1" @click="getBackToErrand">
         <i class="el-icon-bicycle"></i>
         <span slot="title">跑腿办事</span>
       </el-menu-item>
@@ -97,6 +97,10 @@ export default {
     }
   },
   methods: {
+    getBackToErrand () {
+      this.$router.push('/errand')
+      this.getErrandList()
+    },
     getTags (tagSet) {
       var str = ''
       for (var i = 0; i < tagSet.length; i++) {
