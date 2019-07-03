@@ -13,7 +13,7 @@
       <el-table :data="errandList" highlight-current-row style="width: 100%;" stripe>
         <el-table-column type="index" width="50"></el-table-column>
         <el-table-column prop="title" label="活动标题" width="200"></el-table-column>
-        <el-table-column prop="fee" label="报酬（闲钱币个数）" width="100" sortable></el-table-column>
+        <el-table-column prop="fee" label="闲钱币" width="100" sortable></el-table-column>
         <el-table-column prop="finisher" label="接取者" width="100"></el-table-column>
         <el-table-column prop="due_date" label="结束日期" width="200" sortable></el-table-column>
         <el-table-column prop="created_date" label="创建日期" width="200" sortable></el-table-column>
