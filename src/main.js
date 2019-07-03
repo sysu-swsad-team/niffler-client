@@ -7,7 +7,7 @@ import store from './vuex/store'
 import VueRouter from 'vue-router'
 import ElementUI from 'element-ui'
 import axios from 'axios'
-// import utils from './utils'
+import utils from './utils'
 
 /* theme */
 import '../src/assets/theme/element-#1D365D/index.css'
@@ -24,8 +24,8 @@ Vue.use(BootstrapVue)
 Vue.config.productionTip = false
 
 /* axios设置 */
-// axios.defaults.baseURL = 'http://129.204.53.183:8000'
-axios.defaults.baseURL = 'http://127.0.0.1:8000'
+axios.defaults.baseURL = 'http://129.204.53.183:8000'
+// axios.defaults.baseURL = 'http://127.0.0.1:8000'
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
 axios.defaults.withCredentials = true
@@ -35,6 +35,7 @@ router.beforeEach((to, from, next) => {
   /* 若返回登录界面，则清除sessionStorage数据 */
   if (to.path === '/login') {
     sessionStorage.clear()
+    utils.clearCookies()
   }
 
   /* 在sessionStorage中提取user */
