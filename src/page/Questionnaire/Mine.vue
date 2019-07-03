@@ -16,7 +16,7 @@
         <el-table-column type="index" width="50"></el-table-column>
         <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
         <el-table-column prop="remaining_quota" label="剩余量" width="100" sortable></el-table-column>
-        <el-table-column prop="fee" label="费用" width="80" sortable></el-table-column>
+        <el-table-column prop="fee" label="报酬（闲钱币个数）" width="100" sortable></el-table-column>
         <el-table-column prop="created_date" label="创建日期" width="200" sortable></el-table-column>
         <el-table-column prop="due_date" label="结束日期" width="200" sortable></el-table-column>
         <el-table-column prop="tag" label="标签" width="100" :filters="[{ text: '商业', value: '商业' }, {text: '学校', value: '学校' }]" :filter-method="filterTag" filter-placement="bottom-end">
@@ -52,9 +52,13 @@
         </div>
       </el-dialog>
       <el-dialog :visible.sync="isCheck" :close-on-click-model="false" :show-close="true" :close-on-press-escape="true" width="60%" height="auto" class="infinite-list" title="问卷填写情况" :center="true">
-        <el-table v-if="answerList.length > 0" :data="answerList" style="width: 100%" stripe highlight-current-row height="250">
+        <el-table v-if="answerList.length > 0" :data="answerList" style="width: 100%" stripe highlight-current-row max-height="500" fit border>
           <el-table-column prop="userName" label="回答者" width="150"></el-table-column>
-          <el-table-column v-for="(an, index) in answerList.answer" prop="an" :label="index" width="80" :key="index"></el-table-column>
+          <el-table-column label="问题的答案">
+            <template slot-scope="scope">
+              <el-table-column v-for="(an, index) in scope.row.answer" :label="'问题' + index" width="100" :key="index">{{ an }}</el-table-column>
+            </template>
+          </el-table-column>
         </el-table>
         <div v-else>暂无人填写该问卷</div>
       </el-dialog>
@@ -77,8 +81,8 @@
                 </el-form-item>
               </el-col>
               <el-col :span="7" :offset="1">
-                <el-form-item label="每份金额：" label-width="150px">
-                  <span>{{ detailQN.fee }} 元</span>
+                <el-form-item label="报酬（闲钱币个数）" label-width="160px">
+                  <span>{{ detailQN.fee }}</span>
                 </el-form-item>
               </el-col>
               <el-col :span="7" :offset="1">
@@ -159,6 +163,13 @@ export default {
     }
   },
   methods: {
+    getTags (tagSet) {
+      var str = ''
+      for (var i = 0; i < tagSet.length; i++) {
+        str = str + tagSet[i]
+      }
+      return str
+    },
     getQNList () {
       this.listLoading = true
       const queryParams = {
@@ -184,7 +195,7 @@ export default {
               remaining_quota: res.data[i].remaining_quota,
               fee: res.data[i].fee,
               due_date: this.convertUTCTimeToLocalTime(res.data[i].due_date),
-              tag: res.data[i].tag_set.toString(),
+              tag: this.getTags(res.data[i].tag_set),
               description: res.data[i].description,
               questions: res.data[i].poll,
               status: res.data[i].status,

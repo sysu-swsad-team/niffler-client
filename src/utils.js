@@ -23,5 +23,15 @@ export default {
     }
     user.avatar = `${axios.defaults.baseURL}/${user.avatar}`
     return user
+  },
+  clearCookies: function () {
+    var date = new Date()
+    date.setTime(date.getTime() - 10000)
+    var keys = document.cookie.match(/[^ =;]+(?==)/g)
+    if (keys) {
+      for (var i = keys.length; i--;) {
+        document.cookie = keys[i] + '=0; expire=' + date.toGMTString() + '; path=/'
+      }
+    }
   }
 }
