@@ -10,7 +10,7 @@
       </el-form-item>
     </el-form>
   </el-col>
-  <el-table :data="questionnaireList" highlight-current-row style="width: 100%;" stripe @row-click="lookOverQN" v-loading="listLoading" element-loading-spinner="el-icon-loading">
+  <el-table :data="questionnaireList" :row-style="rowStyle" highlight-current-row style="width: 100%;" stripe @row-click="lookOverQN" v-loading="listLoading" element-loading-spinner="el-icon-loading">
     <el-table-column type="index" width="50"></el-table-column>
     <el-table-column prop="title" label="问卷标题" width="200"></el-table-column>
     <el-table-column prop="remaining_quota" label="剩余量" width="100" sortable></el-table-column>
@@ -379,6 +379,10 @@ export default {
           type: 'error'
         })
       })
+    },
+    /* 表格行的样式设置 */
+    rowStyle ({row, rowIndex}) {
+      return 'cursor: pointer;'
     }
   },
   mounted () {

@@ -4,7 +4,7 @@
     <el-menu default-active="1" class="el-menu-vertical-demo"
       @open="handleOpen" @close="handleClose" @select="handleSelect" :collapse="isCollapse"
       :collapse-transition="true">
-      <el-menu-item index="1" @click="$router.push('/questionnaire')">
+      <el-menu-item index="1" @click="getBackToQN">
         <i class="el-icon-edit-outline"></i>
         <span slot="title">问卷系统</span>
       </el-menu-item>
@@ -149,6 +149,10 @@ export default {
     }
   },
   methods: {
+    getBackToQN () {
+      this.$router.push('/questionnaire')
+      this.getQNList()
+    },
     getTags (tagSet) {
       var str = ''
       for (var i = 0; i < tagSet.length; i++) {
