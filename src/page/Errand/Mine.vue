@@ -13,7 +13,7 @@
       <el-table :data="errandList" highlight-current-row style="width: 100%;" stripe>
         <el-table-column type="index" width="50"></el-table-column>
         <el-table-column prop="title" label="活动标题" width="200"></el-table-column>
-        <el-table-column prop="fee" label="报酬" width="80" sortable></el-table-column>
+        <el-table-column prop="fee" label="报酬（闲钱币个数）" width="100" sortable></el-table-column>
         <el-table-column prop="finisher" label="接取者" width="100"></el-table-column>
         <el-table-column prop="due_date" label="结束日期" width="200" sortable></el-table-column>
         <el-table-column prop="created_date" label="创建日期" width="200" sortable></el-table-column>
@@ -81,6 +81,13 @@ export default {
     }
   },
   methods: {
+    getTags (tagSet) {
+      var str = ''
+      for (var i = 0; i < tagSet.length; i++) {
+        str = str + tagSet[i]
+      }
+      return str
+    },
     getErrandList () {
       this.listLoading = true
       const queryParams = {
@@ -110,7 +117,7 @@ export default {
               finisher: participantName,
               due_date: this.convertUTCTimeToLocalTime(res.data[i].due_date),
               created_date: this.convertUTCTimeToLocalTime(res.data[i].created_date),
-              tag: res.data[i].tag_set[0],
+              tag: this.getTags(res.data[i].tag_set),
               description: res.data[i].description,
               status: res.data[i].status
             })

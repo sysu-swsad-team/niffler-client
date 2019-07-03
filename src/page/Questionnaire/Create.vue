@@ -17,8 +17,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="7" :offset="1">
-          <el-form-item label="每份金额(元)：" prop="fee" label-width="120px">
-            <el-input-number v-model="ruleForm.fee" :min="0.01" :max="9999.0" :step="0.01"></el-input-number>
+          <el-form-item label="每份报酬(闲钱币个数)：" prop="fee" label-width="120px">
+            <el-input-number v-model="ruleForm.fee" :min="1" :max="9999" :step="1"></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="7" :offset="1">
