@@ -89,5 +89,5 @@ nginx -c /etc/nginx/nginx.conf
 
 ## Theme color \#1D365D
 
-<div style="background-color: #1D365D; width: 250px; color: white; text-align:center;">Theme color<br>#1D365D</div>
+![#1D365D](https://img.shields.io/badge/-%231D365D-%231D365D.svg)
 
